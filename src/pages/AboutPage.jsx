@@ -1,0 +1,109 @@
+import React from 'react';
+import { 
+  Award, 
+  MapPin, 
+  ShieldCheck, 
+  Users, 
+  Brain, 
+  Heart, 
+  Building, 
+  Cpu, 
+  FileCheck2 
+} from 'lucide-react';
+import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
+
+export default function AboutPage() {
+  return (
+    <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
+      {/* Header */}
+      <div className="bg-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl space-y-4 border border-slate-800">
+        <div className="inline-flex items-center gap-2 bg-teal-500/20 text-teal-300 px-3 py-1 rounded-full text-xs font-bold border border-teal-500/30">
+          <Award className="w-4 h-4" />
+          <span>SMART INDIA HACKATHON 2026</span>
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-black">
+          About SmarTCARE & Team Phantom techie
+        </h1>
+        <p className="text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed">
+          "Empowering elderly lives. Building healthier communities. A brighter North East."
+        </p>
+      </div>
+
+      {/* Official SIH 2026 Details Card */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-teal-200 shadow-sm space-y-5">
+        <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
+          <FileCheck2 className="w-5 h-5 text-teal-600" />
+          <span>Smart India Hackathon 2026 Specifications</span>
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+            <span className="text-slate-400 font-bold block uppercase text-[11px]">Problem Statement ID</span>
+            <span className="text-lg font-black text-teal-800">26003</span>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+            <span className="text-slate-400 font-bold block uppercase text-[11px]">Team Name</span>
+            <span className="text-lg font-black text-slate-900">Phantom techie</span>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+            <span className="text-slate-400 font-bold block uppercase text-[11px]">Ministry / Organization</span>
+            <span className="text-base font-black text-slate-800">
+              Ministry of Development of North Eastern Region (MDoNER)
+            </span>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+            <span className="text-slate-400 font-bold block uppercase text-[11px]">Theme & Category</span>
+            <span className="text-base font-black text-slate-800">
+              Healthcare, Biomedical Devices & Assistive Technology (Software)
+            </span>
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-teal-50 border border-teal-200 text-xs sm:text-sm text-teal-950 space-y-1">
+          <span className="font-extrabold uppercase tracking-wide text-teal-800 block">Problem Title:</span>
+          <p className="font-semibold leading-relaxed">
+            "AI-Based Cognitive Gaming and Memory Assistance Platform for Elderly Dementia Patients in North Eastern Region (NER)"
+          </p>
+        </div>
+      </div>
+
+      {/* Ethical Medical Safety Principles (Section 3 & 45) */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+        <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 text-emerald-600" />
+          <span>Product Safety & Non-Diagnostic Positioning</span>
+        </h3>
+        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          In strict compliance with medical ethics and software safety standards:
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 space-y-2">
+            <span className="font-bold text-rose-900 uppercase">What SmarTCARE Does NOT Do:</span>
+            <ul className="space-y-1.5 text-rose-800">
+              <li>• Does NOT diagnose or predict dementia or Alzheimer's.</li>
+              <li>• Does NOT claim to detect acute medical emergencies.</li>
+              <li>• Does NOT use stigmatizing clinical labels on elderly profiles.</li>
+              <li>• Does NOT interpret simulated sensor data as real clinical metrics.</li>
+            </ul>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+            <span className="font-bold text-emerald-900 uppercase">What SmarTCARE DOES Provide:</span>
+            <ul className="space-y-1.5 text-emerald-800">
+              <li>• AI-assisted cognitive engagement and memory stimulation.</li>
+              <li>• Explainable difficulty leveling that prevents user fatigue.</li>
+              <li>• Culturally respectful imagery from all 8 North Eastern states.</li>
+              <li>• 100% offline-first resilience for low-connectivity valleys.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <DisclaimerBanner />
+    </div>
+  );
+}
