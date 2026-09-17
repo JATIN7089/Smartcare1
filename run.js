@@ -1,26 +1,31 @@
 import { spawn } from 'child_process';
 
-console.log('\n==================================================');
-console.log('  🌟 Starting SmarTCARE Platform (SIH 2026)');
-console.log('  👉 Open in your browser: http://localhost:3000');
-console.log('==================================================\n');
+console.log('\n==============================================================');
+console.log('  🌟 SmarTCARE Platform (SIH 2026 - Problem 26003)');
+console.log('  👉 Frontend Application : http://localhost:3000');
+console.log('  👉 Express REST API     : http://localhost:5000');
+console.log('==============================================================\n');
 
-// Start Express Backend
-const server = spawn('node', ['server/index.js'], { 
+// 1. Start Express Backend API Server
+const isWin = process.platform === 'win32';
+const server = spawn(isWin ? 'node.exe' : 'node', ['server/index.js'], { 
   stdio: 'inherit', 
   shell: true 
 });
 
-// Start Vite Frontend
-const vite = spawn('npx', ['vite', '--host', '0.0.0.0', '--port', '3000'], { 
-  stdio: 'inherit', 
-  shell: true 
-});
+// 2. Start Vite Frontend Dev Server after a short delay so backend is ready
+let vite = null;
+setTimeout(() => {
+  vite = spawn(isWin ? 'npm.cmd' : 'npm', ['run', 'dev:vite'], { 
+    stdio: 'inherit', 
+    shell: true 
+  });
+}, 1000);
 
 const cleanup = () => {
   try {
-    server.kill();
-    vite.kill();
+    if (server) server.kill();
+    if (vite) vite.kill();
   } catch (e) {}
   process.exit();
 };
