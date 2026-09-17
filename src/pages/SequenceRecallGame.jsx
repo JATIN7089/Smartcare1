@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { useApp } from '../context/AppContext.jsx';
 import { soundService } from '../services/soundService.js';
@@ -33,6 +33,7 @@ export default function SequenceRecallGame() {
 
   // Sequence length based on difficulty: Beginner=3, Easy=3, Moderate=4, Advanced=5
   const sequenceLength = currentDiff === 'Beginner' ? 3 : currentDiff === 'Easy' ? 3 : currentDiff === 'Moderate' ? 4 : 5;
+  const location = useLocation();
 
   const [targetSequence, setTargetSequence] = useState([]);
   const [userSequence, setUserSequence] = useState([]);
@@ -41,6 +42,27 @@ export default function SequenceRecallGame() {
   const [attempts, setAttempts] = useState(0);
   const [startTime, setStartTime] = useState(Date.now());
   const [gameResult, setGameResult] = useState(null);
+  const [autoStartCount, setAutoStartCount] = useState(null);
+
+  // Auto-start on voice command
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const shouldStart = location.state?.autostart || params.get('autostart') === '1' || params.get('autostart') === 'true';
+    if (shouldStart && phase === 'ready') {
+      setAutoStartCount(3);
+      const cTimer1 = setTimeout(() => setAutoStartCount(2), 500);
+      const cTimer2 = setTimeout(() => setAutoStartCount(1), 1000);
+      const cTimer3 = setTimeout(() => {
+        setAutoStartCount(null);
+        startRound();
+      }, 1500);
+      return () => {
+        clearTimeout(cTimer1);
+        clearTimeout(cTimer2);
+        clearTimeout(cTimer3);
+      };
+    }
+  }, [location.state]);
 
   const startRound = () => {
     // Generate random sequence
@@ -183,20 +205,32 @@ export default function SequenceRecallGame() {
       {/* Main Play Area */}
       <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-md min-h-[300px] flex flex-col items-center justify-center mb-8">
         {phase === 'ready' && (
-          <div className="text-center space-y-3 py-10">
-            <div className="w-16 h-16 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mx-auto text-2xl font-black">
-              1-2-3
-            </div>
-            <h3 className="text-xl font-bold text-slate-800">Ready to test your attention?</h3>
-            <p className="text-sm text-slate-500 max-w-sm mx-auto">
-              You will see a sequence of {sequenceLength} familiar symbols for 4 seconds. Tap "Start Sequence" when you are comfortable.
-            </p>
-            <button
-              onClick={startRound}
-              className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-8 py-3 rounded-2xl shadow transition"
-            >
-              Start Sequence
-            </button>
+          <div className="text-center space-y-4 py-10">
+            {autoStartCount !== null ? (
+              <div className="space-y-3 animate-in zoom-in-95 duration-200">
+                <div className="w-20 h-20 rounded-full bg-teal-600 text-white flex items-center justify-center mx-auto text-3xl font-black shadow-lg animate-pulse">
+                  {autoStartCount}
+                </div>
+                <h3 className="text-2xl font-black text-slate-800">Starting Automatically...</h3>
+                <p className="text-sm text-teal-700 font-bold">Voice command received • Get ready!</p>
+              </div>
+            ) : (
+              <>
+                <div className="w-16 h-16 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mx-auto text-2xl font-black">
+                  1-2-3
+                </div>
+                <h3 className="text-xl font-bold text-slate-800">Your Attention Activity</h3>
+                <p className="text-sm text-slate-500 max-w-sm mx-auto">
+                  Watch the {sequenceLength} symbols appear, remember the order, and tap them in sequence.
+                </p>
+                <button
+                  onClick={startRound}
+                  className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-8 py-3 rounded-2xl shadow transition min-h-[48px]"
+                >
+                  Start Sequence
+                </button>
+              </>
+            )}
           </div>
         )}
 

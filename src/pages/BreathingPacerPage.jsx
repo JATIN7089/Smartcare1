@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { useApp } from '../context/AppContext.jsx';
 import { voiceService } from '../services/voiceService.js';
@@ -16,9 +16,9 @@ import {
   CheckCircle2, 
   Heart, 
   Activity, 
-  Shield 
+  Shield,
+  Sparkles
 } from 'lucide-react';
-import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 const CYCLE_CONFIG = {
   inhale: 4,
@@ -29,6 +29,7 @@ const CYCLE_CONFIG = {
 
 export default function BreathingPacerPage() {
   const { handleRecordBreathing, accessibility, language, t } = useApp();
+  const location = useLocation();
 
   const [presetMinutes, setPresetMinutes] = useState(2); // 2, 5, 10
   const [isActive, setIsActive] = useState(false);
@@ -38,8 +39,21 @@ export default function BreathingPacerPage() {
   const [totalSecondsElapsed, setTotalSecondsElapsed] = useState(0);
   const [sessionCompleted, setSessionCompleted] = useState(false);
   const [voiceGuidance, setVoiceGuidance] = useState(true);
+  const [autoStartedBadge, setAutoStartedBadge] = useState(false);
 
   const timerRef = useRef(null);
+
+  // Automatic Start from Voice Command ("start breathing", "let's breathe")
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const shouldStart = location.state?.autostart || params.get('autostart') === '1' || params.get('autostart') === 'true';
+    if (shouldStart && !isActive && !sessionCompleted) {
+      setIsActive(true);
+      setAutoStartedBadge(true);
+      soundService.playSingingBowl();
+      setTimeout(() => setAutoStartedBadge(false), 4000);
+    }
+  }, [location.state]);
 
   // Spoken voice guidance in active language
   const speakGuidance = (text) => {

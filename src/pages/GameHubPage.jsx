@@ -113,38 +113,38 @@ export default function GameHubPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-teal-800 via-teal-700 to-sky-800 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
-        <div className="relative z-10 max-w-2xl space-y-3">
-          <span className="text-xs font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full">
-            Cognitive Engagement Hub
+      {/* App Header */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="space-y-1">
+          <span className="text-xs font-bold uppercase tracking-wider text-teal-600 bg-teal-50 px-3 py-1 rounded-full">
+            Activities Hub
           </span>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight">
-            {t('game_hub_title', 'Play, Recall & Strengthen Cognitive Vitality')}
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight pt-1">
+            Your Activities
           </h1>
-          <p className="text-teal-100 text-sm sm:text-base leading-relaxed">
-            {t('game_hub_sub', 'All 7 games are engineered with elderly-friendly ergonomics: generous touch targets, high-contrast imagery, respectful audio feedback, and adaptive AI difficulty.')}
+          <p className="text-xs sm:text-sm text-slate-500 max-w-xl">
+            Choose an activity to practice memory, focus, and patterns at your own relaxed pace.
           </p>
+        </div>
 
-          <div className="pt-2 flex flex-wrap items-center gap-3">
-            <span className="bg-white/10 border border-white/20 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-              <Layers className="w-4 h-4 text-teal-300" /> Active AI Level: <strong className="text-white">{cognitiveProfile?.difficultyLevel || 'Moderate'}</strong>
-            </span>
-            <span className="bg-white/10 border border-white/20 text-xs font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-rose-300" /> Selected NER Region: <strong className="text-white">{culturalRegion}</strong>
-            </span>
-          </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="bg-slate-50 border border-slate-200 text-xs font-bold px-3 py-2 rounded-xl text-slate-700 flex items-center gap-1.5">
+            <Layers className="w-4 h-4 text-teal-600" /> Level: <strong className="text-teal-800">{cognitiveProfile?.difficultyLevel || 'Moderate'}</strong>
+          </span>
+          <span className="bg-slate-50 border border-slate-200 text-xs font-bold px-3 py-2 rounded-xl text-slate-700 flex items-center gap-1.5">
+            <MapPin className="w-4 h-4 text-rose-500" /> {culturalRegion}
+          </span>
         </div>
       </div>
 
       {/* AI Daily Recommendation Card */}
       {recommendation?.primaryActivity && (
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="bg-gradient-to-r from-teal-50 to-emerald-50 border-2 border-teal-200 rounded-3xl p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-600" />
-              <span className="text-xs font-black uppercase tracking-wider text-amber-900">
-                {recommendation.period} Recommendation
+              <Sparkles className="w-4 h-4 text-teal-600" />
+              <span className="text-xs font-black uppercase tracking-wider text-teal-800">
+                AI Recommendation For You
               </span>
             </div>
             <h3 className="text-lg font-black text-slate-900">{recommendation.primaryActivity.title}</h3>
@@ -152,9 +152,10 @@ export default function GameHubPage() {
           </div>
           <Link
             to={recommendation.primaryActivity.route}
-            className="bg-amber-600 hover:bg-amber-700 text-white font-extrabold px-5 py-2.5 rounded-xl text-sm shadow transition flex items-center gap-2 flex-shrink-0"
+            state={{ autostart: true }}
+            className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-6 py-3 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center gap-2 flex-shrink-0 min-h-[48px]"
           >
-            <Play className="w-4 h-4 fill-white" /> Start Recommended Activity
+            <Play className="w-4 h-4 fill-white" /> Start Activity
           </Link>
         </div>
       )}

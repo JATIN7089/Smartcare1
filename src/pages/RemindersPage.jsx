@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
 import { soundService } from '../services/soundService.js';
+import { voiceService } from '../services/voiceService.js';
 import { 
   Bell, 
   Plus, 
@@ -15,10 +17,10 @@ import {
   Activity, 
   PhoneCall, 
   Moon, 
-  X,
+  X, 
+  Volume2,
   Filter
 } from 'lucide-react';
-import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 const CATEGORY_ICONS = {
   Medicine: Pill,
@@ -32,7 +34,8 @@ const CATEGORY_ICONS = {
 };
 
 export default function RemindersPage() {
-  const { reminders, handleToggleReminder, handleAddReminder, handleDeleteReminder } = useApp();
+  const { reminders, handleToggleReminder, handleAddReminder, handleDeleteReminder, language } = useApp();
+  const location = useLocation();
 
   const [activeTab, setActiveTab] = useState('upcoming'); // upcoming | completed | all
   const [showAddModal, setShowAddModal] = useState(false);
@@ -40,6 +43,23 @@ export default function RemindersPage() {
   const [newCategory, setNewCategory] = useState('Medicine');
   const [newTime, setNewTime] = useState('09:00 AM');
   const [newNotes, setNewNotes] = useState('');
+
+  // Read aloud on voice command ("What are my reminders?")
+  useEffect(() => {
+    if (location.state?.readAloud) {
+      readRemindersAloud();
+    }
+  }, [location.state]);
+
+  const readRemindersAloud = () => {
+    const uncompleted = reminders.filter(r => !r.completed);
+    if (uncompleted.length === 0) {
+      voiceService.speak("You have completed all reminders for today. Well done!", language);
+    } else {
+      const summary = `You have ${uncompleted.length} pending items today: ${uncompleted.map(r => `${r.title} at ${r.time}`).join(', ')}.`;
+      voiceService.speak(summary, language);
+    }
+  };
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -71,25 +91,35 @@ export default function RemindersPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
       {/* Top Header */}
-      <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-black uppercase text-teal-700 tracking-wider">
-            Daily Living Support
+          <span className="text-xs font-bold uppercase text-teal-600 bg-teal-50 px-3 py-1 rounded-full">
+            Reminders
           </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-1 flex items-center gap-2">
-            🔔 Smart Health & Routine Reminders
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 flex items-center gap-2">
+            Your Daily Reminders
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600">
-            Keep track of medication, warm hydration, doctor checkups, and cognitive activities.
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+            Keep track of medication, hydration, and daily care.
           </p>
         </div>
 
-        <button
-          onClick={() => setShowAddModal(true)}
-          className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-5 py-3 rounded-2xl text-sm shadow-md transition flex items-center gap-2 min-h-[44px]"
-        >
-          <Plus className="w-5 h-5" /> Add New Reminder
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={readRemindersAloud}
+            className="bg-teal-50 hover:bg-teal-100 text-teal-800 font-bold px-4 py-3 rounded-2xl text-xs sm:text-sm border border-teal-200 flex items-center gap-2 transition min-h-[44px]"
+            title="Read reminders aloud"
+          >
+            <Volume2 className="w-4 h-4 text-teal-600" /> Read Aloud
+          </button>
+
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-5 py-3 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center gap-2 min-h-[44px]"
+          >
+            <Plus className="w-4 h-4" /> Add Reminder
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}

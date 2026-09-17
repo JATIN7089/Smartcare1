@@ -2,14 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========================================================
+   AQUITHA FONT DECLARATIONS & TYPOGRAPHY SYSTEM
+   ======================================================== */
+@font-face {
+  font-family: 'Aquitha';
+  src: local('Aquitha'),
+       local('Aquitha Regular'),
+       local('Aquitha-Regular'),
+       url('/fonts/Aquitha.woff2') format('woff2'),
+       url('/fonts/Aquitha.woff') format('woff'),
+       url('/fonts/Aquitha.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aquitha';
+  src: local('Aquitha Medium'),
+       local('Aquitha-Medium'),
+       url('/fonts/Aquitha-Medium.woff2') format('woff2'),
+       url('/fonts/Aquitha-Medium.woff') format('woff'),
+       url('/fonts/Aquitha-Medium.ttf') format('truetype');
+  font-weight: 500 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aquitha';
+  src: local('Aquitha Bold'),
+       local('Aquitha-Bold'),
+       url('/fonts/Aquitha-Bold.woff2') format('woff2'),
+       url('/fonts/Aquitha-Bold.woff') format('woff'),
+       url('/fonts/Aquitha-Bold.ttf') format('truetype');
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Aquitha', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    @apply antialiased text-slate-800 bg-[#fafbfe];
+    @apply antialiased text-slate-800 bg-[#f8fafc];
+    font-family: 'Aquitha', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+
+  /* Consistent Aquitha across all structural & interactive elements */
+  h1, h2, h3, h4, h5, h6,
+  button, input, select, textarea,
+  nav, .font-heading {
+    font-family: 'Aquitha', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   /* Accessible Touch targets for elderly ergonomics (44px min) */
@@ -20,7 +70,7 @@
 
 /* Custom smooth transitions */
 .transition-card {
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Reduced Motion class override */
@@ -33,4 +83,20 @@
 /* High Contrast mode enhancements */
 .high-contrast {
   filter: contrast(1.25);
+}
+
+/* Custom tablet & app scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

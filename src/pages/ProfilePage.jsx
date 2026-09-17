@@ -82,92 +82,90 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Level and Trend badges */}
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-center">
-            <span className="text-[11px] font-bold text-slate-500 uppercase block">Adaptive Challenge Level</span>
-            <span className="text-lg font-black text-teal-800">{cognitiveProfile?.difficultyLevel || 'Moderate'}</span>
-          </div>
+      {/* Level and Trend badges */}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-center">
+          <span className="text-[11px] font-bold text-slate-500 uppercase block">Challenge Level</span>
+          <span className="text-lg font-black text-teal-800">{cognitiveProfile?.difficultyLevel || 'Moderate'}</span>
+        </div>
 
-          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-2.5 text-center">
-            <span className="text-[11px] font-bold text-emerald-800 uppercase block">Activity Trend</span>
-            <span className="text-lg font-black text-emerald-900 flex items-center justify-center gap-1">
-              <TrendingUp className="w-4 h-4" /> {cognitiveProfile?.recentTrend || 'Stable activity'}
-            </span>
-          </div>
+        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-2.5 text-center">
+          <span className="text-[11px] font-bold text-emerald-800 uppercase block">Your Trend</span>
+          <span className="text-lg font-black text-emerald-900 flex items-center justify-center gap-1">
+            <TrendingUp className="w-4 h-4" /> {cognitiveProfile?.recentTrend || 'Active & Steady'}
+          </span>
         </div>
       </div>
+    </div>
 
-      {/* AI Explainability Card (As required by prompt) */}
-      <div className="bg-gradient-to-r from-teal-50 via-sky-50 to-indigo-50 border-2 border-teal-300 rounded-3xl p-6 shadow-sm space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-teal-700" />
-            <h3 className="font-extrabold text-slate-900 text-base">Adaptive AI Activity Calibration</h3>
-          </div>
-          <button
-            onClick={() => setShowExplanation(!showExplanation)}
-            className="text-xs font-bold text-teal-800 hover:text-teal-950 flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-teal-200 shadow-xs"
-          >
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>{showExplanation ? 'Hide Reasoning' : 'Why was this activity selected?'}</span>
-          </button>
+    {/* Friendly Personalization Explanation */}
+    <div className="bg-gradient-to-r from-teal-50 via-sky-50 to-indigo-50 border-2 border-teal-200 rounded-3xl p-6 shadow-xs space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-teal-700" />
+          <h3 className="font-extrabold text-slate-900 text-base">How SmarTCARE Adapts for You</h3>
         </div>
+        <button
+          onClick={() => setShowExplanation(!showExplanation)}
+          className="text-xs font-bold text-teal-800 hover:text-teal-950 flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-teal-200 shadow-xs min-h-[36px]"
+        >
+          <HelpCircle className="w-3.5 h-3.5" />
+          <span>{showExplanation ? 'Hide Details' : 'Why this level?'}</span>
+        </button>
+      </div>
 
-        <p className="text-sm text-slate-700 leading-relaxed">
-          {cognitiveProfile?.explanation || "Based on your recent memory-game accuracy (84%) and steady response pace, SmarTCARE selected a moderate challenge level to maintain comfortable cognitive engagement without fatigue."}
+      <p className="text-sm text-slate-700 leading-relaxed">
+        {cognitiveProfile?.explanation || "Based on your steady activity and accurate memory matches, SmarTCARE keeps exercises comfortable and engaging without fatigue."}
+      </p>
+
+      {showExplanation && (
+        <div className="bg-white rounded-2xl p-4 border border-teal-200 text-xs text-slate-600 space-y-2 animate-in fade-in">
+          <p><strong>Gentle Balance:</strong> High accuracy helps unlock fun new cultural cards and symbols. If an activity feels too challenging, exercises automatically become simpler with helpful hints.</p>
+        </div>
+      )}
+    </div>
+
+    {/* Visual Grid: Radar & Line Trend */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Radar Chart */}
+      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-3">
+        <h3 className="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+          <Activity className="w-5 h-5 text-teal-600" />
+          <span>Your Activity Balance</span>
+        </h3>
+        <p className="text-xs text-slate-500">
+          A view of memory, attention, pattern recognition, and daily recall.
         </p>
 
-        {showExplanation && (
-          <div className="bg-white rounded-2xl p-4 border border-teal-200 text-xs text-slate-600 space-y-2 animate-in fade-in">
-            <p><strong>Transparency Formula:</strong> Score = (Accuracy × 0.45) + (Speed × 0.20) + (Consistency × 0.20) + (Completion × 0.15).</p>
-            <p><strong>Adaptation Thresholds:</strong> Sustained accuracy above 85% gently increases card/symbol complexity to stimulate neuroplasticity. Scores below 55% or multiple mistakes automatically adjust the system to simpler, hint-assisted exercises to prevent fatigue.</p>
-            <p className="text-amber-800 font-semibold">Important Medical Notice: This indicator tracks game interaction only and is strictly non-diagnostic.</p>
-          </div>
-        )}
+        <div className="h-72 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <RadarChart data={radarData}>
+              <PolarGrid stroke="#e2e8f0" />
+              <PolarAngleAxis dataKey="subject" tick={{ fill: '#334155', fontSize: 11, fontWeight: 'bold' }} />
+              <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#cbd5e1" />
+              <Radar name="Asha's Activity" dataKey="value" stroke="#0d9488" fill="#14b8a6" fillOpacity={0.45} />
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
-      {/* Visual Analytics Grid: Radar & Line Trend */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Radar Chart */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
-          <h3 className="font-extrabold text-lg text-slate-900 flex items-center gap-2">
-            <Activity className="w-5 h-5 text-teal-600" />
-            <span>Cognitive Activity Profile (Multi-Domain)</span>
-          </h3>
-          <p className="text-xs text-slate-500">
-            Current balanced engagement across memory, attention, pattern recognition, and routine recall.
-          </p>
+      {/* Weekly Trend Line Chart */}
+      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-3">
+        <h3 className="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-sky-600" />
+          <span>Your 7-Day Activity</span>
+        </h3>
+        <p className="text-xs text-slate-500">
+          Your daily consistency over the past week.
+        </p>
 
-          <div className="h-72 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={radarData}>
-                <PolarGrid stroke="#e2e8f0" />
-                <PolarAngleAxis dataKey="subject" tick={{ fill: '#334155', fontSize: 11, fontWeight: 'bold' }} />
-                <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#cbd5e1" />
-                <Radar name="Asha's Activity" dataKey="value" stroke="#0d9488" fill="#14b8a6" fillOpacity={0.45} />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Weekly Trend Line Chart */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
-          <h3 className="font-extrabold text-lg text-slate-900 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-sky-600" />
-            <span>Weekly Engagement Trend (7 Days)</span>
-          </h3>
-          <p className="text-xs text-slate-500">
-            Multi-session tracking showing positive engagement trajectories across recent sessions.
-          </p>
-
-          <div className="h-72 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={trendData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="date" tick={{ fill: '#64748b', fontSize: 11 }} />
-                <YAxis domain={[50, 100]} tick={{ fill: '#64748b', fontSize: 11 }} />
-                <Tooltip contentStyle={{ backgroundColor: '#ffffff', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '12px' }} />
+        <div className="h-72 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={trendData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <XAxis dataKey="date" tick={{ fill: '#64748b', fontSize: 11 }} />
+              <YAxis domain={[50, 100]} tick={{ fill: '#64748b', fontSize: 11 }} />
+              <Tooltip contentStyle={{ backgroundColor: '#ffffff', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '12px' }} />
                 <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
                 <Line type="monotone" dataKey="memory" name="Memory Recall" stroke="#0d9488" strokeWidth={3} dot={{ r: 4 }} />
                 <Line type="monotone" dataKey="pattern" name="Pattern Reasoning" stroke="#6366f1" strokeWidth={2} dot={{ r: 3 }} />

@@ -1,17 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Brain, Heart, MapPin, Award, Shield, Cpu, ExternalLink } from 'lucide-react';
-import DisclaimerBanner from './DisclaimerBanner.jsx';
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-300 pt-12 pb-8 border-t border-slate-800">
+    <footer className="bg-slate-900 text-slate-300 pt-10 pb-8 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {/* Top Disclaimer in Footer */}
-        <div className="mb-10">
-          <DisclaimerBanner />
-        </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-slate-800">
           {/* Brand & Team */}
           <div className="lg:col-span-2 space-y-4">

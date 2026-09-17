@@ -79,6 +79,20 @@ export default function VoiceAssistantPage() {
     if (accessibility.voiceEnabled && result.spoken) {
       voiceService.speak(result.spoken, language);
     }
+
+    // AUTOMATED ACTION ROUTER: Automatically execute navigation without requiring another click
+    if (result.action?.type === 'NAVIGATE' && result.action?.route) {
+      setTimeout(() => {
+        navigate(result.action.route, {
+          state: {
+            autostart: result.action.autostart !== false,
+            readAloud: Boolean(result.action.readAloud),
+            intent: result.action.intent,
+            voiceTriggered: true
+          }
+        });
+      }, 900);
+    }
   };
 
   const toggleMic = () => {
