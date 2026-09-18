@@ -136,15 +136,26 @@ export function AppProvider({ children }) {
     };
   }, [account]);
 
-  /** Sign in and adopt the role carried by the credentials. */
-  const login = async (credentials) => {
-    const res = await authService.login(credentials);
+  /** Adopts whatever role the freshly created session carries. */
+  const adopt = (res) => {
     if (res.success && res.account) {
       setAccount(res.account);
       setRole(res.account.role);
     }
     return res;
   };
+
+  /**
+   * Opens the senior's home with no credentials. Someone living with dementia
+   * cannot be asked to recall a password, so the device itself is the key.
+   */
+  const enterAsResident = async (username) => adopt(await authService.enter(username));
+
+  /** Staff sign-in — caregivers and health workers handle real health data. */
+  const login = async (credentials) => adopt(await authService.login(credentials));
+
+  /** Staff registration. Seniors never register; their profile is set up for them. */
+  const register = async (details) => adopt(await authService.register(details));
 
   const logout = async () => {
     await authService.logout();
@@ -304,7 +315,9 @@ export function AppProvider({ children }) {
         setRole: handleRoleChange,
         account,
         authChecked,
+        enterAsResident,
         login,
+        register,
         logout,
         user,
         setUser,

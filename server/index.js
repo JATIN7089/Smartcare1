@@ -31,8 +31,9 @@ const ACCOUNTS = [
   {
     id: 'user-asha-68',
     username: 'asha',
-    password: 'asha123',
-    pin: '1234',
+    // No password and no PIN by design. Asking someone living with dementia
+    // to recall a secret is exactly the barrier this product exists to remove,
+    // so the senior's device opens straight into their own home screen.
     role: 'elderly',
     name: 'Asha Sharma',
     detail: 'Tezpur, Assam • 68 yrs',
@@ -42,7 +43,6 @@ const ACCOUNTS = [
     id: 'care-sunita',
     username: 'sunita',
     password: 'care123',
-    pin: '2345',
     role: 'caregiver',
     name: 'Sunita Sharma',
     detail: 'Daughter • Primary Caregiver',
@@ -53,7 +53,6 @@ const ACCOUNTS = [
     id: 'cho-barua',
     username: 'barua',
     password: 'doctor123',
-    pin: '3456',
     role: 'healthcare',
     name: 'Dr. B. K. Barua',
     detail: 'Community Health Officer • Sonitpur SDH',
@@ -489,33 +488,106 @@ app.get('/api/auth/accounts', (req, res) => {
     role: a.role,
     name: a.name,
     detail: a.detail,
-    avatar: a.avatar
+    avatar: a.avatar,
+    requiresPassword: a.role !== 'elderly'
   })));
 });
 
 /** Sign in with username + password, or username + 4-digit PIN. */
+function issueToken(acc) {
+  const token = newToken();
+  SESSIONS.set(token, acc.id);
+  return token;
+}
+
+/**
+ * Senior entry — no credentials.
+ *
+ * Someone living with memory loss cannot be asked to remember a password or
+ * a PIN; they would be locked out of the very reminders and support meant to
+ * help them. Their phone is the key. The account is still role-locked, so
+ * this door only ever opens the elderly experience, never a clinical one.
+ */
+app.post('/api/auth/enter', (req, res) => {
+  const { username } = req.body || {};
+  const id = String(username || 'asha').trim().toLowerCase();
+
+  const acc = ACCOUNTS.find(a => a.username === id && a.role === 'elderly');
+  if (!acc) {
+    return res.status(404).json({ success: false, message: 'No resident profile found on this device.' });
+  }
+
+  state.activeUser.role = 'elderly';
+  res.json({ success: true, token: issueToken(acc), account: publicAccount(acc) });
+});
+
+/** Staff sign-in. Caregivers and health workers only — they handle real data. */
 app.post('/api/auth/login', (req, res) => {
-  const { username, password, pin } = req.body || {};
+  const { username, password } = req.body || {};
   const id = String(username || '').trim().toLowerCase();
 
   const acc = ACCOUNTS.find(a => a.username === id);
-  if (!acc) {
+  if (!acc || acc.role === 'elderly') {
     return res.status(401).json({ success: false, message: 'We could not find that account.' });
   }
 
-  const passwordOk = password && password === acc.password;
-  const pinOk = pin && String(pin) === acc.pin;
-  if (!passwordOk && !pinOk) {
-    return res.status(401).json({ success: false, message: 'Incorrect password or PIN. Please try again.' });
+  if (!password || password !== acc.password) {
+    return res.status(401).json({ success: false, message: 'Incorrect password. Please try again.' });
   }
 
-  const token = newToken();
-  SESSIONS.set(token, acc.id);
+  res.json({ success: true, token: issueToken(acc), account: publicAccount(acc) });
+});
 
-  // The elderly profile is the data subject the whole app revolves around.
-  if (acc.role === 'elderly') state.activeUser.role = 'elderly';
+/**
+ * Staff registration. A new caregiver or health worker creates their own
+ * account here; seniors never register, their profile is set up for them.
+ */
+app.post('/api/auth/register', (req, res) => {
+  const { name, username, password, role, detail, joinCode } = req.body || {};
 
-  res.json({ success: true, token, account: publicAccount(acc) });
+  const id = String(username || '').trim().toLowerCase();
+  const fullName = String(name || '').trim();
+
+  if (!fullName || !id || !password) {
+    return res.status(400).json({ success: false, message: 'Please fill in your name, username and password.' });
+  }
+  if (!/^[a-z0-9_.]{3,20}$/.test(id)) {
+    return res.status(400).json({ success: false, message: 'Username must be 3-20 letters, numbers, dot or underscore.' });
+  }
+  if (String(password).length < 6) {
+    return res.status(400).json({ success: false, message: 'Password must be at least 6 characters.' });
+  }
+  if (!['caregiver', 'healthcare'].includes(role)) {
+    return res.status(400).json({ success: false, message: 'Choose whether you are a caregiver or a health worker.' });
+  }
+  if (ACCOUNTS.some(a => a.username === id)) {
+    return res.status(409).json({ success: false, message: 'That username is already taken.' });
+  }
+
+  // A caregiver must prove they belong to the family, using the join code
+  // printed in the senior's profile. Health workers are verified by the
+  // facility, represented here by the same shared code.
+  if (joinCode && String(joinCode).trim().toUpperCase() !== state.activeUser.joinCode) {
+    return res.status(403).json({ success: false, message: 'That join code does not match this family.' });
+  }
+  if (role === 'caregiver' && !joinCode) {
+    return res.status(400).json({ success: false, message: 'Enter the join code from the senior\'s profile.' });
+  }
+
+  const acc = {
+    id: `${role}-${id}`,
+    username: id,
+    password: String(password),
+    role,
+    name: fullName,
+    detail: String(detail || '').trim() ||
+      (role === 'caregiver' ? 'Family Caregiver' : 'Community Health Officer'),
+    avatar: fullName[0].toUpperCase(),
+    linkedPatients: ['user-asha-68']
+  };
+  ACCOUNTS.push(acc);
+
+  res.status(201).json({ success: true, token: issueToken(acc), account: publicAccount(acc) });
 });
 
 app.post('/api/auth/logout', (req, res) => {

@@ -542,17 +542,35 @@ export default function AppShell({ children }) {
               ))}
             </div>
 
-            <p className="text-[11px] text-slate-400 leading-relaxed border-t border-slate-100 pt-3">
-              Need a different portal? Sign out and sign back in with those
-              details — each account only sees what it should.
-            </p>
-
-            <button
-              onClick={handleSignOut}
-              className="w-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-3.5 rounded-2xl text-sm shadow-md transition active:scale-[0.98] min-h-[50px] flex items-center justify-center gap-2"
-            >
-              <LogOut className="w-4 h-4" /> Sign Out
-            </button>
+            {/* A senior should never be able to lock themselves out of their own
+                reminders, so their panel offers a handover to family instead of
+                a sign-out. Staff, who hold other people's data, get a real one. */}
+            {role === 'elderly' ? (
+              <>
+                <p className="text-[11px] text-slate-400 leading-relaxed border-t border-slate-100 pt-3">
+                  This is your home and it stays open — you never need a password.
+                </p>
+                <button
+                  onClick={handleSignOut}
+                  className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 text-slate-600 font-bold py-3.5 rounded-2xl text-sm transition active:scale-[0.98] min-h-[50px] flex items-center justify-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" /> Hand phone to caregiver
+                </button>
+              </>
+            ) : (
+              <>
+                <p className="text-[11px] text-slate-400 leading-relaxed border-t border-slate-100 pt-3">
+                  Need a different portal? Sign out and sign back in with those
+                  details — each account only sees what it should.
+                </p>
+                <button
+                  onClick={handleSignOut}
+                  className="w-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-3.5 rounded-2xl text-sm shadow-md transition active:scale-[0.98] min-h-[50px] flex items-center justify-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" /> Sign Out
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
