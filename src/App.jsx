@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AppProvider } from './context/AppContext.jsx';
+import { AppProvider, useApp } from './context/AppContext.jsx';
+import { getRole } from './data/roles.js';
 
 // Application Shell & Accessibility
 import AppShell from './components/AppShell.jsx';
@@ -48,6 +49,15 @@ import AdminPage from './pages/AdminPage.jsx';
 import ArchitecturePage from './pages/ArchitecturePage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 
+/**
+ * Sends each role to its own home screen. A caregiver opening the app should
+ * land on the family dashboard, not on the elderly activity screen.
+ */
+function RoleHome() {
+  const { role } = useApp();
+  return <Navigate to={getRole(role).home} replace />;
+}
+
 export default function App() {
   return (
     <AppProvider>
@@ -55,7 +65,7 @@ export default function App() {
         <AppShell>
           <Routes>
             {/* Elderly Experience (App Home) */}
-            <Route path="/" element={<ElderlyDashboard />} />
+            <Route path="/" element={<RoleHome />} />
             <Route path="/elderly" element={<ElderlyDashboard />} />
             <Route path="/dashboard" element={<ElderlyDashboard />} />
 
@@ -103,7 +113,7 @@ export default function App() {
             <Route path="/about" element={<AboutPage />} />
 
             {/* Fallback */}
-            <Route path="*" element={<Navigate to="/elderly" replace />} />
+            <Route path="*" element={<RoleHome />} />
           </Routes>
         </AppShell>
 
