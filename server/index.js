@@ -126,6 +126,24 @@ let state = {
     }
   },
 
+  // Wayfinding: where "home" is, for the "mera ghar kaha hai?" flow.
+  // Coordinates are the demo residence in Tezpur; the map links and the
+  // embedded OpenStreetMap view are built from these, so no API key is
+  // needed and the page still works offline from photo + landmarks.
+  home: {
+    label: 'Asha Sharma — Tezpur Ancestral Home',
+    address: 'Tezpur Ancestral House, Near Chai Bagan Gate, Sonitpur, Tezpur, Assam 784001',
+    lat: 26.6338,
+    lng: 92.8000,
+    photo: '/memories/home.jpg',
+    landmarks: [
+      'The green wooden gate with the tulsi plant in the courtyard',
+      'Two lanes after the Chai Bagan gate, on the left',
+      'Behind the Sonitpur SDH road, near the tea garden quarters'
+    ],
+    contact: { name: 'Sunita Sharma (Daughter)', phone: '+91 98640 12345' }
+  },
+
   cognitiveProfile: {
     userId: 'user-asha-68',
     lastUpdated: new Date().toISOString(),
@@ -300,8 +318,8 @@ let state = {
       answer: 'Rongali Bihu in the month of Bohag!',
       category: 'Event',
       subject: 'Rongali Bihu',
+      photo: '/memories/bihu.jpg',
       voiceNote: 'This is Rongali Bihu at your Tezpur courtyard.',
-      photo: null,
       notes: 'Asha made Til Pitha and played the Tokari with her grandchildren.',
       themeColor: '#ea580c'
     },
@@ -316,7 +334,7 @@ let state = {
       category: 'Place',
       subject: 'Majuli Island',
       voiceNote: 'This is Majuli Island, where you took the ferry across the Brahmaputra.',
-      photo: null,
+      photo: '/memories/majuli.jpg',
       notes: 'Asha loved hearing the devotional Borgeet and seeing traditional masks.',
       themeColor: '#0d9488'
     },
@@ -670,6 +688,10 @@ app.post('/api/caregiver/link', (req, res) => {
 });
 
 // Cognitive Profile
+app.get('/api/home', (req, res) => {
+  res.json(state.home);
+});
+
 app.get('/api/cognitive-profile', (req, res) => {
   res.json(state.cognitiveProfile);
 });

@@ -58,6 +58,7 @@ export const ROLES = {
       { label: 'Daily Routine', path: '/routine', icon: 'Clock' },
       { label: 'Memory Lane', path: '/memory-lane', icon: 'Heart' },
       { label: 'Grounding Exercise', path: '/grounding', icon: 'Sparkles' },
+      { label: 'Find My Home', path: '/find-home', icon: 'MapPin' },
       { label: 'Well-being Centre', path: '/wellbeing', icon: 'Activity' },
       { label: 'My Progress', path: '/profile', icon: 'User' }
     ],

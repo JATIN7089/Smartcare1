@@ -62,6 +62,7 @@ export const INTENT = {
 
   // --- Navigation ---------------------------------------------------------
   GO_HOME: 'GO_HOME',
+  WAYFIND_HOME: 'WAYFIND_HOME',
   OPEN_CAREGIVER_PORTAL: 'OPEN_CAREGIVER_PORTAL',
   OPEN_HEALTHCARE_PORTAL: 'OPEN_HEALTHCARE_PORTAL',
 
@@ -216,6 +217,18 @@ const PHRASES = [
   [/\bdeep\s*breath\w*\b/g, ' BREATHING '],
   [/\b5\s*4\s*3\s*2\s*1\b/g, ' GROUNDING '],
 
+  // ---- Wayfinding: "mera ghar kaha hai?" (BEFORE any generic HOME fold) --
+  [/\b(mera|hamara|mera)?\s*ghar\s*(kaha|kahan|kahaan|kidhar)\b/g, ' WAYFIND '],
+  [/\bghar\s*(kaise|kasie|kaise)\s*(jau|jaun|jaungi|jaunga|jai|pahunche)\b/g, ' WAYFIND '],
+  [/\b(main|mai|hum)\s*(kho|khoo)\s*(gaya|gayi|gya|gyi|gaye)\b/g, ' WAYFIND '],
+  [/\b(ghar\s*(le\s*chalo|leh\s*chalo|chalo)|raasta\s*(dikha|dikhao)|ghar\s*ka\s*raasta)\b/g, ' WAYFIND '],
+  [/\b(i\s+am\s+lost|im\s+lost|where\s+is\s+my\s+home|wheres\s+my\s+home|take\s+me\s+home|show\s+me\s+my\s+home|find\s+my\s+home|how\s+do\s+i\s+get\s+home)\b/g, ' WAYFIND '],
+  [/(?:^|\s)(घर\s*(कहाँ|कहा)|खो\s*ग(या|यी|ए))(?=\s|$)/g, ' WAYFIND '],
+  // Bengali / Assamese script wayfinding
+  [/(?:^|\s)(ঘৰ|বাড়ি)\s*(ক'ত|কোথায়|কথায়)(?=\s|$)/g, ' WAYFIND '],
+  [/(?:^|\s)(ঘৰ|বাড়ি)(লৈ|তে)?\s*(কেনেকৈ|কীভাবে)\s*(যাম|যাব|জাবো|যাবো)(?=\s|$)/g, ' WAYFIND '],
+  [/(?:^|\s)(বাট\s*ভুলি|ৰাস্তা\s*ভুলে|রাস্তা\s*ভুলে|পথ\s*ভুলে)(?=\s|$)/g, ' WAYFIND '],
+
   // ---- People ------------------------------------------------------------
   [/\b(beti|bete|daughter|sunita)\s*(ko)?\s*(call|phone|bulao)?\b/g, ' CAREGIVER '],
   [/(?:^|\s)(बेटी|सुनीता)(?=\s|$)/g, ' CAREGIVER '],
@@ -320,7 +333,8 @@ const LEXICON = {
   progress: 'PROGRESS', score: 'PROGRESS', pragati: 'PROGRESS',
   performance: 'PROGRESS', 'प्रगति': 'PROGRESS',
   profile: 'PROFILE', account: 'PROFILE', 'प्रोफाइल': 'PROFILE',
-  home: 'HOME', ghar: 'HOME', mukhya: 'HOME', 'घर': 'HOME', 'होम': 'HOME',
+  home: 'HOME', ghar: 'HOME', mukhya: 'HOME', screen: 'HOME', mainscreen: 'HOME',
+  homepage: 'HOME', dashboard: 'HOME', 'घर': 'HOME', 'होम': 'HOME', 'स्क्रीन': 'HOME',
   caregiver: 'CAREGIVER', 'केयरगिवर': 'CAREGIVER',
   call: 'CALL', phone: 'CALL', bulao: 'CALL', baat: 'CALL', 'फोन': 'CALL', 'बुलाओ': 'CALL',
   help: 'HELP', madad: 'HELP', sahayata: 'HELP', 'मदद': 'HELP',
@@ -447,7 +461,8 @@ const INTENT_DEFS = [
   { intent: INTENT.MEMORY_LANE, all: [['MEMORYLANE']], weight: 9 },
 
   // ---------- NAVIGATION ----------
-  { intent: INTENT.GO_HOME, all: [['HOME']], weight: 7 },
+  { intent: INTENT.WAYFIND_HOME, all: [['WAYFIND']], weight: 13 },
+  { intent: INTENT.GO_HOME, all: [['HOME']], not: ['WAYFIND'], weight: 7 },
 
   // ---------- CONVERSATIONAL ----------
   { intent: INTENT.WHO_ARE_YOU, all: [['WHOAREYOU']], weight: 10 },

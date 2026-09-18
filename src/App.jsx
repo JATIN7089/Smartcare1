@@ -32,6 +32,7 @@ import BreathingPacerPage from './pages/BreathingPacerPage.jsx';
 import WellbeingMonitorPage from './pages/WellbeingMonitorPage.jsx';
 import GroundingPage from './pages/GroundingPage.jsx';
 import MemoryLanePage from './pages/MemoryLanePage.jsx';
+import FindHomePage from './pages/FindHomePage.jsx';
 import MyPeoplePage from './pages/MyPeoplePage.jsx';
 import FaceRecallGame from './pages/FaceRecallGame.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
@@ -124,6 +125,8 @@ function AuthenticatedApp() {
           <Route path="/reminders" element={<RemindersPage />} />
           <Route path="/routine" element={<RoutinePage />} />
           <Route path="/memory-lane" element={<MemoryLanePage />} />
+
+          <Route path="/find-home" element={<FindHomePage />} />
           <Route path="/my-people" element={<MyPeoplePage />} />
           <Route path="/profile" element={<ProfilePage />} />
 

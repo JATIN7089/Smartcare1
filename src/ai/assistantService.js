@@ -89,13 +89,15 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
               { label: '🎮 गेम खेलना है', cmd: 'game khelna hai' },
               { label: '💊 कौन सी दवा ली?', cmd: 'kaunsi medicine li thi' },
               { label: '⏰ अगली दवा कब?', cmd: 'agli dawai kab hai' },
-              { label: '🫁 साँस का अभ्यास', cmd: 'saans ka abhyas shuru karo' }
+              { label: '🫁 साँस का अभ्यास', cmd: 'saans ka abhyas shuru karo' },
+              { label: '🏠 मेरा घर कहाँ है?', cmd: 'mera ghar kaha hai' }
             ]
           : [
               { label: '🎮 I want to play a game', cmd: 'game khelna hai' },
               { label: '💊 Which medicine did I take?', cmd: 'which medicine did I take' },
               { label: '⏰ When is my next medicine?', cmd: 'when is my next medicine' },
-              { label: '🫁 Start breathing', cmd: 'start breathing' }
+              { label: '🫁 Start breathing', cmd: 'start breathing' },
+              { label: '🏠 Where is my home?', cmd: 'mera ghar kaha hai' }
             ],
         pendingSlot: null,
         detectedLanguage: replyLanguage,

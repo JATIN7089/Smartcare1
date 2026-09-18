@@ -17,6 +17,7 @@ import { INTENT } from './nluEngine.js';
 const T = {
   /* ---------------- Assamese ---------------- */
   as: {
+    WAYFIND_HOME: 'ভয় নাপায়, {name} বাইদেউ। আপোনাৰ ঘৰ {next}। মই ঘৰৰ ছবি আৰু বাটৰ মেপ খোলিছোঁ।',
     GREETING: 'নমস্কাৰ {name} বাইদেউ! মই আপোনাৰ স্মাৰ্টকেয়াৰ সংগী।',
     MED_WHICH_TAKEN: 'আপুনি আজি {count} টা দৰৱ খাইছে: {list}। ভাল কৰিছে, {name} বাইদেউ।',
     MED_WHICH_TAKEN_NONE: 'আজি এতিয়ালৈকে কোনো দৰৱ খোৱা বুলি দিয়া নাই। পৰৱৰ্তী দৰৱ {next}, {time} বজাত।',
@@ -30,6 +31,7 @@ const T = {
   },
   /* ---------------- Bengali ---------------- */
   bn: {
+    WAYFIND_HOME: 'ভয় পেয়ো না, {name} দিদি। আপনার বাড়ি {next}। আমি বাড়ির ছবি ও পথের ম্যাপ খুলছি।',
     GREETING: 'নমস্কার {name} দিদি! আমি আপনার স্মার্টকেয়ার সঙ্গী।',
     MED_WHICH_TAKEN: 'আপনি আজ {count} টি ওষুধ খেয়েছেন: {list}। খুব ভাল, {name} দিদি।',
     MED_WHICH_TAKEN_NONE: 'আজ এখনও কোনো ওষুধ খাওয়া নথিভুক্ত হয়নি। পরের ওষুধ {next}, {time} টায়।',
@@ -43,6 +45,7 @@ const T = {
   },
   /* ---------------- Bodo (Devanagari) ---------------- */
   brx: {
+    WAYFIND_HOME: 'गोनांथि होनाय जरुरत जाहाय, {name}। नोंथांनि नो {next}। आं नोनि फोटो आर बाटोनि नक्सा खोलो।',
     GREETING: 'खुलुमबाय {name}! आं नोंथांनि स्मार्टकेयार लोगो।',
     MED_WHICH_TAKEN: 'नोंथांनि आइजौ {count} दवाई खाबाय: {list}। जाहिनां, {name}।',
     MED_WHICH_TAKEN_NONE: 'आइजौ थाइ दवाई खाबाय खोमोनाय जाहाय। गुदान दवाई {next}, {time}।',
@@ -56,6 +59,7 @@ const T = {
   },
   /* ---------------- Meitei (Manipuri) ---------------- */
   mni: {
+    WAYFIND_HOME: 'খঞ্জররোনু, {name}। নহাক্কী যুমদি {next}। ঐহাক্না যুমগী মফম আরু লম্বীগী map হাংগে।',
     GREETING: 'খুরুমজরি {name}! ঐহাক নহাক্কী স্মার্টকেয়র মরুপনি।',
     MED_WHICH_TAKEN: 'নহাক্না নোংমসিদা {count} হিদাক থক্লে: {list}। নুংঙাইরবনি, {name}।',
     MED_WHICH_TAKEN_NONE: 'হন্দক্ক মশিদা হিদাক থকখ্রে হায়না ইরি। মতুংগী হিদাক {next}, {time}।',
@@ -69,6 +73,7 @@ const T = {
   },
   /* ---------------- Khasi ---------------- */
   kha: {
+    WAYFIND_HOME: 'Ym khreh, {name}。Ka iing jong phi {next}。Nga pynkhang ka jingpynkhwai jong ka iing bad ka map.',
     GREETING: 'Khublei {name}! Nga dei ka SmarTCARE jong phi.',
     MED_WHICH_TAKEN: 'Phi la pynlep {count} dawa mynta: {list}.Khublei shibun, {name}.',
     MED_WHICH_TAKEN_NONE: 'Ym don dawa la pynlep mynta. Ka dawa ba wan {next}, {time}.',
@@ -82,6 +87,7 @@ const T = {
   },
   /* ---------------- Mizo ---------------- */
   lus: {
+    WAYFIND_HOME: 'Hrehawm hlo ang e, {name}。I in chu {next}。I in thlalak athau lam zin ka hawng e.',
     GREETING: 'Chibai {name}! I SmarTCARE thiante ka ni e.',
     MED_WHICH_TAKEN: 'Tunah hian dawidawi {count} i in tawh: {list}.A tha hle, {name}.',
     MED_WHICH_TAKEN_NONE: 'Tunah hian dawidawi in tawh a la ni lo. A dawng {next}, {time} ah.',
@@ -95,6 +101,7 @@ const T = {
   },
   /* ---------------- Nagamese ---------------- */
   nag: {
+    WAYFIND_HOME: 'Chinta nako, {name}। Apuni laga nok {next}। Ami nok laga photo ar rasta laga map kholi diya ase.',
     GREETING: 'Namaste {name}! Ami apuni laga SmarTCARE sathi ase.',
     MED_WHICH_TAKEN: 'Apuni aji {count} dawai khai tawh ase: {list}। Bohot bhal, {name}.',
     MED_WHICH_TAKEN_NONE: 'Aji ekhono kunu dawai kha bola record hoi nahi. Agla dawai {next}, {time} baji.',
@@ -108,6 +115,7 @@ const T = {
   },
   /* ---------------- Kokborok ---------------- */
   trp: {
+    WAYFIND_HOME: 'Chinta mono, {name}। Nangi nok {next}। Ang nok laga photo ar lam laga map kholhai tongha.',
     GREETING: 'Kahamba {name}! Ang nini SmarTCARE logi.',
     MED_WHICH_TAKEN: 'Nang nua sorno {count} dawai nakha tawh: {list}। Bohot bhal, {name}.',
     MED_WHICH_TAKEN_NONE: 'Nua sorno dawai nakha khama record hokha. Thangthai dawai {next}, {time}.',
@@ -121,6 +129,7 @@ const T = {
   },
   /* ---------------- Nepali ---------------- */
   ne: {
+    WAYFIND_HOME: 'नआत्तिनुहोस्, {name} ज्यू। तपाईंको घर {next}। म घरको फोटो र बाटोको नक्सा खोल्दैछु।',
     GREETING: 'नमस्ते {name} ज्यू! म तपाईंको स्मार्टकेयर साथी हुँ।',
     MED_WHICH_TAKEN: 'तपाईंले आज {count} औषधि खानुभयो: {list}। धेरै राम्रो, {name} ज्यू।',
     MED_WHICH_TAKEN_NONE: 'आज अहिलेसम्म कुनै औषधि खाएको रेकर्ड छैन। अर्को औषधि {next}, {time} बजे।',

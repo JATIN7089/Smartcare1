@@ -20,6 +20,8 @@
 import { voiceService } from './voiceService.js';
 import { understand, INTENT } from '../ai/nluEngine.js';
 import { respond } from '../ai/dialogueEngine.js';
+import { detectLanguage } from '../ai/languageDetector.js';
+import { SUPPORTED_LANGUAGES } from '../data/translations.js';
 
 // Kept for backward compatibility with any older imports.
 import { detectIntent, INTENTS } from './intentService.js';
@@ -31,6 +33,9 @@ class VoiceCommandService {
     // Multi-turn memory for the global mic, so a clarifying question asked in
     // one pop-up can be answered the next time the user taps the microphone.
     this.session = { pendingSlot: null, lastIntent: null };
+    // The language the user last spoke in. The microphone follows it, so a
+    // Hindi speaker never has to change the UI language to be understood.
+    this.lastLanguage = null;
   }
 
   resetSession() {
@@ -58,6 +63,15 @@ class VoiceCommandService {
       onComplete
     } = context;
 
+    /* Answer in the language that was SPOKEN, exactly like the Assistant
+       page does. Without this the global microphone always replied in the
+       UI language, which is why a Hindi question got an English answer. */
+    const detected = (text || '').trim() ? detectLanguage(text) : { code: language };
+    const replyLanguage = SUPPORTED_LANGUAGES.some(l => l.code === detected.code)
+      ? detected.code
+      : language;
+    this.lastLanguage = replyLanguage;
+
     const nlu = understand(text, this.session);
     const result = respond(nlu, {
       reminders,
@@ -65,7 +79,7 @@ class VoiceCommandService {
       cognitiveProfile,
       user,
       role,
-      language
+      language: replyLanguage
     });
 
     // Remember any clarifying question for the next turn.
@@ -74,9 +88,9 @@ class VoiceCommandService {
       lastIntent: nlu.intent
     };
 
-    // Speak the reply.
+    // Speak the reply in the language it was written in.
     if (result.spoken && voiceService.enabled) {
-      voiceService.speak(result.spoken, language);
+      voiceService.speak(result.spoken, replyLanguage);
     }
 
     // Carry out the action.
@@ -114,6 +128,7 @@ class VoiceCommandService {
       spoken: result.spoken,
       route: action?.route || null,
       navigated,
+      detectedLanguage: replyLanguage,
       chips: result.chips || [],
       pendingSlot: result.pendingSlot || null,
       // Keep the pop-up open when the assistant asked a question or simply
@@ -149,7 +164,7 @@ class VoiceCommandService {
       return false;
     }
 
-    const lang = context.language || 'en';
+    const lang = this.lastLanguage || context.language || 'en';
     const started = voiceService.startListening({
       lang,
       onResult: (transcript) => {

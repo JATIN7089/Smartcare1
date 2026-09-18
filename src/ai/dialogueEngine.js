@@ -17,6 +17,7 @@
 
 import { INTENT, GAME_CATALOG } from './nluEngine.js';
 import { respondInLanguage } from './dialogueTranslations.js';
+import { HOME } from '../data/homeLocation.js';
 
 /* ============================================================
    TIME HELPERS
@@ -673,6 +674,27 @@ export function respond(nlu, ctx = {}) {
      NAVIGATION & CHIT-CHAT
      ========================================================= */
 
+  /* ---------- WAYFINDING: "mera ghar kaha hai?" ----------
+     A lost resident needs reassurance before directions. Answer in words,
+     then open the find-home page with the photo, landmarks and live map. */
+  if (intent === INTENT.WAYFIND_HOME) {
+    return reply({
+      text: pick(L, {
+        en: `You are safe, ${name}. Your home is ${HOME.address}. I am opening your home photo and the map with the way home.`,
+        hi: `आप सुरक्षित हैं, ${name} जी। आपका घर यहाँ है: ${HOME.address}। मैं घर की फोटो और रास्ते का नक्शा खोल रही हूँ।`
+      }),
+      spoken: pick(L, {
+        en: `Do not worry, ${name}. You are safe. I am showing your home and the way to reach it.`,
+        hi: `घबराइए मत, ${name} जी। आप सुरक्षित हैं। मैं आपका घर और वहाँ पहुँचने का रास्ता दिखा रही हूँ।`
+      }),
+      action: { type: 'NAVIGATE', route: '/find-home', autostart: false, readAloud: true, label: 'Find My Home', delay: 700 },
+      chips: [
+        { label: '📞 Call Sunita', cmd: 'call my daughter' },
+        { label: '🏠 Show my home again', cmd: 'mera ghar kaha hai' }
+      ]
+    });
+  }
+
   if (intent === INTENT.GO_HOME) {
     return reply({
       text: pick(L, { en: 'Going to your home screen.', hi: 'होम स्क्रीन पर ले जा रही हूँ।' }),
@@ -830,6 +852,12 @@ function buildLocalisedReply(nlu, ctx, lang) {
   let targetCompleted = null;
   let focusTitle = next ? shortTitle(next.title) : '';
   let focusTime = next ? next.time : '';
+
+  // For wayfinding the "focus" of the sentence is the home address itself.
+  if (nlu.intent === INTENT.WAYFIND_HOME) {
+    focusTitle = HOME.address;
+    focusTime = '';
+  }
 
   if (nlu.intent === INTENT.MED_DID_I_TAKE) {
     let target = ent.medicineHint ? meds.find(r => matchesMedicineHint(r, ent.medicineHint)) : null;
