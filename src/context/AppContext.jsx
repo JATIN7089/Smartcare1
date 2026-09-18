@@ -163,12 +163,48 @@ export function AppProvider({ children }) {
   });
 
   // Reminders, Routine, Wellbeing
-  const [reminders, setReminders] = useState(INITIAL_REMINDERS);
-  const [routine, setRoutine] = useState(INITIAL_ROUTINE);
+  const [reminders, setReminders] = useState(() => {
+    try {
+      const saved = localStorage.getItem('smartcare_reminders_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return INITIAL_REMINDERS;
+  });
+
+  const [routine, setRoutine] = useState(() => {
+    try {
+      const saved = localStorage.getItem('smartcare_routine_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return INITIAL_ROUTINE;
+  });
+
   const [breathingSessions, setBreathingSessions] = useState([]);
   const [familyMemories, setFamilyMemories] = useState(INITIAL_MEMORIES);
   const [alerts, setAlerts] = useState([]);
   const [activityPlans, setActivityPlans] = useState([]);
+
+  useEffect(() => {
+    try {
+      if (reminders && reminders.length > 0) {
+        localStorage.setItem('smartcare_reminders_v1', JSON.stringify(reminders));
+      }
+    } catch (e) {}
+  }, [reminders]);
+
+  useEffect(() => {
+    try {
+      if (routine && routine.length > 0) {
+        localStorage.setItem('smartcare_routine_v1', JSON.stringify(routine));
+      }
+    } catch (e) {}
+  }, [routine]);
 
   // Cultural Region & Language
   const [culturalRegion, setCulturalRegion] = useState('Assam');
@@ -293,12 +329,29 @@ export function AppProvider({ children }) {
 
       if (u) setUser(u);
       if (prof) setCognitiveProfile(prof);
-      if (rem && rem.length) setReminders(rem);
-      if (rout && rout.length) setRoutine(rout);
-      if (br && br.length) setBreathingSessions(br);
-      if (mem && mem.length) setFamilyMemories(mem);
-      if (alt && alt.length) setAlerts(alt);
-      if (plans && plans.length) setActivityPlans(plans);
+      if (rem && Array.isArray(rem) && rem.length) {
+        setReminders(prev => {
+          if (!prev || prev.length === 0) return rem;
+          const localMap = new Map(prev.map(r => [r.id, r]));
+          const merged = rem.map(s => {
+            const local = localMap.get(s.id);
+            return local ? { ...s, completed: local.completed } : s;
+          });
+          const serverIds = new Set(rem.map(s => s.id));
+          const localOnly = prev.filter(p => !serverIds.has(p.id));
+          return [...merged, ...localOnly];
+        });
+      }
+      if (rout && Array.isArray(rout) && rout.length) {
+        setRoutine(prev => {
+          if (prev && prev.length === rout.length) return prev;
+          return rout;
+        });
+      }
+      if (br && Array.isArray(br) && br.length) setBreathingSessions(br);
+      if (mem && Array.isArray(mem) && mem.length) setFamilyMemories(mem);
+      if (alt && Array.isArray(alt) && alt.length) setAlerts(alt);
+      if (plans && Array.isArray(plans) && plans.length) setActivityPlans(plans);
     } catch (e) {
       console.warn('Initial data load note:', e);
     }
@@ -371,14 +424,26 @@ export function AppProvider({ children }) {
   };
 
   const handleAddReminder = async (newRem) => {
-    const res = await api.addReminder(newRem);
-    if (res?.reminder) {
-      setReminders(prev => [...prev, res.reminder]);
+    const tempId = newRem.id || `rem-${Date.now()}`;
+    const item = {
+      id: tempId,
+      title: newRem.title || 'New Reminder',
+      category: newRem.category || 'Medicine',
+      time: newRem.time || '09:00 AM',
+      date: newRem.date || 'Today',
+      completed: false,
+      notes: newRem.notes || ''
+    };
+    setReminders(prev => [...prev, item]);
+    const res = await api.addReminder(item);
+    if (res?.reminder?.id && res.reminder.id !== tempId) {
+      setReminders(prev => prev.map(r => r.id === tempId ? res.reminder : r));
     }
   };
 
   const handleDeleteReminder = async (id) => {
     setReminders(prev => prev.filter(r => r.id !== id));
+    soundService.playSoftRetry();
     await api.deleteReminder(id);
   };
 

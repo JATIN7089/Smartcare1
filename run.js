@@ -7,17 +7,19 @@ console.log('  👉 Express REST API     : http://localhost:5000');
 console.log('==============================================================\n');
 
 const isWin = process.platform === 'win32';
+const nodeBin = process.execPath;
+const npmCmd = isWin ? 'npm.cmd' : 'npm';
 
-// 1. Start Vite Frontend Dev Server immediately so port 3000 binds first
-const vite = spawn(isWin ? 'npm.cmd' : 'npm', ['run', 'dev:vite'], { 
+// 1. Start Express Backend API Server
+const server = spawn(nodeBin, ['server/index.js'], { 
   stdio: 'inherit', 
-  shell: true 
+  shell: isWin 
 });
 
-// 2. Start Express Backend API Server
-const server = spawn(isWin ? 'node.exe' : 'node', ['server/index.js'], { 
+// 2. Start Vite Frontend Dev Server
+const vite = spawn(npmCmd, ['run', 'dev:vite'], { 
   stdio: 'inherit', 
-  shell: true 
+  shell: isWin 
 });
 
 const cleanup = () => {

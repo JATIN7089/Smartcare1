@@ -759,9 +759,9 @@ app.get('/api/reminders', (req, res) => {
 });
 
 app.post('/api/reminders', (req, res) => {
-  const { title, category, time, date, notes } = req.body;
+  const { id, title, category, time, date, notes } = req.body;
   const newReminder = {
-    id: `rem-${Date.now()}`,
+    id: id || `rem-${Date.now()}`,
     title: title || 'New Reminder',
     category: category || 'Daily',
     time: time || '12:00 PM',

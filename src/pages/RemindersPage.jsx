@@ -38,7 +38,7 @@ export default function RemindersPage() {
   const { reminders, handleToggleReminder, handleAddReminder, handleDeleteReminder, language } = useApp();
   const location = useLocation();
 
-  const [activeTab, setActiveTab] = useState('upcoming'); // upcoming | completed | all
+  const [activeTab, setActiveTab] = useState('all'); // all | upcoming | completed
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newCategory, setNewCategory] = useState('Medicine');
@@ -126,6 +126,16 @@ export default function RemindersPage() {
       {/* Tabs */}
       <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
         <button
+          onClick={() => setActiveTab('all')}
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition min-h-[44px] ${
+            activeTab === 'all'
+              ? 'bg-teal-600 text-white shadow-xs'
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          All Items ({reminders.length})
+        </button>
+        <button
           onClick={() => setActiveTab('upcoming')}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition min-h-[44px] ${
             activeTab === 'upcoming'
@@ -144,16 +154,6 @@ export default function RemindersPage() {
           }`}
         >
           Completed ({completedList.length})
-        </button>
-        <button
-          onClick={() => setActiveTab('all')}
-          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition min-h-[44px] ${
-            activeTab === 'all'
-              ? 'bg-teal-600 text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100'
-          }`}
-        >
-          All Items ({reminders.length})
         </button>
       </div>
 
