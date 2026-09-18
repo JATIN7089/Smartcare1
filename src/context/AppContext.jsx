@@ -107,6 +107,11 @@ export function AppProvider({ children }) {
   // Hackathon Guided Demo Tour State (0 = closed, 1-14 = step active)
   const [demoTourStep, setDemoTourStep] = useState(0);
 
+  // Live stream: the newest senior activity event, so portals can react
+  // instantly (toast + refetch) instead of waiting for a manual reload.
+  const [lastLiveEvent, setLastLiveEvent] = useState(null);
+  const [liveConnected, setLiveConnected] = useState(false);
+
   // Restore any existing session before deciding what to render.
   useEffect(() => {
     let alive = true;
