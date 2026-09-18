@@ -13,7 +13,8 @@ import {
   AlertCircle,
   Heart,
   UserPlus,
-  KeyRound
+  KeyRound,
+  HelpCircle
 } from 'lucide-react';
 
 const ROLE_ICON = { caregiver: Users, healthcare: Stethoscope };
@@ -32,6 +33,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [showCodeHelp, setShowCodeHelp] = useState(false);
 
   const [form, setForm] = useState({
     name: '', username: '', password: '',
@@ -406,9 +408,55 @@ export default function LoginPage() {
                     className="w-full bg-white border-2 border-slate-200 focus:border-teal-500 rounded-2xl pl-11 pr-4 py-3 text-sm font-bold tracking-wide outline-none transition min-h-[48px]"
                   />
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1.5 leading-relaxed">
-                  Found in the senior's profile. This links you to their care circle.
-                </p>
+                {/* Someone registering for the first time has no way to guess
+                    where this comes from, so spell it out. */}
+                <button
+                  type="button"
+                  onClick={() => setShowCodeHelp(h => !h)}
+                  className="flex items-center gap-1.5 text-[11px] font-bold text-teal-700 hover:text-teal-800 mt-2 min-h-[36px]"
+                >
+                  <HelpCircle className="w-3.5 h-3.5" />
+                  Where do I get this code?
+                </button>
+
+                {showCodeHelp && (
+                  <div className="mt-1 rounded-2xl bg-teal-50 border border-teal-200 p-4 space-y-2.5">
+                    <p className="text-xs font-black text-teal-900">
+                      On the senior's phone:
+                    </p>
+                    <ol className="space-y-1.5 text-[11px] text-teal-900/80 font-medium">
+                      {[
+                        'Open SmarTCARE and tap "Open My Home".',
+                        'Go to My Progress (in the More menu).',
+                        'Find the "Family Join Code" card.',
+                        'Tap to reveal, then Copy or Share it to you.'
+                      ].map((step, i) => (
+                        <li key={i} className="flex gap-2">
+                          <span className="w-4 h-4 rounded-full bg-teal-600 text-white text-[9px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">
+                            {i + 1}
+                          </span>
+                          <span>{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                    <p className="text-[10px] text-teal-800/70 leading-relaxed border-t border-teal-200 pt-2">
+                      Health workers can leave this blank — your facility verifies
+                      you instead.
+                    </p>
+                    <div className="border-t border-teal-200 pt-2">
+                      <p className="text-[10px] font-black uppercase tracking-wide text-teal-700/60 mb-1">
+                        Demo code
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => { setForm(f => ({ ...f, joinCode: 'SMT-4821' })); setError(''); }}
+                        className="text-xs font-black font-mono tracking-widest text-teal-800 bg-white border border-teal-300 rounded-xl px-3 py-2 hover:bg-teal-100 transition"
+                      >
+                        SMT-4821 — tap to fill
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button

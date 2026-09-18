@@ -30,6 +30,7 @@ import {
   Info
 } from 'lucide-react';
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
+import JoinCodeCard from '../components/JoinCodeCard.jsx';
 
 export default function ProfilePage() {
   const { cognitiveProfile, user } = useApp();
@@ -124,6 +125,12 @@ export default function ProfilePage() {
         </div>
       )}
     </div>
+
+    {/* The code a new caregiver needs while registering. It lives here because
+        the senior's phone is the one place a family member can actually read
+        it off — the caregiver dashboard is locked until they already have an
+        account. */}
+    <JoinCodeCard />
 
     {/* Visual Grid: Radar & Line Trend */}
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
