@@ -10,6 +10,8 @@
 
 import { SUPPORTED_LANGUAGES, TRANSLATIONS } from '../data/translations.js';
 import { detectIntent, INTENTS } from '../services/intentService.js';
+import { understand } from './nluEngine.js';
+import { respond } from './dialogueEngine.js';
 
 export const ASSISTANT_LANGUAGES = SUPPORTED_LANGUAGES;
 
@@ -42,8 +44,50 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
 
   const activeGreeting = greetings[language] ? greetings[language][role] || greetings.en[role] : greetings.en[role];
 
-  // If query is empty, return initial greeting
+  // If query is empty, return an opening greeting.
+  // For elderly users we enrich it with a live status line so the very first
+  // thing they hear is useful ("2 medicines pending today").
   if (!query) {
+    if (role === 'elderly') {
+      const pendingMeds = reminders.filter(
+        r => !r.completed && (r.category === 'Medicine' || /medicine|tablet|pill|dawa/i.test(r.title || ''))
+      );
+
+      const statusLine = pendingMeds.length
+        ? (language === 'hi'
+            ? ` आज ${pendingMeds.length} दवा बाकी है।`
+            : ` You have ${pendingMeds.length} medicine${pendingMeds.length === 1 ? '' : 's'} pending today.`)
+        : (language === 'hi'
+            ? ' आज सब कुछ ठीक चल रहा है।'
+            : ' Everything is on track today.');
+
+      const askLine = language === 'hi'
+        ? ' क्या करना चाहेंगी?'
+        : ' What would you like to do?';
+
+      const greetingText = activeGreeting + statusLine + askLine;
+
+      return {
+        reply: greetingText,
+        spoken: greetingText,
+        action: null,
+        chips: language === 'hi'
+          ? [
+              { label: '🎮 गेम खेलना है', cmd: 'game khelna hai' },
+              { label: '💊 कौन सी दवा ली?', cmd: 'kaunsi medicine li thi' },
+              { label: '⏰ अगली दवा कब?', cmd: 'agli dawai kab hai' },
+              { label: '🫁 साँस का अभ्यास', cmd: 'saans ka abhyas shuru karo' }
+            ]
+          : [
+              { label: '🎮 I want to play a game', cmd: 'game khelna hai' },
+              { label: '💊 Which medicine did I take?', cmd: 'which medicine did I take' },
+              { label: '⏰ When is my next medicine?', cmd: 'when is my next medicine' },
+              { label: '🫁 Start breathing', cmd: 'start breathing' }
+            ],
+        pendingSlot: null
+      };
+    }
+
     return {
       reply: activeGreeting,
       action: { type: 'SUGGESTION', items: ['Start memory game', 'Start breathing', 'When is my medicine?'] },
@@ -51,69 +95,24 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
     };
   }
 
-  // 1. ELDERLY ROLE RESPONSES & ACTIONS
+  // 1. ELDERLY ROLE — advanced NLU + dialogue engine
   if (role === 'elderly') {
-    // Caregiver call intent
-    if (query.includes('caregiver') && (query.includes('call') || query.includes('phone') || query.includes('talk') || query.includes('sunita'))) {
-      const callReplies = {
-        en: `Connecting you with Sunita Sharma (+91 98640 12345). Calling now...`,
-        hi: `सुनीता शर्मा (+91 98640 12345) से संपर्क किया जा रहा है।`,
-        as: `সুনীতা শৰ্মাৰ (+91 98640 12345) লগত সংযোগ কৰা হৈছে।`,
-        bn: `সুনীতা শর্মার (+91 98640 12345) সাথে যোগাযোগ করা হচ্ছে।`,
-        brx: `सुनिता शर्माजों (+91 98640 12345) फोनांज़ाबबाय।`,
-        mni: `সুনিথা শর্মাগা (+91 98640 12345) শম্নহল্লে।`,
-        kha: `Iasnoh bad i Sunita Sharma (+91 98640 12345).`,
-        lus: `Sunita Sharma (+91 98640 12345) nen kan inzawm e.`,
-        nag: `Sunita Sharma (+91 98640 12345) ke call kori ase.`,
-        trp: `Sunita Sharma (+91 98640 12345) bai kok sanai wngha.`,
-        ne: `सुनीता शर्मा (+91 98640 12345) सँग सम्पर्क गरिँदैछ।`
-      };
-      const reply = callReplies[language] || callReplies.en;
-      return {
-        reply,
-        action: { type: 'CALL_SIMULATION', contact: 'Sunita Sharma', phone: '+91 98640 12345' },
-        spoken: reply
-      };
-    }
+    const nlu = understand(input, contextData.session || {});
+    const result = respond(nlu, {
+      reminders,
+      routine,
+      cognitiveProfile,
+      user: activeUser,
+      role,
+      language
+    });
 
-    // Process through Natural Language Intent Engine
-    const intentRes = detectIntent(query, { language, reminders });
-    if (intentRes && intentRes.intent !== INTENTS.UNKNOWN && intentRes.route) {
-      // Localized short responses
-      return {
-        reply: intentRes.text,
-        spoken: intentRes.spoken,
-        action: {
-          type: 'NAVIGATE',
-          route: intentRes.route,
-          autostart: intentRes.autostart,
-          readAloud: intentRes.readAloud,
-          intent: intentRes.intent,
-          label: intentRes.text
-        }
-      };
-    }
-
-    // Default Fallback
-    const defaultElderlyReplies = {
-      en: `I am here with you, ${userName}. You can say: "Start memory game", "Start breathing", or "Show my reminders".`,
-      hi: `मैं आपके साथ हूँ, ${userName} जी। आप कह सकते हैं: "स्मृति खेल शुरू करो", "प्राणायाम शुरू करो", या "दवा दिखाओ"।`,
-      as: `মই আপোনাৰ লগতেই আছোঁ, ${userName} বাইদেউ। আপুনি ক’ব পাৰে: "খেল আৰম্ভ কৰক", "উশাহৰ পেচাৰ আৰম্ভ কৰক", বা "দৰৱ দেখুৱাওক"।`,
-      bn: `আমি আপনার সাথেই আছি, ${userName} দিদি। আপনি বলতে পারেন: "খেলা শুরু করো", "শ্বাসচর্চা শুরু করো", বা "ওষুধ দেখাও"।`,
-      brx: `आं नोंथांनि लोगोनो दं, ${userName}। नोंथाङा बुंनो हागौ: "गेलेनाय जागाय", एबा "हां ला"।`,
-      mni: `ঐহাক নহাক্কী নকন্দা লৈরি, ${userName}। নহাক্না হাইবা য়াই: "শান্নবা হৌরো", নত্রগা "স্বাস হোম্বগী থবক হৌরো"।`,
-      kha: `Nga don ryngkat bad phi, ${userName}. Phi lah ban ong: "Sdang lehkai", lane "Ring mynsiem".`,
-      lus: `I kiangah ka awm reng e, ${userName}. "Infiamna tan rawh", emaw "Thawlak tan rawh" i ti thei ang.`,
-      nag: `Ami apuni logot ase, ${userName}. Apuni kobole pare: "Khel shuru koribi", ba "Saans lowa shuru koribi".`,
-      trp: `Ang nini logio tongha, ${userName}. Nung sana mannai: "Khel chengbadi", ba "Huktwi sodi".`,
-      ne: `म तपाईंसँगै छु, ${userName} ज्यू। तपाईं भन्न सक्नुहुन्छ: "खेल सुरु गर", वा "श्वास अभ्यास सुरु गर"।`
-    };
-
-    const reply = defaultElderlyReplies[language] || defaultElderlyReplies.en;
     return {
-      reply,
-      action: { type: 'SUGGESTION', items: ['Start memory game', 'Start breathing', 'Show my reminders'] },
-      spoken: reply
+      ...result,
+      intent: nlu.intent,
+      confidence: nlu.confidence,
+      concepts: nlu.concepts,
+      action: normaliseAction(result.action)
     };
   }
 
@@ -132,4 +131,24 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
     action: { type: 'NAVIGATE', route: '/healthcare', label: 'Clinical Portal' },
     spoken: `Patient Asha Sharma maintains an 88 percent weekly adherence.`
   };
+}
+
+/**
+ * Bridges the dialogue engine's action vocabulary to the shape the UI layer
+ * already understands, so existing NAVIGATE / CALL_SIMULATION handling keeps
+ * working while new action types (COMPLETE_REMINDER, STOP_SPEAKING) pass through.
+ */
+function normaliseAction(action) {
+  if (!action) return null;
+
+  if (action.type === 'CALL') {
+    return {
+      type: 'CALL_SIMULATION',
+      contact: action.contact,
+      phone: action.phone,
+      label: action.label
+    };
+  }
+
+  return action;
 }

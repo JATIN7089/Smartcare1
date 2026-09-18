@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
 import { voiceService } from '../services/voiceService.js';
@@ -22,7 +22,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function VoiceAssistantPage() {
-  const { role, user, reminders, routine, cognitiveProfile, language, setLanguage, supportedLanguages, currentLanguageObj, accessibility, t } = useApp();
+  const { role, user, reminders, routine, cognitiveProfile, language, setLanguage, supportedLanguages, currentLanguageObj, accessibility, t, handleToggleReminder } = useApp();
   const navigate = useNavigate();
 
   const [isListening, setIsListening] = useState(false);
@@ -30,6 +30,15 @@ export default function VoiceAssistantPage() {
   const [conversation, setConversation] = useState([]);
   const [lastAction, setLastAction] = useState(null);
   const [micError, setMicError] = useState(null);
+
+  // Multi-turn memory: when the assistant asks a clarifying question it stores
+  // the awaited slot here, so the next utterance is read in that context.
+  const [session, setSession] = useState({ pendingSlot: null, lastIntent: null });
+
+  // Dynamic follow-up chips returned by the dialogue engine.
+  const [chips, setChips] = useState([]);
+
+  const conversationEndRef = useRef(null);
 
   // Initialize or update conversation on role or language change
   useEffect(() => {
@@ -41,57 +50,96 @@ export default function VoiceAssistantPage() {
         timestamp: 'Just now'
       }
     ]);
+    setChips(greetingMsg.chips || []);
+    setSession({ pendingSlot: null, lastIntent: null });
   }, [role, language]);
+
+  // Keep the newest message in view as the conversation grows.
+  useEffect(() => {
+    conversationEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [conversation]);
 
   const handleSend = (textToSend) => {
     const query = textToSend || inputText;
     if (!query.trim()) return;
 
-    const userMessage = { 
-      sender: 'user', 
-      text: query, 
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+    const userMessage = {
+      sender: 'user',
+      text: query,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setConversation(prev => [...prev, userMessage]);
     setInputText('');
     setMicError(null);
 
-    // Process through role-aware assistant engine
+    // Process through the role-aware assistant engine, handing it the
+    // pending-slot session so follow-up answers ("haan", "pehli") make sense.
     const result = processVoiceCommand(query, role, {
       activeUser: user,
       reminders,
       routine,
       cognitiveProfile,
-      language
+      language,
+      session
     });
 
     const assistantMessage = {
       sender: 'assistant',
       text: result.reply,
       action: result.action,
+      intent: result.intent,
+      confidence: result.confidence,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
     setConversation(prev => [...prev, assistantMessage]);
     setLastAction(result.action);
+    setChips(result.chips || []);
 
-    // Speak aloud in selected language if enabled
+    // Carry the clarifying question (if any) into the next turn.
+    setSession({
+      pendingSlot: result.pendingSlot || null,
+      lastIntent: result.intent || null
+    });
+
+    // Speak aloud in the selected language if enabled
     if (accessibility.voiceEnabled && result.spoken) {
       voiceService.speak(result.spoken, language);
     }
 
-    // AUTOMATED ACTION ROUTER: Automatically execute navigation without requiring another click
-    if (result.action?.type === 'NAVIGATE' && result.action?.route) {
+    executeAction(result.action);
+  };
+
+  /**
+   * Runs whatever the dialogue engine decided to do.
+   * Navigation is delayed slightly so the spoken confirmation is heard first,
+   * and informational answers get a longer delay so the user can read them.
+   */
+  const executeAction = (action) => {
+    if (!action) return;
+
+    if (action.type === 'COMPLETE_REMINDER' && action.reminderId) {
+      handleToggleReminder(action.reminderId);
+      return;
+    }
+
+    if (action.type === 'STOP_SPEAKING') {
+      voiceService.stopSpeaking();
+      return;
+    }
+
+    if (action.type === 'NAVIGATE' && action.route) {
+      const delay = typeof action.delay === 'number' ? action.delay : 900;
       setTimeout(() => {
-        navigate(result.action.route, {
+        navigate(action.route, {
           state: {
-            autostart: result.action.autostart !== false,
-            readAloud: Boolean(result.action.readAloud),
-            intent: result.action.intent,
+            autostart: action.autostart !== false,
+            readAloud: Boolean(action.readAloud),
+            intent: action.intent,
             voiceTriggered: true
           }
         });
-      }, 900);
+      }, delay);
     }
   };
 
@@ -138,6 +186,11 @@ export default function VoiceAssistantPage() {
     'Summarize patient cohort adherence',
     'Review Asha cognitive trends'
   ];
+
+  // Engine-supplied follow-up chips take priority; otherwise show role samples.
+  const activeChips = chips.length > 0
+    ? chips
+    : samplePrompts.map(p => ({ label: `💬 "${p}"`, cmd: p }));
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
@@ -218,16 +271,18 @@ export default function VoiceAssistantPage() {
       {/* Quick Prompts (Elderly Accessible buttons) */}
       <div className="space-y-2">
         <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
-          {t('suggested_questions', 'Suggested Questions (Tap to ask instantly):')}
+          {session.pendingSlot
+            ? t('tap_to_answer', 'Tap to answer:')
+            : t('suggested_questions', 'Suggested Questions (Tap to ask instantly):')}
         </span>
         <div className="flex flex-wrap gap-2">
-          {samplePrompts.map((prompt, i) => (
+          {activeChips.map((chip, i) => (
             <button
-              key={i}
-              onClick={() => handleSend(prompt)}
+              key={`${chip.cmd}-${i}`}
+              onClick={() => handleSend(chip.cmd)}
               className="px-4 py-2.5 rounded-xl bg-white hover:bg-teal-50 border border-slate-200 hover:border-teal-400 text-slate-800 text-xs sm:text-sm font-bold shadow-xs transition min-h-[44px]"
             >
-              💬 "{prompt}"
+              {chip.label}
             </button>
           ))}
         </div>
@@ -292,6 +347,7 @@ export default function VoiceAssistantPage() {
             </div>
           </div>
         ))}
+        <div ref={conversationEndRef} />
       </div>
 
       {/* Manual Text Fallback Input */}

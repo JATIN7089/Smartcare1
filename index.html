@@ -7,9 +7,211 @@
     <meta name="description" content="SmarTCARE — AI-Based Cognitive Gaming and Memory Assistance Platform for Elderly Dementia Patients in North Eastern Region (NER). Smart India Hackathon 2026 Problem Statement 26003." />
     <meta name="theme-color" content="#0d9488" />
     <title>SmarTCARE | Cognitive Care for Brighter Tomorrows — SIH 2026</title>
+
+    <!-- ===================================================================
+         INSTANT SPLASH / LOADING SCREEN
+         Inlined so it paints immediately, before the JS bundle downloads.
+         Removed by src/main.jsx once React has mounted.
+         =================================================================== -->
+    <style>
+      #smartcare-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        padding: 24px;
+        background:
+          radial-gradient(circle at 20% 15%, #ccfbf1 0%, rgba(204, 251, 241, 0) 55%),
+          radial-gradient(circle at 82% 82%, #dcfce7 0%, rgba(220, 252, 231, 0) 55%),
+          linear-gradient(160deg, #f8fafc 0%, #f0fdfa 100%);
+        font-family: 'Aquitha', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        text-align: center;
+        opacity: 1;
+        transition: opacity 0.55s ease, visibility 0.55s ease;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      #smartcare-splash.is-hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .sc-splash__badge {
+        position: relative;
+        width: 116px;
+        height: 116px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 34px;
+        background: linear-gradient(145deg, #0d9488 0%, #16a34a 100%);
+        box-shadow: 0 18px 38px -12px rgba(13, 148, 136, 0.55);
+        animation: sc-badge-in 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      /* Calm breathing halo — echoes the app's 4-2-6 breathing pacer */
+      .sc-splash__badge::before,
+      .sc-splash__badge::after {
+        content: '';
+        position: absolute;
+        inset: -14px;
+        border-radius: 44px;
+        border: 3px solid rgba(13, 148, 136, 0.35);
+        animation: sc-halo 2.6s ease-out infinite;
+      }
+
+      .sc-splash__badge::after {
+        animation-delay: 1.3s;
+      }
+
+      .sc-splash__badge svg {
+        width: 60px;
+        height: 60px;
+        stroke: #ffffff;
+      }
+
+      .sc-splash__title {
+        margin: 26px 0 0;
+        font-size: 2.1rem;
+        line-height: 1.15;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #0f172a;
+        animation: sc-rise 0.6s ease-out 0.15s both;
+      }
+
+      .sc-splash__title span {
+        color: #0d9488;
+      }
+
+      .sc-splash__tagline {
+        margin: 10px 0 0;
+        font-size: 1.03rem;
+        font-weight: 500;
+        color: #475569;
+        animation: sc-rise 0.6s ease-out 0.28s both;
+      }
+
+      .sc-splash__track {
+        position: relative;
+        width: min(260px, 72vw);
+        height: 8px;
+        margin-top: 34px;
+        border-radius: 999px;
+        background: rgba(13, 148, 136, 0.16);
+        overflow: hidden;
+        animation: sc-rise 0.6s ease-out 0.4s both;
+      }
+
+      .sc-splash__bar {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 42%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #0d9488, #16a34a);
+        animation: sc-sweep 1.45s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+      }
+
+      .sc-splash__status {
+        margin: 16px 0 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        color: #0f766e;
+        animation: sc-rise 0.6s ease-out 0.5s both;
+      }
+
+      .sc-splash__footer {
+        position: absolute;
+        bottom: max(26px, env(safe-area-inset-bottom, 0px));
+        left: 0;
+        right: 0;
+        padding: 0 24px;
+        font-size: 0.78rem;
+        line-height: 1.5;
+        color: #64748b;
+        animation: sc-rise 0.6s ease-out 0.62s both;
+      }
+
+      @keyframes sc-badge-in {
+        from { opacity: 0; transform: scale(0.82); }
+        to   { opacity: 1; transform: scale(1); }
+      }
+
+      @keyframes sc-halo {
+        0%   { opacity: 0.75; transform: scale(0.9); }
+        70%  { opacity: 0;    transform: scale(1.32); }
+        100% { opacity: 0;    transform: scale(1.32); }
+      }
+
+      @keyframes sc-rise {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes sc-sweep {
+        0%   { left: -45%; width: 45%; }
+        55%  { width: 62%; }
+        100% { left: 100%; width: 45%; }
+      }
+
+      /* Respect users who prefer calmer motion (and the app's own a11y stance) */
+      @media (prefers-reduced-motion: reduce) {
+        #smartcare-splash *,
+        #smartcare-splash *::before,
+        #smartcare-splash *::after {
+          animation-duration: 0.001s !important;
+          animation-iteration-count: 1 !important;
+        }
+        .sc-splash__bar {
+          left: 0 !important;
+          width: 100% !important;
+          opacity: 0.85;
+        }
+      }
+
+      @media (max-width: 360px) {
+        .sc-splash__badge { width: 96px; height: 96px; border-radius: 28px; }
+        .sc-splash__badge svg { width: 50px; height: 50px; }
+        .sc-splash__title { font-size: 1.8rem; }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+
+    <div id="smartcare-splash" role="status" aria-live="polite" aria-label="SmarTCARE is loading">
+      <div class="sc-splash__badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-4 4 4 4 0 0 0 4 4h8a4 4 0 0 0 4-4 4 4 0 0 0-4-4V6a4 4 0 0 0-4-4z"/>
+          <path d="M12 18v4"/>
+          <path d="M8 22h8"/>
+        </svg>
+      </div>
+
+      <h1 class="sc-splash__title">Smar<span>TCARE</span></h1>
+      <p class="sc-splash__tagline">Cognitive Care for Brighter Tomorrows</p>
+
+      <div class="sc-splash__track"><div class="sc-splash__bar"></div></div>
+      <p class="sc-splash__status">Getting things ready for you&hellip;</p>
+
+      <p class="sc-splash__footer">
+        Play &bull; Recall &bull; Stay Connected &bull; Live Better<br />
+        A supportive companion &mdash; it does not diagnose any medical condition.
+      </p>
+    </div>
+
+    <script>
+      // Timestamp the very first paint so the splash can honour a minimum
+      // on-screen duration instead of flashing past on fast connections.
+      window.__SMARTCARE_SPLASH_START__ = Date.now();
+    </script>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
