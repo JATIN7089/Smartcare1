@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
 import VoiceActionModal from './VoiceActionModal.jsx';
-import { ROLES, ROLE_LIST, getRole } from '../data/roles.js';
+import { getRole } from '../data/roles.js';
 import {
   Home,
   Puzzle,
@@ -25,7 +25,8 @@ import {
   Wifi,
   WifiOff,
   ChevronDown,
-  ArrowLeftRight
+  ArrowLeftRight,
+  LogOut
 } from 'lucide-react';
 
 /** Icon names in roles.js are resolved through this map. */
@@ -53,6 +54,8 @@ export default function AppShell({ children }) {
     toggleSimulatedOffline,
     alerts = [],
     reminders = [],
+    account,
+    logout,
     setDemoTourStep
   } = useApp();
 
@@ -87,12 +90,16 @@ export default function AppShell({ children }) {
   const cfg = getRole(role);
   const theme = cfg.theme;
 
-  /** Switching role also lands the user on that role's own home page. */
-  const switchRole = (newRole) => {
-    setRole(newRole);
+  /**
+   * Roles are tied to credentials now, so "switching" means signing out and
+   * signing back in as the other person. This keeps a senior from wandering
+   * into the caregiver or clinical portals.
+   */
+  const handleSignOut = async () => {
     setRoleModalOpen(false);
     setMoreDrawerOpen(false);
-    navigate(ROLES[newRole].home);
+    await logout();
+    navigate('/');
   };
 
   const isActivePath = (path) => {
@@ -140,7 +147,7 @@ export default function AppShell({ children }) {
             {cfg.persona.name[0]}
           </span>
           <span className="flex flex-col items-start leading-none">
-            <span className="text-[8px] uppercase tracking-wide opacity-70 font-black">View</span>
+            <span className="text-[8px] uppercase tracking-wide opacity-70 font-black">Account</span>
             <span className="text-[11px] font-black">{cfg.shortLabel}</span>
           </span>
           <ChevronDown className="w-3.5 h-3.5 opacity-70 flex-shrink-0" />
@@ -149,7 +156,7 @@ export default function AppShell({ children }) {
         <>
           <span className="flex items-center gap-1.5">
             <ArrowLeftRight className="w-3.5 h-3.5" />
-            <span>Switch view · {cfg.label}</span>
+            <span>{cfg.label} · Account</span>
           </span>
           <ChevronDown className="w-3.5 h-3.5 opacity-70" />
         </>
@@ -167,7 +174,7 @@ export default function AppShell({ children }) {
           onClick={dismissRoleHint}
           className="md:hidden absolute top-[110%] right-0 z-50 w-max max-w-[220px] bg-slate-900 text-white text-[11px] font-semibold rounded-xl px-3 py-2 shadow-xl text-left leading-snug"
         >
-          Tap here to switch between Elderly, Caregiver and Health Worker views.
+          Your account and sign-out live here.
           <span className="block text-[10px] text-slate-400 mt-0.5">Tap to dismiss</span>
         </button>
       </>
@@ -445,7 +452,7 @@ export default function AppShell({ children }) {
                   onClick={() => { setMoreDrawerOpen(false); openRolePicker(); }}
                   className={`w-full mt-1 ${theme.solid} text-white rounded-xl py-2 text-xs font-bold flex items-center justify-center gap-1.5 min-h-[40px]`}
                 >
-                  <ArrowLeftRight className="w-3.5 h-3.5" /> Switch Role
+                  <ArrowLeftRight className="w-3.5 h-3.5" /> Account &amp; Sign Out
                 </button>
               </div>
 
@@ -480,7 +487,7 @@ export default function AppShell({ children }) {
       )}
 
       {/* ========================================================
-          6. ROLE SWITCHER MODAL
+          6. ACCOUNT MODAL — identity + sign out
          ======================================================== */}
       {roleModalOpen && (
         <div
@@ -488,13 +495,13 @@ export default function AppShell({ children }) {
           onClick={() => setRoleModalOpen(false)}
         >
           <div
-            className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 shadow-2xl space-y-3"
+            className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 shadow-2xl space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div>
-                <h3 className="text-lg font-black text-slate-900">Choose Your View</h3>
-                <p className="text-xs text-slate-500">Each role shows different information</p>
+                <h3 className="text-lg font-black text-slate-900">Your Account</h3>
+                <p className="text-xs text-slate-500">Signed in with your own details</p>
               </div>
               <button
                 onClick={() => setRoleModalOpen(false)}
@@ -504,32 +511,48 @@ export default function AppShell({ children }) {
               </button>
             </div>
 
-            <div className="space-y-2.5">
-              {ROLE_LIST.map((r) => {
-                const selected = role === r.id;
-                return (
-                  <button
-                    key={r.id}
-                    onClick={() => switchRole(r.id)}
-                    className={`w-full flex items-center gap-3 p-4 rounded-2xl border-2 text-left transition min-h-[64px] ${
-                      selected
-                        ? `${r.theme.soft} ${r.theme.border} shadow-xs`
-                        : 'bg-white border-slate-200 hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className={`w-11 h-11 rounded-2xl bg-gradient-to-tr ${r.theme.gradient} text-white flex items-center justify-center font-black flex-shrink-0`}>
-                      {r.persona.name[0]}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-black text-slate-900">{r.label}</p>
-                      <p className="text-[11px] text-slate-500 truncate">{r.description}</p>
-                      <p className="text-[10px] text-slate-400 truncate mt-0.5">{r.persona.name} · {r.persona.detail}</p>
-                    </div>
-                    {selected && <Check className={`w-5 h-5 flex-shrink-0 ${r.theme.softText}`} />}
-                  </button>
-                );
-              })}
+            {/* Who is signed in */}
+            <div className={`flex items-center gap-3 p-4 rounded-2xl border-2 ${theme.soft} ${theme.border}`}>
+              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${theme.gradient} text-white flex items-center justify-center font-black text-lg flex-shrink-0`}>
+                {account?.avatar || cfg.persona.name[0]}
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-black text-slate-900 truncate">
+                  {account?.name || cfg.persona.name}
+                </p>
+                <p className="text-[11px] text-slate-500 truncate">
+                  {account?.detail || cfg.persona.detail}
+                </p>
+                <span className={`inline-block mt-1 text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-full ${theme.solid} text-white`}>
+                  {cfg.label}
+                </span>
+              </div>
             </div>
+
+            {/* What this account can reach */}
+            <div className="space-y-1.5">
+              <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                You have access to
+              </p>
+              {cfg.nav.map(item => (
+                <div key={item.path} className="flex items-center gap-2 text-xs text-slate-600 font-semibold">
+                  <Check className={`w-3.5 h-3.5 ${theme.softText} flex-shrink-0`} />
+                  <span>{item.label}</span>
+                </div>
+              ))}
+            </div>
+
+            <p className="text-[11px] text-slate-400 leading-relaxed border-t border-slate-100 pt-3">
+              Need a different portal? Sign out and sign back in with those
+              details — each account only sees what it should.
+            </p>
+
+            <button
+              onClick={handleSignOut}
+              className="w-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-3.5 rounded-2xl text-sm shadow-md transition active:scale-[0.98] min-h-[50px] flex items-center justify-center gap-2"
+            >
+              <LogOut className="w-4 h-4" /> Sign Out
+            </button>
           </div>
         </div>
       )}

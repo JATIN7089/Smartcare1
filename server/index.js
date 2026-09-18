@@ -14,6 +14,95 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(distPath));
 
+
+/* ============================================================
+   DEMO ACCOUNTS
+   ------------------------------------------------------------
+   A deliberately simple credential store for the SIH demo. Passwords are
+   kept in plain text here ONLY because this is an offline demo with fixed
+   judge-facing logins; a production deployment would hash them and back
+   this with the real user database.
+
+   The important part for the product is the ROLE each account carries:
+   a senior can never open the caregiver or clinical portals, because the
+   role is decided by the credentials, not by a UI toggle.
+   ============================================================ */
+const ACCOUNTS = [
+  {
+    id: 'user-asha-68',
+    username: 'asha',
+    password: 'asha123',
+    pin: '1234',
+    role: 'elderly',
+    name: 'Asha Sharma',
+    detail: 'Tezpur, Assam • 68 yrs',
+    avatar: 'A'
+  },
+  {
+    id: 'care-sunita',
+    username: 'sunita',
+    password: 'care123',
+    pin: '2345',
+    role: 'caregiver',
+    name: 'Sunita Sharma',
+    detail: 'Daughter • Primary Caregiver',
+    avatar: 'S',
+    linkedPatients: ['user-asha-68']
+  },
+  {
+    id: 'cho-barua',
+    username: 'barua',
+    password: 'doctor123',
+    pin: '3456',
+    role: 'healthcare',
+    name: 'Dr. B. K. Barua',
+    detail: 'Community Health Officer • Sonitpur SDH',
+    avatar: 'B',
+    linkedPatients: ['user-asha-68', 'user-biren-74', 'user-mary-71']
+  }
+];
+
+/** Active sessions: token -> account id. In-memory for the demo. */
+const SESSIONS = new Map();
+
+function publicAccount(acc) {
+  if (!acc) return null;
+  const { password, pin, ...safe } = acc;
+  return safe;
+}
+
+function newToken() {
+  return 'tok-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+/** Resolves the account behind an Authorization: Bearer <token> header. */
+function accountFromRequest(req) {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  if (!token) return null;
+  const accountId = SESSIONS.get(token);
+  if (!accountId) return null;
+  return ACCOUNTS.find(a => a.id === accountId) || null;
+}
+
+/** Express guard: rejects anyone whose role is not in `allowed`. */
+function requireRole(...allowed) {
+  return (req, res, next) => {
+    const acc = accountFromRequest(req);
+    if (!acc) {
+      return res.status(401).json({ success: false, message: 'Please sign in to continue.' });
+    }
+    if (!allowed.includes(acc.role)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account does not have access to this area.'
+      });
+    }
+    req.account = acc;
+    next();
+  };
+}
+
 // In-Memory Database store with rich initial data
 let state = {
   activeUser: {
@@ -389,17 +478,62 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Auth & Role
-app.get('/api/auth/current-user', (req, res) => {
-  res.json(state.activeUser);
+/* ============================================================
+   AUTHENTICATION
+   ============================================================ */
+
+/** The three demo identities, shown on the sign-in screen. */
+app.get('/api/auth/accounts', (req, res) => {
+  res.json(ACCOUNTS.map(a => ({
+    username: a.username,
+    role: a.role,
+    name: a.name,
+    detail: a.detail,
+    avatar: a.avatar
+  })));
 });
 
-app.post('/api/auth/switch-role', (req, res) => {
-  const { role } = req.body;
-  if (role) {
-    state.activeUser.role = role;
+/** Sign in with username + password, or username + 4-digit PIN. */
+app.post('/api/auth/login', (req, res) => {
+  const { username, password, pin } = req.body || {};
+  const id = String(username || '').trim().toLowerCase();
+
+  const acc = ACCOUNTS.find(a => a.username === id);
+  if (!acc) {
+    return res.status(401).json({ success: false, message: 'We could not find that account.' });
   }
-  res.json({ success: true, user: state.activeUser });
+
+  const passwordOk = password && password === acc.password;
+  const pinOk = pin && String(pin) === acc.pin;
+  if (!passwordOk && !pinOk) {
+    return res.status(401).json({ success: false, message: 'Incorrect password or PIN. Please try again.' });
+  }
+
+  const token = newToken();
+  SESSIONS.set(token, acc.id);
+
+  // The elderly profile is the data subject the whole app revolves around.
+  if (acc.role === 'elderly') state.activeUser.role = 'elderly';
+
+  res.json({ success: true, token, account: publicAccount(acc) });
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  if (token) SESSIONS.delete(token);
+  res.json({ success: true });
+});
+
+/** Restores a session on page reload. */
+app.get('/api/auth/me', (req, res) => {
+  const acc = accountFromRequest(req);
+  if (!acc) return res.status(401).json({ success: false, message: 'Not signed in.' });
+  res.json({ success: true, account: publicAccount(acc) });
+});
+
+app.get('/api/auth/current-user', (req, res) => {
+  res.json(state.activeUser);
 });
 
 // Join code linking
@@ -593,11 +727,11 @@ app.post('/api/memories', (req, res) => {
 });
 
 // Caregiver & Healthcare Portals
-app.get('/api/caregiver/patients', (req, res) => {
+app.get('/api/caregiver/patients', requireRole('caregiver', 'healthcare'), (req, res) => {
   res.json(state.connectedPatients);
 });
 
-app.get('/api/caregiver/patients/:id', (req, res) => {
+app.get('/api/caregiver/patients/:id', requireRole('caregiver', 'healthcare'), (req, res) => {
   const patient = state.connectedPatients.find(p => p.id === req.params.id) || state.connectedPatients[0];
   res.json({
     patient,
@@ -613,7 +747,7 @@ app.get('/api/caregiver/patients/:id', (req, res) => {
   });
 });
 
-app.post('/api/caregiver/notes', (req, res) => {
+app.post('/api/caregiver/notes', requireRole('caregiver', 'healthcare'), (req, res) => {
   const { author, text } = req.body;
   const note = {
     id: `note-${Date.now()}`,
@@ -641,7 +775,7 @@ app.get('/api/activity-plans', (req, res) => {
   res.json(state.activityPlans);
 });
 
-app.post('/api/activity-plans', (req, res) => {
+app.post('/api/activity-plans', requireRole('healthcare'), (req, res) => {
   const { title, createdBy, priority, tasks } = req.body;
   const plan = {
     id: `plan-${Date.now()}`,
@@ -670,7 +804,7 @@ app.put('/api/activity-plans/:planId/tasks/:taskId/toggle', (req, res) => {
 });
 
 // Admin Metrics
-app.get('/api/admin/metrics', (req, res) => {
+app.get('/api/admin/metrics', requireRole('healthcare'), (req, res) => {
   res.json(state.adminMetrics);
 });
 

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api } from '../services/api.js';
+import { authService } from '../services/authService.js';
 import { syncEngine } from '../services/syncEngine.js';
 import { soundService } from '../services/soundService.js';
 import { voiceService } from '../services/voiceService.js';
@@ -9,7 +10,11 @@ const AppContext = createContext();
 
 export function AppProvider({ children }) {
   // Authentication & Role
-  const [role, setRole] = useState('elderly'); // elderly | caregiver | healthcare | admin
+  // `account` is the signed-in identity; `role` is derived from it, so the
+  // role can no longer be changed by the UI alone.
+  const [account, setAccount] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [role, setRole] = useState('elderly'); // elderly | caregiver | healthcare
   const [user, setUser] = useState({
     id: 'user-asha-68',
     name: 'Asha Sharma',
@@ -102,8 +107,24 @@ export function AppProvider({ children }) {
   // Hackathon Guided Demo Tour State (0 = closed, 1-14 = step active)
   const [demoTourStep, setDemoTourStep] = useState(0);
 
-  // Load initial data
+  // Restore any existing session before deciding what to render.
   useEffect(() => {
+    let alive = true;
+    authService.restore()
+      .then(acc => {
+        if (!alive) return;
+        if (acc) {
+          setAccount(acc);
+          setRole(acc.role);
+        }
+      })
+      .finally(() => { if (alive) setAuthChecked(true); });
+    return () => { alive = false; };
+  }, []);
+
+  // Load app data once a session exists.
+  useEffect(() => {
+    if (!account) return undefined;
     loadInitialData();
 
     const unsubscribeSync = syncEngine.subscribe(state => {
@@ -113,7 +134,23 @@ export function AppProvider({ children }) {
     return () => {
       unsubscribeSync();
     };
-  }, []);
+  }, [account]);
+
+  /** Sign in and adopt the role carried by the credentials. */
+  const login = async (credentials) => {
+    const res = await authService.login(credentials);
+    if (res.success && res.account) {
+      setAccount(res.account);
+      setRole(res.account.role);
+    }
+    return res;
+  };
+
+  const logout = async () => {
+    await authService.logout();
+    setAccount(null);
+    setRole('elderly');
+  };
 
   const loadInitialData = async () => {
     try {
@@ -142,10 +179,23 @@ export function AppProvider({ children }) {
   };
 
   // Role Switching
+  /**
+   * Roles come from the signed-in account, so this only permits a change the
+   * account is actually entitled to. A senior can never become a caregiver or
+   * health worker by toggling the UI — they must sign in with those details.
+   */
   const handleRoleChange = async (newRole) => {
+    if (!account) return { success: false, message: 'Please sign in first.' };
+    if (account.role !== newRole) {
+      return {
+        success: false,
+        message: `You are signed in as ${account.name}. Sign out to use a different account.`
+      };
+    }
     setRole(newRole);
     setUser(prev => ({ ...prev, role: newRole }));
     await api.switchRole(newRole);
+    return { success: true };
   };
 
   // Accessibility Toggles
@@ -252,6 +302,10 @@ export function AppProvider({ children }) {
       value={{
         role,
         setRole: handleRoleChange,
+        account,
+        authChecked,
+        login,
+        logout,
         user,
         setUser,
         cognitiveProfile,
