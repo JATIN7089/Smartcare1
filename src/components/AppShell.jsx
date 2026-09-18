@@ -64,6 +64,26 @@ export default function AppShell({ children }) {
   const [moreDrawerOpen, setMoreDrawerOpen] = useState(false);
   const [roleModalOpen, setRoleModalOpen] = useState(false);
 
+  // One-time nudge so people discover that caregiver and health-worker
+  // portals exist at all. Dismissed permanently once the picker is opened.
+  const [roleHintSeen, setRoleHintSeen] = useState(() => {
+    try {
+      return localStorage.getItem('smartcare_role_hint_seen') === '1';
+    } catch (e) {
+      return true;
+    }
+  });
+
+  const dismissRoleHint = () => {
+    setRoleHintSeen(true);
+    try { localStorage.setItem('smartcare_role_hint_seen', '1'); } catch (e) {}
+  };
+
+  const openRolePicker = () => {
+    dismissRoleHint();
+    setRoleModalOpen(true);
+  };
+
   const cfg = getRole(role);
   const theme = cfg.theme;
 
@@ -98,21 +118,61 @@ export default function AppShell({ children }) {
 
   /* ============================================================
      Reusable: role switcher trigger button
+
+     This is the only way into the caregiver / health-worker portals, so it
+     has to read unmistakably as "you are X, tap to change" — an icon alone
+     was far too easy to miss on a phone.
      ============================================================ */
   const RoleSwitchButton = ({ compact = false }) => (
+    <div className="relative">
     <button
-      onClick={() => setRoleModalOpen(true)}
-      className={`flex items-center gap-1.5 rounded-xl border font-bold transition min-h-[44px] ${
-        compact ? 'px-2.5 py-1.5 text-[11px]' : 'px-3 py-2 text-xs w-full justify-between'
-      } ${theme.soft} ${theme.softText} ${theme.border} hover:brightness-95`}
+      onClick={openRolePicker}
+      className={`flex items-center rounded-xl border-2 font-bold transition min-h-[44px] ${
+        compact ? 'gap-1.5 pl-1.5 pr-2 py-1' : 'gap-2 px-3 py-2 text-xs w-full justify-between'
+      } ${theme.soft} ${theme.softText} ${theme.border} hover:brightness-95 active:scale-95`}
       title="Switch role"
+      aria-label={`Current view: ${cfg.label}. Tap to switch role.`}
     >
-      <span className="flex items-center gap-1.5">
-        <ArrowLeftRight className="w-3.5 h-3.5" />
-        <span>{compact ? cfg.shortLabel : cfg.label}</span>
-      </span>
-      <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+      {compact ? (
+        <>
+          {/* Avatar keeps the control recognisable at a glance */}
+          <span className={`w-7 h-7 rounded-lg ${theme.solid} text-white flex items-center justify-center text-[11px] font-black flex-shrink-0`}>
+            {cfg.persona.name[0]}
+          </span>
+          <span className="flex flex-col items-start leading-none">
+            <span className="text-[8px] uppercase tracking-wide opacity-70 font-black">View</span>
+            <span className="text-[11px] font-black">{cfg.shortLabel}</span>
+          </span>
+          <ChevronDown className="w-3.5 h-3.5 opacity-70 flex-shrink-0" />
+        </>
+      ) : (
+        <>
+          <span className="flex items-center gap-1.5">
+            <ArrowLeftRight className="w-3.5 h-3.5" />
+            <span>Switch view · {cfg.label}</span>
+          </span>
+          <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+        </>
+      )}
     </button>
+
+    {/* First-run nudge pointing at the switcher */}
+    {compact && !roleHintSeen && (
+      <>
+        <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3 pointer-events-none">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-rose-500" />
+        </span>
+        <button
+          onClick={dismissRoleHint}
+          className="md:hidden absolute top-[110%] right-0 z-50 w-max max-w-[220px] bg-slate-900 text-white text-[11px] font-semibold rounded-xl px-3 py-2 shadow-xl text-left leading-snug"
+        >
+          Tap here to switch between Elderly, Caregiver and Health Worker views.
+          <span className="block text-[10px] text-slate-400 mt-0.5">Tap to dismiss</span>
+        </button>
+      </>
+    )}
+    </div>
   );
 
   return (
@@ -252,25 +312,24 @@ export default function AppShell({ children }) {
           2. MOBILE TOP BAR (< 768px)
          ======================================================== */}
       <header className="md:hidden sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 px-3 py-2.5 flex items-center justify-between gap-2 shadow-xs">
-        <Link to={cfg.home} className="flex items-center gap-2 min-w-0">
+        <Link to={cfg.home} className="flex items-center gap-2 min-w-0 flex-shrink">
           <div className={`w-9 h-9 rounded-xl bg-gradient-to-tr ${theme.gradient} flex items-center justify-center text-white shadow-xs flex-shrink-0`}>
             <Brain className="w-5 h-5" />
           </div>
-          <div className="min-w-0">
-            <span className="font-extrabold text-base text-slate-900 block leading-none truncate">
-              SmarT<span className={theme.softText}>CARE</span>
-            </span>
-            <span className="text-[10px] text-slate-400 font-medium">{cfg.tagline}</span>
-          </div>
+          {/* Wordmark hides on very narrow phones so the role switcher always fits */}
+          <span className="font-extrabold text-base text-slate-900 leading-none truncate hidden min-[380px]:block">
+            SmarT<span className={theme.softText}>CARE</span>
+          </span>
         </Link>
 
         <div className="flex items-center gap-1.5 flex-shrink-0">
-          {/* Role switcher — the key fix: reachable on phones */}
+          {/* Role switcher — the only route into the caregiver / CHO portals */}
           <RoleSwitchButton compact />
 
           <button
             onClick={() => setLangModalOpen(true)}
-            className="flex items-center gap-1 bg-slate-100 text-slate-700 px-2 py-1.5 rounded-xl text-[11px] font-bold border border-slate-200 min-h-[44px]"
+            className="flex items-center justify-center bg-slate-100 text-slate-700 w-10 h-10 rounded-xl text-sm font-bold border border-slate-200 min-h-[44px] min-w-[44px]"
+            aria-label="Change language"
           >
             <span>{currentLanguageObj.flag}</span>
           </button>
@@ -383,7 +442,7 @@ export default function AppShell({ children }) {
                 <p className="text-sm font-bold text-slate-900">{cfg.persona.name}</p>
                 <p className="text-[11px] text-slate-500">{cfg.persona.detail}</p>
                 <button
-                  onClick={() => { setMoreDrawerOpen(false); setRoleModalOpen(true); }}
+                  onClick={() => { setMoreDrawerOpen(false); openRolePicker(); }}
                   className={`w-full mt-1 ${theme.solid} text-white rounded-xl py-2 text-xs font-bold flex items-center justify-center gap-1.5 min-h-[40px]`}
                 >
                   <ArrowLeftRight className="w-3.5 h-3.5" /> Switch Role
