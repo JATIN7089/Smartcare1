@@ -44,7 +44,7 @@ const ROUTINE_QUESTIONS = [
 ];
 
 export default function DailyRecallGame() {
-  const { cognitiveProfile, updateProfileAfterGame } = useApp();
+  const { cognitiveProfile, updateProfileAfterGame, t } = useApp();
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [answered, setAnswered] = useState(false);
@@ -131,8 +131,7 @@ export default function DailyRecallGame() {
           to="/games"
           className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2 rounded-xl border border-teal-200 transition"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Game Hub
-        </Link>
+          <ArrowLeft className="w-4 h-4" />{t('g_back_hub')}</Link>
         <span className="text-xs font-bold text-slate-500">
           Question {currentIdx + 1} of {ROUTINE_QUESTIONS.length}
         </span>
@@ -178,7 +177,7 @@ export default function DailyRecallGame() {
 
           {answered && (
             <div className="bg-teal-50 border border-teal-200 rounded-2xl p-4 text-xs sm:text-sm text-teal-900 animate-in fade-in space-y-1">
-              <span className="font-black uppercase tracking-wider block text-teal-800 text-[11px]">Why this matters:</span>
+              <span className="font-black uppercase tracking-wider block text-teal-800 text-[11px]">{t('g_why_matters')}</span>
               <p>{currentQ.explanation}</p>
             </div>
           )}
@@ -199,18 +198,18 @@ export default function DailyRecallGame() {
           <div className="w-16 h-16 rounded-full bg-teal-100 text-teal-700 mx-auto flex items-center justify-center">
             <Trophy className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-black text-slate-900">Routine Recall Complete!</h2>
+          <h2 className="text-2xl font-black text-slate-900">{t('g_routine_complete')}</h2>
           <p className="text-sm text-slate-600 max-w-sm mx-auto">
             Recalling daily sequencing reinforces independent living habits and episodic memory pathways.
           </p>
 
           <div className="flex justify-center gap-4">
             <div className="bg-teal-50 border border-teal-200 rounded-xl px-5 py-3">
-              <span className="text-xs text-teal-700 block font-bold">Accuracy</span>
+              <span className="text-xs text-teal-700 block font-bold">{t('g_accuracy')}</span>
               <span className="text-2xl font-black text-teal-900">{Math.round((scoreCount / ROUTINE_QUESTIONS.length) * 100)}%</span>
             </div>
             <div className="bg-teal-50 border border-teal-200 rounded-xl px-5 py-3">
-              <span className="text-xs text-teal-700 block font-bold">Category</span>
+              <span className="text-xs text-teal-700 block font-bold">{t('rem_category')}</span>
               <span className="text-sm font-black text-teal-900 mt-1 block">Routine Memory</span>
             </div>
           </div>
@@ -219,15 +218,11 @@ export default function DailyRecallGame() {
             <button
               onClick={resetGame}
               className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition"
-            >
-              Play Again
-            </button>
+            >{t('g_play_again')}</button>
             <Link
               to="/routine"
               className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-6 py-2.5 rounded-xl text-sm transition"
-            >
-              View Daily Timeline
-            </Link>
+            >{t('g_view_timeline')}</Link>
           </div>
         </div>
       )}

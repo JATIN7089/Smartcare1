@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
+import { NAV_LABEL_KEYS } from '../data/translations.js';
 import VoiceActionModal from './VoiceActionModal.jsx';
 import { getRole } from '../data/roles.js';
 import {
@@ -56,7 +57,7 @@ export default function AppShell({ children }) {
     reminders = [],
     account,
     logout,
-    setDemoTourStep
+    setDemoTourStep,
   } = useApp();
 
   const location = useLocation();
@@ -137,7 +138,7 @@ export default function AppShell({ children }) {
       className={`flex items-center rounded-xl border-2 font-bold transition min-h-[44px] ${
         compact ? 'gap-1.5 pl-1.5 pr-2 py-1' : 'gap-2 px-3 py-2 text-xs w-full justify-between'
       } ${theme.soft} ${theme.softText} ${theme.border} hover:brightness-95 active:scale-95`}
-      title="Switch role"
+      title={t('navbar_switch_role')}
       aria-label={`Current view: ${cfg.label}. Tap to switch role.`}
     >
       {compact ? (
@@ -147,7 +148,7 @@ export default function AppShell({ children }) {
             {cfg.persona.name[0]}
           </span>
           <span className="flex flex-col items-start leading-none">
-            <span className="text-[8px] uppercase tracking-wide opacity-70 font-black">Account</span>
+            <span className="text-[8px] uppercase tracking-wide opacity-70 font-black">{t('shell_account')}</span>
             <span className="text-[11px] font-black">{cfg.shortLabel}</span>
           </span>
           <ChevronDown className="w-3.5 h-3.5 opacity-70 flex-shrink-0" />
@@ -173,9 +174,7 @@ export default function AppShell({ children }) {
         <button
           onClick={dismissRoleHint}
           className="md:hidden absolute top-[110%] right-0 z-50 w-max max-w-[220px] bg-slate-900 text-white text-[11px] font-semibold rounded-xl px-3 py-2 shadow-xl text-left leading-snug"
-        >
-          Your account and sign-out live here.
-          <span className="block text-[10px] text-slate-400 mt-0.5">Tap to dismiss</span>
+        >{t('shell_account_desc')}<span className="block text-[10px] text-slate-400 mt-0.5">{t('shell_dismiss')}</span>
         </button>
       </>
     )}
@@ -240,7 +239,7 @@ export default function AppShell({ children }) {
                 }`}
               >
                 <Icon name={item.icon} className={`w-5 h-5 flex-shrink-0 ${active ? 'text-white' : 'text-slate-500'}`} />
-                <span className="flex-1">{item.label}</span>
+                <span className="flex-1">{t(NAV_LABEL_KEYS[item.label] || '', item.label)}</span>
                 {badge && (
                   <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
                     active ? 'bg-white/25 text-white' : 'bg-rose-100 text-rose-700'
@@ -255,7 +254,7 @@ export default function AppShell({ children }) {
           {/* Secondary links for this role */}
           {cfg.more.length > 0 && (
             <div className="pt-3 mt-3 border-t border-slate-100 space-y-1">
-              <p className="px-4 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-400">More</p>
+              <p className="px-4 pb-1 text-[10px] font-black uppercase tracking-wider text-slate-400">{t('shell_more')}</p>
               {cfg.more.map((item) => (
                 <Link
                   key={item.path}
@@ -263,7 +262,7 @@ export default function AppShell({ children }) {
                   className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-50 font-semibold text-xs transition min-h-[42px]"
                 >
                   <Icon name={item.icon} className="w-4 h-4 flex-shrink-0" />
-                  <span>{item.label}</span>
+                  <span>{t(NAV_LABEL_KEYS[item.label] || '', item.label)}</span>
                 </Link>
               ))}
             </div>
@@ -277,7 +276,7 @@ export default function AppShell({ children }) {
               className={`w-full bg-gradient-to-r ${theme.gradient} text-white rounded-2xl p-3.5 flex items-center justify-center gap-2.5 font-extrabold text-sm shadow-md transition-all hover:scale-[1.02] active:scale-[0.98] min-h-[50px]`}
             >
               <Mic className="w-5 h-5" />
-              <span>Talk to SmarTCARE</span>
+              <span>{t('shell_talk')}</span>
             </button>
           )}
 
@@ -290,7 +289,7 @@ export default function AppShell({ children }) {
                 <Globe className="w-3.5 h-3.5 text-teal-600" />
                 <span>{currentLanguageObj.flag} {currentLanguageObj.native}</span>
               </span>
-              <span className="text-[10px] text-slate-400">Change</span>
+              <span className="text-[10px] text-slate-400">{t('shell_change')}</span>
             </button>
 
             <button
@@ -309,8 +308,8 @@ export default function AppShell({ children }) {
           </div>
 
           <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1 px-1">
-            <Link to="/about" className="hover:text-teal-600 transition">About SmarTCARE</Link>
-            <button onClick={() => setDemoTourStep(1)} className="hover:text-teal-600 transition">Tour</button>
+            <Link to="/about" className="hover:text-teal-600 transition">{t('shell_about')}</Link>
+            <button onClick={() => setDemoTourStep(1)} className="hover:text-teal-600 transition">{t('shell_tour')}</button>
           </div>
         </div>
       </aside>
@@ -336,7 +335,7 @@ export default function AppShell({ children }) {
           <button
             onClick={() => setLangModalOpen(true)}
             className="flex items-center justify-center bg-slate-100 text-slate-700 w-10 h-10 rounded-xl text-sm font-bold border border-slate-200 min-h-[44px] min-w-[44px]"
-            aria-label="Change language"
+            aria-label={t('shell_choose_language')}
           >
             <span>{currentLanguageObj.flag}</span>
           </button>
@@ -368,7 +367,7 @@ export default function AppShell({ children }) {
               }`}
             >
               <Icon name={item.icon} className="w-5 h-5" />
-              <span className="text-[10px] mt-0.5 truncate max-w-full">{item.label}</span>
+              <span className="text-[10px] mt-0.5 truncate max-w-full">{t(NAV_LABEL_KEYS[item.label] || '', item.label)}</span>
               {badge && (
                 <span className="absolute top-0 right-1 bg-rose-500 text-white text-[9px] font-black rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center">
                   {badge}
@@ -383,7 +382,7 @@ export default function AppShell({ children }) {
           <button
             onClick={() => setVoiceModalOpen(true)}
             className={`w-14 h-14 rounded-full bg-gradient-to-tr ${theme.gradient} text-white flex items-center justify-center shadow-xl transform active:scale-95 transition min-h-[56px] min-w-[56px]`}
-            aria-label="Talk to SmarTCARE"
+            aria-label={t('shell_talk')}
           >
             <Mic className="w-7 h-7" />
           </button>
@@ -401,7 +400,7 @@ export default function AppShell({ children }) {
               }`}
             >
               <Icon name={item.icon} className="w-5 h-5" />
-              <span className="text-[10px] mt-0.5 truncate max-w-full">{item.label}</span>
+              <span className="text-[10px] mt-0.5 truncate max-w-full">{t(NAV_LABEL_KEYS[item.label] || '', item.label)}</span>
               {badge && (
                 <span className="absolute top-0 right-1 bg-rose-500 text-white text-[9px] font-black rounded-full min-w-[16px] h-4 px-1 flex items-center justify-center">
                   {badge}
@@ -416,7 +415,7 @@ export default function AppShell({ children }) {
           className="flex flex-col items-center justify-center py-1 px-2 rounded-xl min-h-[48px] flex-1 text-slate-500"
         >
           <Menu className="w-5 h-5" />
-          <span className="text-[10px] mt-0.5">More</span>
+          <span className="text-[10px] mt-0.5">{t('shell_more')}</span>
         </button>
       </nav>
 
@@ -434,7 +433,7 @@ export default function AppShell({ children }) {
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <span className="font-extrabold text-slate-900 text-lg">Menu</span>
+                <span className="font-extrabold text-slate-900 text-lg">{t('shell_menu')}</span>
                 <button
                   onClick={() => setMoreDrawerOpen(false)}
                   className="p-1.5 rounded-full hover:bg-slate-100 text-slate-500"
@@ -445,14 +444,14 @@ export default function AppShell({ children }) {
 
               {/* Current role + quick switch */}
               <div className={`p-3 rounded-2xl border ${theme.soft} ${theme.border} space-y-2`}>
-                <p className="text-[10px] font-black uppercase tracking-wider text-slate-500">Signed in as</p>
+                <p className="text-[10px] font-black uppercase tracking-wider text-slate-500">{t('shell_signed_in_as')}</p>
                 <p className="text-sm font-bold text-slate-900">{cfg.persona.name}</p>
                 <p className="text-[11px] text-slate-500">{cfg.persona.detail}</p>
                 <button
                   onClick={() => { setMoreDrawerOpen(false); openRolePicker(); }}
                   className={`w-full mt-1 ${theme.solid} text-white rounded-xl py-2 text-xs font-bold flex items-center justify-center gap-1.5 min-h-[40px]`}
                 >
-                  <ArrowLeftRight className="w-3.5 h-3.5" /> Account &amp; Sign Out
+                  <ArrowLeftRight className="w-3.5 h-3.5" /> {t('shell_account')} &amp; {t('shell_signout')}
                 </button>
               </div>
 
@@ -465,22 +464,18 @@ export default function AppShell({ children }) {
                     className="flex items-center gap-3 p-3 rounded-xl text-slate-700 hover:bg-slate-50 font-bold text-sm min-h-[44px]"
                   >
                     <Icon name={item.icon} className={`w-4 h-4 ${theme.softText}`} />
-                    <span>{item.label}</span>
+                    <span>{t(NAV_LABEL_KEYS[item.label] || '', item.label)}</span>
                   </Link>
                 ))}
               </div>
             </div>
 
             <div className="pt-4 border-t border-slate-100 space-y-2 text-xs text-slate-500">
-              <Link to="/about" onClick={() => setMoreDrawerOpen(false)} className="block hover:text-teal-600 font-medium">
-                About SmarTCARE Project
-              </Link>
+              <Link to="/about" onClick={() => setMoreDrawerOpen(false)} className="block hover:text-teal-600 font-medium">{t('shell_about')}</Link>
               <button
                 onClick={() => { setMoreDrawerOpen(false); setDemoTourStep(1); }}
                 className="text-teal-700 font-bold"
-              >
-                Launch SIH Demo Tour
-              </button>
+              >{t('shell_tour')}</button>
             </div>
           </div>
         </div>
@@ -500,8 +495,8 @@ export default function AppShell({ children }) {
           >
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div>
-                <h3 className="text-lg font-black text-slate-900">Your Account</h3>
-                <p className="text-xs text-slate-500">Signed in with your own details</p>
+                <h3 className="text-lg font-black text-slate-900">{t('shell_your_account')}</h3>
+                <p className="text-xs text-slate-500">{t('shell_own_details')}</p>
               </div>
               <button
                 onClick={() => setRoleModalOpen(false)}
@@ -531,13 +526,11 @@ export default function AppShell({ children }) {
 
             {/* What this account can reach */}
             <div className="space-y-1.5">
-              <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">
-                You have access to
-              </p>
+              <p className="text-[10px] font-black uppercase tracking-wider text-slate-400">{t('shell_access')}</p>
               {cfg.nav.map(item => (
                 <div key={item.path} className="flex items-center gap-2 text-xs text-slate-600 font-semibold">
                   <Check className={`w-3.5 h-3.5 ${theme.softText} flex-shrink-0`} />
-                  <span>{item.label}</span>
+                  <span>{t(NAV_LABEL_KEYS[item.label] || '', item.label)}</span>
                 </div>
               ))}
             </div>
@@ -547,28 +540,21 @@ export default function AppShell({ children }) {
                 a sign-out. Staff, who hold other people's data, get a real one. */}
             {role === 'elderly' ? (
               <>
-                <p className="text-[11px] text-slate-400 leading-relaxed border-t border-slate-100 pt-3">
-                  This is your home and it stays open — you never need a password.
-                </p>
+                <p className="text-[11px] text-slate-400 leading-relaxed border-t border-slate-100 pt-3">{t('shell_no_password')}</p>
                 <button
                   onClick={handleSignOut}
                   className="w-full bg-white border-2 border-slate-200 hover:border-slate-300 text-slate-600 font-bold py-3.5 rounded-2xl text-sm transition active:scale-[0.98] min-h-[50px] flex items-center justify-center gap-2"
                 >
-                  <LogOut className="w-4 h-4" /> Hand phone to caregiver
-                </button>
+                  <LogOut className="w-4 h-4" />{t('shell_hand_phone')}</button>
               </>
             ) : (
               <>
-                <p className="text-[11px] text-slate-400 leading-relaxed border-t border-slate-100 pt-3">
-                  Need a different portal? Sign out and sign back in with those
-                  details — each account only sees what it should.
-                </p>
+                <p className="text-[11px] text-slate-400 leading-relaxed border-t border-slate-100 pt-3">{t('shell_hand_phone_desc')}</p>
                 <button
                   onClick={handleSignOut}
                   className="w-full bg-rose-500 hover:bg-rose-600 text-white font-extrabold py-3.5 rounded-2xl text-sm shadow-md transition active:scale-[0.98] min-h-[50px] flex items-center justify-center gap-2"
                 >
-                  <LogOut className="w-4 h-4" /> Sign Out
-                </button>
+                  <LogOut className="w-4 h-4" />{t('shell_signout')}</button>
               </>
             )}
           </div>
@@ -590,7 +576,7 @@ export default function AppShell({ children }) {
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <Globe className="w-5 h-5 text-teal-600" />
-                <h3 className="text-lg font-black text-slate-900">Choose Language</h3>
+                <h3 className="text-lg font-black text-slate-900">{t('shell_choose_language')}</h3>
               </div>
               <button
                 onClick={() => setLangModalOpen(false)}

@@ -94,32 +94,24 @@ export default function RemindersPage() {
       {/* Top Header */}
       <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase text-teal-600 bg-teal-50 px-3 py-1 rounded-full">
-            Reminders
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 flex items-center gap-2">
-            Your Daily Reminders
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-            Keep track of medication, hydration, and daily care.
-          </p>
+          <span className="text-xs font-bold uppercase text-teal-600 bg-teal-50 px-3 py-1 rounded-full">{t('rem_title')}</span>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-2 flex items-center gap-2">{t('rem_heading')}</h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">{t('rem_sub')}</p>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={readRemindersAloud}
             className="bg-teal-50 hover:bg-teal-100 text-teal-800 font-bold px-4 py-3 rounded-2xl text-xs sm:text-sm border border-teal-200 flex items-center gap-2 transition min-h-[44px]"
-            title="Read reminders aloud"
+            title={t('rem_read_aloud')}
           >
-            <Volume2 className="w-4 h-4 text-teal-600" /> Read Aloud
-          </button>
+            <Volume2 className="w-4 h-4 text-teal-600" />{t('rem_read_aloud')}</button>
 
           <button
             onClick={() => setShowAddModal(true)}
             className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-5 py-3 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center gap-2 min-h-[44px]"
           >
-            <Plus className="w-4 h-4" /> Add Reminder
-          </button>
+            <Plus className="w-4 h-4" />{t('rem_add')}</button>
         </div>
       </div>
 
@@ -162,8 +154,8 @@ export default function RemindersPage() {
         {displayedList.length === 0 ? (
           <div className="bg-white rounded-3xl p-10 text-center border border-slate-200 text-slate-500 space-y-2">
             <Check className="w-10 h-10 text-teal-600 mx-auto" />
-            <p className="font-bold text-slate-700">No reminders in this tab!</p>
-            <p className="text-xs text-slate-400">Everything is up-to-date and completed.</p>
+            <p className="font-bold text-slate-700">{t('rem_none')}</p>
+            <p className="text-xs text-slate-400">{t('rem_none_done')}</p>
           </div>
         ) : (
           displayedList.map(reminder => {
@@ -231,7 +223,7 @@ export default function RemindersPage() {
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 space-y-5 animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h3 className="font-extrabold text-xl text-slate-900">Add New Reminder</h3>
+              <h3 className="font-extrabold text-xl text-slate-900">{t('rem_add_new')}</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-slate-400 hover:text-slate-700 p-1 rounded-lg"
@@ -242,38 +234,38 @@ export default function RemindersPage() {
 
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Reminder Title</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">{t('rem_title_field')}</label>
                 <input
                   type="text"
                   required
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="e.g. Afternoon Blood Pressure Tablet"
+                  placeholder={t('rem_ph_title')}
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Category</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">{t('rem_category')}</label>
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:ring-2 focus:ring-teal-500 outline-none"
                   >
-                    <option value="Medicine">Medicine</option>
-                    <option value="Hydration">Hydration</option>
-                    <option value="Meals">Meals</option>
-                    <option value="Appointments">Appointments</option>
-                    <option value="Cognitive Activity">Cognitive Activity</option>
-                    <option value="Exercise">Exercise</option>
-                    <option value="Family Calls">Family Calls</option>
-                    <option value="Sleep">Sleep</option>
+                    <option value="Medicine">{t('rem_cat_medicine')}</option>
+                    <option value="Hydration">{t('rem_cat_hydration')}</option>
+                    <option value="Meals">{t('rem_cat_meals')}</option>
+                    <option value="Appointments">{t('rem_cat_appointments')}</option>
+                    <option value="Cognitive Activity">{t('rem_cat_cognitive')}</option>
+                    <option value="Exercise">{t('rem_cat_exercise')}</option>
+                    <option value="Family Calls">{t('rem_cat_family')}</option>
+                    <option value="Sleep">{t('rem_cat_sleep')}</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Time</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">{t('rem_time')}</label>
                   <input
                     type="text"
                     value={newTime}
@@ -285,12 +277,12 @@ export default function RemindersPage() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Notes / Instructions</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">{t('rem_notes')}</label>
                 <input
                   type="text"
                   value={newNotes}
                   onChange={(e) => setNewNotes(e.target.value)}
-                  placeholder="e.g. Drink with lukewarm water"
+                  placeholder={t('rem_ph_notes')}
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 outline-none"
                 />
               </div>
@@ -300,15 +292,11 @@ export default function RemindersPage() {
                   type="button"
                   onClick={() => setShowAddModal(false)}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100"
-                >
-                  Cancel
-                </button>
+                >{t('rem_cancel')}</button>
                 <button
                   type="submit"
                   className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow transition"
-                >
-                  Save Reminder
-                </button>
+                >{t('rem_save')}</button>
               </div>
             </form>
           </div>

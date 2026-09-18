@@ -295,8 +295,7 @@ export default function BreathingPacerPage() {
       {autoStartedBadge && (
         <div className="flex justify-center">
           <span className="inline-flex items-center gap-1.5 text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 px-3 py-1.5 rounded-full">
-            <Sparkles className="w-3.5 h-3.5" /> Started by voice command
-          </span>
+            <Sparkles className="w-3.5 h-3.5" />{t('br_voice_started')}</span>
         </div>
       )}
 
@@ -334,7 +333,7 @@ export default function BreathingPacerPage() {
               </span>
             </>
           ) : sessionCompleted ? (
-            <span className="text-2xl font-black text-teal-700">Well done!</span>
+            <span className="text-2xl font-black text-teal-700">{t('br_well_done')}</span>
           ) : (
             <span className="text-lg font-bold text-slate-500">
               {totalSecondsElapsed > 0 ? 'Paused' : 'Ready when you are'}

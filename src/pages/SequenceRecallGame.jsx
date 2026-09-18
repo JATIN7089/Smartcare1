@@ -28,7 +28,7 @@ const SYMBOLS_POOL = [
 ];
 
 export default function SequenceRecallGame() {
-  const { cognitiveProfile, updateProfileAfterGame, user } = useApp();
+  const { cognitiveProfile, updateProfileAfterGame, user, t } = useApp();
   const currentDiff = cognitiveProfile?.difficultyLevel || 'Moderate';
 
   // Sequence length based on difficulty: Beginner=3, Easy=3, Moderate=4, Advanced=5
@@ -173,11 +173,10 @@ export default function SequenceRecallGame() {
           to="/games"
           className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2 rounded-xl border border-teal-200 transition"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Game Hub
-        </Link>
+          <ArrowLeft className="w-4 h-4" />{t('g_back_hub')}</Link>
 
         <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200 flex items-center gap-1.5">
-          <Layers className="w-3.5 h-3.5 text-teal-600" /> Challenge: <strong className="text-teal-800">{currentDiff} ({sequenceLength} items)</strong>
+          <Layers className="w-3.5 h-3.5 text-teal-600" />{t('g_challenge')}<strong className="text-teal-800">{currentDiff} ({sequenceLength} items)</strong>
         </span>
       </div>
 
@@ -197,8 +196,7 @@ export default function SequenceRecallGame() {
             onClick={startRound}
             className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md transition flex items-center gap-2"
           >
-            <Play className="w-4 h-4 fill-white" /> Start Sequence
-          </button>
+            <Play className="w-4 h-4 fill-white" />{t('g_start_sequence')}</button>
         )}
       </div>
 
@@ -226,9 +224,7 @@ export default function SequenceRecallGame() {
                 <button
                   onClick={startRound}
                   className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-8 py-3 rounded-2xl shadow transition min-h-[48px]"
-                >
-                  Start Sequence
-                </button>
+                >{t('g_start_sequence')}</button>
               </>
             )}
           </div>
@@ -341,15 +337,15 @@ export default function SequenceRecallGame() {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-teal-50 rounded-xl p-3 border border-teal-200 text-center">
-                <span className="text-xs text-teal-700 font-bold block">Accuracy</span>
+                <span className="text-xs text-teal-700 font-bold block">{t('g_accuracy')}</span>
                 <span className="text-xl font-black text-teal-900">{gameResult.accuracy}%</span>
               </div>
               <div className="bg-teal-50 rounded-xl p-3 border border-teal-200 text-center">
-                <span className="text-xs text-teal-700 font-bold block">Score</span>
+                <span className="text-xs text-teal-700 font-bold block">{t('g_score')}</span>
                 <span className="text-xl font-black text-teal-900">{gameResult.score}/100</span>
               </div>
               <div className="bg-teal-50 rounded-xl p-3 border border-teal-200 text-center">
-                <span className="text-xs text-teal-700 font-bold block">Time</span>
+                <span className="text-xs text-teal-700 font-bold block">{t('time')}</span>
                 <span className="text-xl font-black text-teal-900">{gameResult.time}s</span>
               </div>
             </div>
@@ -358,9 +354,7 @@ export default function SequenceRecallGame() {
               <button
                 onClick={startRound}
                 className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition"
-              >
-                Play Another Round
-              </button>
+              >{t('g_play_another')}</button>
               <Link
                 to="/games"
                 className="text-xs font-bold text-teal-700 hover:underline"

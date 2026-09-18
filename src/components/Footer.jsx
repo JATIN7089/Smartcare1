@@ -15,13 +15,11 @@ export default function Footer() {
               </div>
               <div>
                 <span className="font-black text-xl text-white tracking-tight">SmarT<span className="text-teal-400">CARE</span></span>
-                <p className="text-xs text-slate-400">Cognitive Care for Brighter Tomorrows</p>
+                <p className="text-xs text-slate-400">{t('tagline')}</p>
               </div>
             </div>
 
-            <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
-              "Empowering elderly lives. Building healthier communities. A brighter North East."
-            </p>
+            <p className="text-sm text-slate-400 leading-relaxed max-w-sm">{t('foot_quote')}</p>
 
             <div className="bg-slate-800/80 rounded-xl p-3.5 border border-slate-700/80 space-y-1.5 text-xs">
               <div className="flex items-center gap-2 text-teal-300 font-bold">
@@ -29,7 +27,7 @@ export default function Footer() {
                 <span>SMART INDIA HACKATHON 2026</span>
               </div>
               <p className="text-slate-300 font-medium">Problem Statement ID: <span className="text-white font-bold">26003</span></p>
-              <p className="text-slate-400">AI-Based Cognitive Gaming and Memory Assistance Platform for Elderly Dementia Patients in North Eastern Region (NER)</p>
+              <p className="text-slate-400">{t('foot_problem')}</p>
               <p className="text-amber-300 text-[11px] pt-1">
                 <strong>Ministry:</strong> Ministry of Development of North Eastern Region (MDoNER)
               </p>
@@ -41,55 +39,55 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-3.5">Cognitive Hub</h4>
+            <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-3.5">{t('foot_hub')}</h4>
             <ul className="space-y-2 text-xs">
-              <li><Link to="/elderly" className="hover:text-teal-400 transition">Elderly Home Screen</Link></li>
-              <li><Link to="/games" className="hover:text-teal-400 transition">Cognitive Games Hub</Link></li>
-              <li><Link to="/games/memory" className="hover:text-teal-400 transition">Memory Match</Link></li>
-              <li><Link to="/games/cultural" className="hover:text-teal-400 transition">NER Cultural Match</Link></li>
-              <li><Link to="/games/sound" className="hover:text-teal-400 transition">Sound Memory Game</Link></li>
-              <li><Link to="/games/daily-recall" className="hover:text-teal-400 transition">Daily Routine Recall</Link></li>
-              <li><Link to="/cultural-mode" className="hover:text-teal-400 transition">NER Cultural Mode (8 States)</Link></li>
+              <li><Link to="/elderly" className="hover:text-teal-400 transition">{t('foot_l_elderly')}</Link></li>
+              <li><Link to="/games" className="hover:text-teal-400 transition">{t('foot_l_gameshub')}</Link></li>
+              <li><Link to="/games/memory" className="hover:text-teal-400 transition">{t('foot_l_memory')}</Link></li>
+              <li><Link to="/games/cultural" className="hover:text-teal-400 transition">{t('foot_l_cultural')}</Link></li>
+              <li><Link to="/games/sound" className="hover:text-teal-400 transition">{t('foot_l_sound')}</Link></li>
+              <li><Link to="/games/daily-recall" className="hover:text-teal-400 transition">{t('foot_l_daily')}</Link></li>
+              <li><Link to="/cultural-mode" className="hover:text-teal-400 transition">{t('foot_l_mode')}</Link></li>
             </ul>
           </div>
 
           {/* Care & Well-being */}
           <div>
-            <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-3.5">Care & Well-being</h4>
+            <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-3.5">{t('foot_care')}</h4>
             <ul className="space-y-2 text-xs">
-              <li><Link to="/breathing" className="hover:text-teal-400 transition">Breathing Pacer (4-2-6)</Link></li>
-              <li><Link to="/wellbeing" className="hover:text-teal-400 transition">Well-being Center</Link></li>
-              <li><Link to="/wellbeing/monitor" className="hover:text-teal-400 transition">Well-being Monitor (Demo)</Link></li>
-              <li><Link to="/grounding" className="hover:text-teal-400 transition">5-4-3-2-1 Grounding</Link></li>
-              <li><Link to="/memory-lane" className="hover:text-teal-400 transition">Family Memory Lane</Link></li>
-              <li><Link to="/reminders" className="hover:text-teal-400 transition">Smart Reminders</Link></li>
-              <li><Link to="/routine" className="hover:text-teal-400 transition">Daily Routine Timeline</Link></li>
+              <li><Link to="/breathing" className="hover:text-teal-400 transition">{t('foot_l_breathing')}</Link></li>
+              <li><Link to="/wellbeing" className="hover:text-teal-400 transition">{t('foot_l_well')}</Link></li>
+              <li><Link to="/wellbeing/monitor" className="hover:text-teal-400 transition">{t('foot_l_monitor')}</Link></li>
+              <li><Link to="/grounding" className="hover:text-teal-400 transition">{t('foot_l_ground')}</Link></li>
+              <li><Link to="/memory-lane" className="hover:text-teal-400 transition">{t('foot_l_lane')}</Link></li>
+              <li><Link to="/reminders" className="hover:text-teal-400 transition">{t('foot_l_rem')}</Link></li>
+              <li><Link to="/routine" className="hover:text-teal-400 transition">{t('foot_l_routine')}</Link></li>
             </ul>
           </div>
 
           {/* Portals & Architecture */}
           <div>
-            <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-3.5">Portals & System</h4>
+            <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-3.5">{t('foot_portals')}</h4>
             <ul className="space-y-2 text-xs">
-              <li><Link to="/assistant" className="hover:text-teal-400 transition">Role-Aware Voice Assistant</Link></li>
-              <li><Link to="/profile" className="hover:text-teal-400 transition">Personal Cognitive Profile</Link></li>
-              <li><Link to="/caregiver" className="hover:text-teal-400 transition">Caregiver Dashboard</Link></li>
-              <li><Link to="/caregiver/reports" className="hover:text-teal-400 transition">Trend Analytics Reports</Link></li>
-              <li><Link to="/healthcare" className="hover:text-teal-400 transition">Healthcare Worker Portal</Link></li>
-              <li><Link to="/admin" className="hover:text-teal-400 transition">MDoNER Admin View</Link></li>
-              <li><Link to="/architecture" className="hover:text-teal-400 transition">Offline-First Architecture</Link></li>
-              <li><Link to="/about" className="hover:text-teal-400 transition">About Phantom techie</Link></li>
+              <li><Link to="/assistant" className="hover:text-teal-400 transition">{t('foot_l_assist')}</Link></li>
+              <li><Link to="/profile" className="hover:text-teal-400 transition">{t('foot_l_profile')}</Link></li>
+              <li><Link to="/caregiver" className="hover:text-teal-400 transition">{t('foot_l_caredash')}</Link></li>
+              <li><Link to="/caregiver/reports" className="hover:text-teal-400 transition">{t('foot_l_reports')}</Link></li>
+              <li><Link to="/healthcare" className="hover:text-teal-400 transition">{t('foot_l_health')}</Link></li>
+              <li><Link to="/admin" className="hover:text-teal-400 transition">{t('foot_l_admin')}</Link></li>
+              <li><Link to="/architecture" className="hover:text-teal-400 transition">{t('foot_l_arch')}</Link></li>
+              <li><Link to="/about" className="hover:text-teal-400 transition">{t('foot_l_about')}</Link></li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Tagline & Copyright */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
-          <p>© 2026 SmarTCARE • Team Phantom techie • Smart India Hackathon 2026</p>
+          <p>{t('foot_copy')}</p>
           <div className="flex items-center gap-4">
-            <span className="text-slate-400 font-medium">Tagline: Play • Recall • Stay Connected • Live Better</span>
+            <span className="text-slate-400 font-medium">{t('foot_tag')}</span>
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-teal-500"></span>
-            <span>NER Low-Bandwidth Optimized</span>
+            <span>{t('foot_bw')}</span>
           </div>
         </div>
       </div>

@@ -128,20 +128,14 @@ export default function GameHubPage() {
       {/* App Header */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="space-y-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-teal-600 bg-teal-50 px-3 py-1 rounded-full">
-            Activities Hub
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight pt-1">
-            Your Activities
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 max-w-xl">
-            Choose an activity to practice memory, focus, and patterns at your own relaxed pace.
-          </p>
+          <span className="text-xs font-bold uppercase tracking-wider text-teal-600 bg-teal-50 px-3 py-1 rounded-full">{t('gh_hub')}</span>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight pt-1">{t('gh_your')}</h1>
+          <p className="text-xs sm:text-sm text-slate-500 max-w-xl">{t('gh_sub')}</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <span className="bg-slate-50 border border-slate-200 text-xs font-bold px-3 py-2 rounded-xl text-slate-700 flex items-center gap-1.5">
-            <Layers className="w-4 h-4 text-teal-600" /> Level: <strong className="text-teal-800">{cognitiveProfile?.difficultyLevel || 'Moderate'}</strong>
+            <Layers className="w-4 h-4 text-teal-600" />{t('gh_level')}<strong className="text-teal-800">{cognitiveProfile?.difficultyLevel || 'Moderate'}</strong>
           </span>
           <span className="bg-slate-50 border border-slate-200 text-xs font-bold px-3 py-2 rounded-xl text-slate-700 flex items-center gap-1.5">
             <MapPin className="w-4 h-4 text-rose-500" /> {culturalRegion}
@@ -155,9 +149,7 @@ export default function GameHubPage() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-teal-600" />
-              <span className="text-xs font-black uppercase tracking-wider text-teal-800">
-                AI Recommendation For You
-              </span>
+              <span className="text-xs font-black uppercase tracking-wider text-teal-800">{t('gh_ai')}</span>
             </div>
             <h3 className="text-lg font-black text-slate-900">{recommendation.primaryActivity.title}</h3>
             <p className="text-xs sm:text-sm text-slate-600 max-w-xl">{recommendation.primaryActivity.reason}</p>
@@ -167,8 +159,7 @@ export default function GameHubPage() {
             state={{ autostart: true }}
             className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-6 py-3 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center gap-2 flex-shrink-0 min-h-[48px]"
           >
-            <Play className="w-4 h-4 fill-white" /> Start Activity
-          </Link>
+            <Play className="w-4 h-4 fill-white" />{t('gh_start')}</Link>
         </div>
       )}
 

@@ -48,7 +48,7 @@ const ICON_MAP = {
 };
 
 export default function CulturalModePage() {
-  const { culturalRegion, setCulturalRegion } = useApp();
+  const { culturalRegion, setCulturalRegion, t } = useApp();
 
   const selectedRegionItems = NER_CULTURAL_ITEMS.filter(
     item => culturalRegion === 'General NER' || item.region === culturalRegion
@@ -70,14 +70,14 @@ export default function CulturalModePage() {
 
         <div className="pt-2 flex items-center gap-2">
           <span className="text-xs font-bold bg-white/20 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
-            <MapPin className="w-4 h-4 text-rose-300" /> Active Theme: <strong>{culturalRegion}</strong>
+            <MapPin className="w-4 h-4 text-rose-300" />{t('g_active_theme')}<strong>{culturalRegion}</strong>
           </span>
         </div>
       </div>
 
       {/* State / Region Grid Selector */}
       <div className="space-y-4">
-        <h2 className="text-xl font-black text-slate-900">Choose Cultural Heritage Preference</h2>
+        <h2 className="text-xl font-black text-slate-900">{t('g_choose_heritage')}</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {NER_REGIONS.map(reg => {
             const isSelected = culturalRegion === reg.id;

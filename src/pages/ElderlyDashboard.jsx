@@ -82,15 +82,13 @@ export default function ElderlyDashboard() {
             <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
               {greetingText}, {user?.name?.split(' ')[0] || 'Asha'} 👋
             </h1>
-            <p className="text-sm sm:text-base text-slate-500 mt-0.5">
-              Ready for a peaceful and active day?
-            </p>
+            <p className="text-sm sm:text-base text-slate-500 mt-0.5">{t('dash_ready')}</p>
           </div>
 
           {/* AI Recommendation Pill */}
           <div className="inline-flex items-center gap-2 bg-teal-50 border border-teal-200 text-teal-800 px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold shadow-xs">
             <Sparkles className="w-4 h-4 text-teal-600 flex-shrink-0" />
-            <span>AI Suggestion: "Try a short memory activity."</span>
+            <span>{t('dash_ai_suggestion')} {t('dash_ai_tip')}</span>
           </div>
         </div>
       </div>
@@ -102,16 +100,15 @@ export default function ElderlyDashboard() {
           <button
             onClick={() => setVoiceModalOpen(true)}
             className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-white text-teal-700 hover:bg-teal-50 flex items-center justify-center shadow-lg transform hover:scale-105 active:scale-95 transition flex-shrink-0 min-h-[56px] min-w-[56px]"
-            aria-label="Talk to SmarTCARE"
+            aria-label={t('shell_talk')}
           >
             <Mic className="w-9 h-9 sm:w-10 sm:h-10 text-teal-600 animate-pulse" />
           </button>
           <div className="space-y-1 text-center sm:text-left">
             <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
-              "Talk to SmarTCARE"
+              {t('shell_talk')}
             </h2>
-            <p className="text-teal-100 text-xs sm:text-sm max-w-md leading-relaxed">
-              Say: <strong className="text-white">"Start memory game"</strong>, <strong className="text-white">"Start breathing"</strong>, or <strong className="text-white">"Show my reminders"</strong>.
+            <p className="text-teal-100 text-xs sm:text-sm max-w-md leading-relaxed">{t('dash_say')}<strong className="text-white">{t('dash_sample_game')}</strong>, <strong className="text-white">{t('dash_sample_breath')}</strong>, or <strong className="text-white">{t('dash_sample_reminders')}</strong>.
             </p>
           </div>
         </div>
@@ -120,7 +117,7 @@ export default function ElderlyDashboard() {
           onClick={() => setVoiceModalOpen(true)}
           className="bg-white/20 hover:bg-white/30 backdrop-blur text-white font-extrabold px-6 py-3.5 rounded-2xl text-xs sm:text-sm border border-white/30 flex items-center gap-2 transition hover:scale-102 min-h-[48px] z-10 whitespace-nowrap"
         >
-          <span>Tap to Speak</span>
+          <span>{t('dash_tap_to_speak')}</span>
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>
@@ -129,13 +126,13 @@ export default function ElderlyDashboard() {
       <div className="space-y-3.5">
         <div className="flex items-center justify-between">
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-2">
-            <span>Today's Activities</span>
+            <span>{t('dash_today_activities')}</span>
           </h2>
           <Link
             to="/games"
             className="text-xs sm:text-sm font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1"
           >
-            <span>All Activities</span>
+            <span>{t('dash_all_activities')}</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -165,7 +162,7 @@ export default function ElderlyDashboard() {
                 </div>
 
                 <div className="pt-3 flex items-center justify-end text-xs font-bold opacity-80">
-                  <span className="flex items-center gap-1">Play Now <ChevronRight className="w-3.5 h-3.5" /></span>
+                  <span className="flex items-center gap-1">{t('dash_play_now')}<ChevronRight className="w-3.5 h-3.5" /></span>
                 </div>
               </Link>
             );
@@ -182,11 +179,9 @@ export default function ElderlyDashboard() {
               <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
                 ⏰
               </div>
-              <h2 className="text-xl font-black text-slate-900">Today's Reminders</h2>
+              <h2 className="text-xl font-black text-slate-900">{t('dash_today_reminders')}</h2>
             </div>
-            <Link to="/reminders" className="text-xs font-bold text-teal-600 hover:underline">
-              View All →
-            </Link>
+            <Link to="/reminders" className="text-xs font-bold text-teal-600 hover:underline">{t('dash_view_all')}</Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -225,12 +220,10 @@ export default function ElderlyDashboard() {
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-rose-700">
               <Wind className="w-5 h-5" />
-              <span className="text-xs font-black uppercase tracking-wider">Well-being</span>
+              <span className="text-xs font-black uppercase tracking-wider">{t('dash_wellbeing')}</span>
             </div>
-            <h3 className="text-xl font-black text-slate-900">Take a Deep Breath</h3>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              2 minutes of gentle 4-2-6 breathing to refresh your mind and stay relaxed.
-            </p>
+            <h3 className="text-xl font-black text-slate-900">{t('dash_deep_breath')}</h3>
+            <p className="text-xs text-slate-600 leading-relaxed">{t('dash_breath_desc')}</p>
           </div>
 
           <Link
@@ -238,7 +231,7 @@ export default function ElderlyDashboard() {
             state={{ autostart: true }}
             className="w-full bg-teal-600 hover:bg-teal-700 text-white font-extrabold p-3.5 rounded-2xl text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition min-h-[48px]"
           >
-            <span>Breathe Now</span>
+            <span>{t('dash_breathe_now')}</span>
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
@@ -251,9 +244,8 @@ export default function ElderlyDashboard() {
             {cognitiveProfile?.overallScore || 81}%
           </div>
           <div>
-            <h3 className="text-lg sm:text-xl font-black text-slate-900">Your Progress</h3>
-            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-              Steady activity • Level: <strong className="text-teal-700">{cognitiveProfile?.difficultyLevel || 'Moderate'}</strong>
+            <h3 className="text-lg sm:text-xl font-black text-slate-900">{t('dash_your_progress')}</h3>
+            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">{t('dash_steady_level')}<strong className="text-teal-700">{cognitiveProfile?.difficultyLevel || 'Moderate'}</strong>
             </p>
           </div>
         </div>
@@ -262,7 +254,7 @@ export default function ElderlyDashboard() {
           to="/profile"
           className="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold px-5 py-3 rounded-2xl text-xs sm:text-sm border border-slate-200 flex items-center gap-2 transition min-h-[44px]"
         >
-          <span>View Progress Details</span>
+          <span>{t('dash_view_progress')}</span>
           <ChevronRight className="w-4 h-4" />
         </Link>
       </div>

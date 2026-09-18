@@ -63,7 +63,7 @@ const SOUND_QUESTIONS = [
 ];
 
 export default function SoundMemoryGame() {
-  const { cognitiveProfile, updateProfileAfterGame } = useApp();
+  const { cognitiveProfile, updateProfileAfterGame, t } = useApp();
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -160,8 +160,7 @@ export default function SoundMemoryGame() {
           to="/games"
           className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2 rounded-xl border border-teal-200 transition"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Game Hub
-        </Link>
+          <ArrowLeft className="w-4 h-4" />{t('g_back_hub')}</Link>
         <span className="text-xs font-bold text-slate-500">
           Sound {currentIdx + 1} of {SOUND_QUESTIONS.length}
         </span>
@@ -268,11 +267,11 @@ export default function SoundMemoryGame() {
 
           <div className="flex justify-center gap-4">
             <div className="bg-teal-50 border border-teal-200 rounded-xl px-5 py-3">
-              <span className="text-xs text-teal-700 block font-bold">Accuracy</span>
+              <span className="text-xs text-teal-700 block font-bold">{t('g_accuracy')}</span>
               <span className="text-2xl font-black text-teal-900">{Math.round((correctCount / SOUND_QUESTIONS.length) * 100)}%</span>
             </div>
             <div className="bg-teal-50 border border-teal-200 rounded-xl px-5 py-3">
-              <span className="text-xs text-teal-700 block font-bold">Category</span>
+              <span className="text-xs text-teal-700 block font-bold">{t('rem_category')}</span>
               <span className="text-sm font-black text-teal-900 mt-1 block">Auditory Memory</span>
             </div>
           </div>
@@ -281,15 +280,11 @@ export default function SoundMemoryGame() {
             <button
               onClick={resetGame}
               className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition"
-            >
-              Play Again
-            </button>
+            >{t('g_play_again')}</button>
             <Link
               to="/games"
               className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-6 py-2.5 rounded-xl text-sm transition"
-            >
-              Game Hub
-            </Link>
+            >{t('g_game_hub')}</Link>
           </div>
         </div>
       )}

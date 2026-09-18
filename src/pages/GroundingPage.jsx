@@ -88,7 +88,7 @@ const GROUNDING_STEPS = [
 ];
 
 export default function GroundingPage() {
-  const { accessibility } = useApp();
+  const { accessibility, t } = useApp();
   const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const [completed, setCompleted] = useState(false);
 
@@ -132,8 +132,7 @@ export default function GroundingPage() {
           to="/wellbeing"
           className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2 rounded-xl border border-teal-200 transition"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Well-being
-        </Link>
+          <ArrowLeft className="w-4 h-4" />{t('gr_back')}</Link>
         <span className="text-xs font-bold text-slate-500">
           Step {current.step} of 5
         </span>
@@ -166,9 +165,7 @@ export default function GroundingPage() {
 
           {/* Examples list */}
           <div className={`${current.bgColor} border ${current.borderColor} rounded-2xl p-4 sm:p-5 space-y-2.5`}>
-            <span className="text-xs font-black uppercase tracking-wider text-slate-700 block">
-              Familiar Examples to Look For:
-            </span>
+            <span className="text-xs font-black uppercase tracking-wider text-slate-700 block">{t('gr_examples')}</span>
             <ul className="space-y-2 text-xs sm:text-sm text-slate-800">
               {current.examples.map((ex, idx) => (
                 <li key={idx} className="flex items-center gap-2.5">
@@ -185,16 +182,13 @@ export default function GroundingPage() {
               onClick={handlePrev}
               disabled={currentStepIdx === 0}
               className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 disabled:opacity-40 min-h-[44px]"
-            >
-              Previous
-            </button>
+            >{t('gr_prev')}</button>
 
             <button
               onClick={() => voiceService.speak(current.voicePrompt)}
               className="text-xs font-bold text-teal-700 hover:text-teal-900 flex items-center gap-1 bg-teal-50 px-3 py-2 rounded-xl"
             >
-              <Volume2 className="w-4 h-4" /> Repeat Voice
-            </button>
+              <Volume2 className="w-4 h-4" />{t('gr_repeat')}</button>
 
             <button
               onClick={handleNext}
@@ -212,7 +206,7 @@ export default function GroundingPage() {
             <CheckCircle2 className="w-9 h-9" />
           </div>
 
-          <h2 className="text-2xl font-black text-slate-900">You Are Safe, Present, and Grounded</h2>
+          <h2 className="text-2xl font-black text-slate-900">{t('gr_safe')}</h2>
           <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
             By reconnecting with your 5 senses, your mind and body return to a centered, peaceful baseline.
           </p>
@@ -221,15 +215,11 @@ export default function GroundingPage() {
             <button
               onClick={reset}
               className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition"
-            >
-              Do Exercise Again
-            </button>
+            >{t('gr_again')}</button>
             <Link
               to="/breathing"
               className="bg-sky-600 hover:bg-sky-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition"
-            >
-              Paced Breathing Pacer
-            </Link>
+            >{t('gr_pacer')}</Link>
           </div>
         </div>
       )}

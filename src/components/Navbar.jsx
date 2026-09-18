@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
+import { NAV_LABEL_KEYS } from '../data/translations.js';
 import { 
   Brain, 
   Wifi, 
@@ -31,7 +32,7 @@ export default function Navbar() {
     t,
     currentLanguageObj,
     supportedLanguages,
-    setDemoTourStep
+    setDemoTourStep,
   } = useApp();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -169,8 +170,8 @@ export default function Navbar() {
             <button
               onClick={() => setLangMenuOpen(!langMenuOpen)}
               className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold text-slate-800 rounded-xl px-2.5 py-1.5 shadow-xs transition"
-              title="Change Application Language"
-              aria-label="Change Language"
+              title={t('navbar_change_language')}
+              aria-label={t('switch_language')}
             >
               <Globe className="w-3.5 h-3.5 text-teal-600" />
               <span>{currentLanguageObj.flag} {currentLanguageObj.native}</span>
@@ -181,10 +182,8 @@ export default function Navbar() {
             {langMenuOpen && (
               <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border-2 border-teal-500 p-2 z-50 animate-in fade-in zoom-in-95 max-h-96 overflow-y-auto">
                 <div className="px-3 py-1.5 border-b border-slate-100 mb-1">
-                  <span className="text-[10px] font-black uppercase text-teal-700 tracking-wider block">
-                    Choose Language (ভাষা / भाषा)
-                  </span>
-                  <span className="text-xs text-slate-500">11 North Eastern & National Languages</span>
+                  <span className="text-[10px] font-black uppercase text-teal-700 tracking-wider block">{t('navbar_choose_language')}</span>
+                  <span className="text-xs text-slate-500">{t('navbar_lang_count')}</span>
                 </div>
 
                 <div className="space-y-1">
@@ -268,9 +267,7 @@ export default function Navbar() {
           <button
             onClick={() => setDemoTourStep(1)}
             className="bg-amber-400 text-amber-950 font-bold px-2 py-1 rounded text-xs"
-          >
-            Demo
-          </button>
+          >{t('navbar_demo')}</button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2 rounded-lg text-slate-600 hover:bg-slate-100"
@@ -321,7 +318,7 @@ export default function Navbar() {
           </div>
 
           <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
-            <span className="text-xs text-slate-500 font-semibold">Switch Role</span>
+            <span className="text-xs text-slate-500 font-semibold">{t('navbar_switch_role')}</span>
             <select
               value={role}
               onChange={(e) => {

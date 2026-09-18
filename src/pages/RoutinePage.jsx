@@ -44,20 +44,14 @@ export default function RoutinePage() {
       {/* Header */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-black uppercase text-teal-700 tracking-wider">
-            Daily Living Routine
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-1 flex items-center gap-2">
-            📅 Structured Daily Timeline
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-600">
-            A peaceful circadian structure supporting independence, nourishment, hydration, and restful sleep.
-          </p>
+          <span className="text-xs font-black uppercase text-teal-700 tracking-wider">{t('rou_title')}</span>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-1 flex items-center gap-2">{t('rou_structured')}</h1>
+          <p className="text-xs sm:text-sm text-slate-600">{t('rou_sub')}</p>
         </div>
 
         {/* Progress summary badge */}
         <div className="bg-teal-50 border border-teal-200 rounded-2xl p-4 text-center min-w-[140px]">
-          <span className="text-xs font-bold text-teal-800 block">Today's Routine</span>
+          <span className="text-xs font-bold text-teal-800 block">{t('rou_today')}</span>
           <span className="text-2xl font-black text-teal-900">{progressPercent}%</span>
           <span className="text-[11px] text-teal-700 block">{completedCount} of {routine.length} done</span>
         </div>

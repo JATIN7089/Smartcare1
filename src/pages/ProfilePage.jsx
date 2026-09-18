@@ -33,7 +33,7 @@ import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 import JoinCodeCard from '../components/JoinCodeCard.jsx';
 
 export default function ProfilePage() {
-  const { cognitiveProfile, user } = useApp();
+  const { cognitiveProfile, user, t } = useApp();
   const [showExplanation, setShowExplanation] = useState(false);
 
   const metrics = cognitiveProfile?.metrics || {
@@ -86,12 +86,12 @@ export default function ProfilePage() {
       {/* Level and Trend badges */}
       <div className="flex flex-wrap items-center gap-3">
         <div className="bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-center">
-          <span className="text-[11px] font-bold text-slate-500 uppercase block">Challenge Level</span>
+          <span className="text-[11px] font-bold text-slate-500 uppercase block">{t('prof_challenge')}</span>
           <span className="text-lg font-black text-teal-800">{cognitiveProfile?.difficultyLevel || 'Moderate'}</span>
         </div>
 
         <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-2.5 text-center">
-          <span className="text-[11px] font-bold text-emerald-800 uppercase block">Your Trend</span>
+          <span className="text-[11px] font-bold text-emerald-800 uppercase block">{t('prof_trend')}</span>
           <span className="text-lg font-black text-emerald-900 flex items-center justify-center gap-1">
             <TrendingUp className="w-4 h-4" /> {cognitiveProfile?.recentTrend || 'Active & Steady'}
           </span>
@@ -104,7 +104,7 @@ export default function ProfilePage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-teal-700" />
-          <h3 className="font-extrabold text-slate-900 text-base">How SmarTCARE Adapts for You</h3>
+          <h3 className="font-extrabold text-slate-900 text-base">{t('prof_adapts')}</h3>
         </div>
         <button
           onClick={() => setShowExplanation(!showExplanation)}
@@ -121,7 +121,7 @@ export default function ProfilePage() {
 
       {showExplanation && (
         <div className="bg-white rounded-2xl p-4 border border-teal-200 text-xs text-slate-600 space-y-2 animate-in fade-in">
-          <p><strong>Gentle Balance:</strong> High accuracy helps unlock fun new cultural cards and symbols. If an activity feels too challenging, exercises automatically become simpler with helpful hints.</p>
+          <p><strong>{t('prof_balance')}</strong> High accuracy helps unlock fun new cultural cards and symbols. If an activity feels too challenging, exercises automatically become simpler with helpful hints.</p>
         </div>
       )}
     </div>
@@ -138,11 +138,9 @@ export default function ProfilePage() {
       <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-3">
         <h3 className="font-extrabold text-lg text-slate-900 flex items-center gap-2">
           <Activity className="w-5 h-5 text-teal-600" />
-          <span>Your Activity Balance</span>
+          <span>{t('prof_your_balance')}</span>
         </h3>
-        <p className="text-xs text-slate-500">
-          A view of memory, attention, pattern recognition, and daily recall.
-        </p>
+        <p className="text-xs text-slate-500">{t('prof_balance_desc')}</p>
 
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -160,11 +158,9 @@ export default function ProfilePage() {
       <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-3">
         <h3 className="font-extrabold text-lg text-slate-900 flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-sky-600" />
-          <span>Your 7-Day Activity</span>
+          <span>{t('prof_7day')}</span>
         </h3>
-        <p className="text-xs text-slate-500">
-          Your daily consistency over the past week.
-        </p>
+        <p className="text-xs text-slate-500">{t('prof_7day_desc')}</p>
 
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -203,9 +199,7 @@ export default function ProfilePage() {
 
       {/* Mandatory Non-Clinical Statement as required by prompt */}
       <div className="bg-slate-100 rounded-2xl p-4 text-xs text-slate-600 space-y-1 border border-slate-200">
-        <p className="font-bold text-slate-800">
-          Non-Diagnostic Platform Policy:
-        </p>
+        <p className="font-bold text-slate-800">{t('prof_policy')}</p>
         <p>
           "These indicators describe interaction with SmarTCARE activities and are not clinical measurements. SmarTCARE does not diagnose, predict, or evaluate dementia or any medical disease. Consider discussing persistent changes with a qualified healthcare professional."
         </p>

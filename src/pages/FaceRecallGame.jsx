@@ -34,7 +34,7 @@ import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
  */
 export default function FaceRecallGame() {
   const navigate = useNavigate();
-  const { familyMemories = [], language } = useApp();
+  const { familyMemories = [], language, t } = useApp();
 
   // Only photographed memories can be recognised.
   const playable = useMemo(
@@ -114,14 +114,13 @@ export default function FaceRecallGame() {
           onClick={() => navigate('/games')}
           className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 transition min-h-[44px]"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Activities
-        </button>
+          <ArrowLeft className="w-4 h-4" />{t('g_back_activities')}</button>
 
         <div className="bg-white rounded-3xl p-8 border border-slate-200 text-center space-y-4">
           <div className="w-16 h-16 rounded-3xl bg-rose-50 text-rose-500 flex items-center justify-center mx-auto">
             <ImagePlus className="w-8 h-8" />
           </div>
-          <h2 className="text-xl font-black text-slate-900">No photos yet</h2>
+          <h2 className="text-xl font-black text-slate-900">{t('g_no_photos')}</h2>
           <p className="text-sm text-slate-500 leading-relaxed max-w-sm mx-auto">
             This activity uses photos of your own family, your home and the
             places you love. A family member can add them in Memory Lane.
@@ -130,8 +129,7 @@ export default function FaceRecallGame() {
             onClick={() => navigate('/memory-lane')}
             className="inline-flex items-center gap-2 bg-rose-500 hover:bg-rose-600 text-white font-extrabold px-6 py-3.5 rounded-2xl text-sm transition active:scale-[0.98] min-h-[50px]"
           >
-            <Heart className="w-4 h-4" /> Open Memory Lane
-          </button>
+            <Heart className="w-4 h-4" />{t('g_open_memorylane')}</button>
         </div>
       </div>
     );
@@ -145,8 +143,7 @@ export default function FaceRecallGame() {
         onClick={() => navigate('/games')}
         className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 transition min-h-[44px]"
       >
-        <ArrowLeft className="w-4 h-4" /> Back to Activities
-      </button>
+        <ArrowLeft className="w-4 h-4" />{t('g_back_activities')}</button>
 
       <div className="flex items-start justify-between gap-3">
         <div>
@@ -159,7 +156,7 @@ export default function FaceRecallGame() {
           </p>
         </div>
         <div className="text-right flex-shrink-0">
-          <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Photo</p>
+          <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">{t('g_photo')}</p>
           <p className="text-sm font-black text-slate-700">{index + 1} / {playable.length}</p>
         </div>
       </div>
@@ -205,9 +202,7 @@ export default function FaceRecallGame() {
                 <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-2xl p-4">
                   <Lightbulb className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
                   <div className="space-y-1">
-                    <p className="text-xs font-bold text-amber-900">
-                      Not quite — here is a clue.
-                    </p>
+                    <p className="text-xs font-bold text-amber-900">{t('g_not_quite')}</p>
                     <p className="text-xs text-amber-800 leading-relaxed">
                       {current.relationship
                         ? `This is your ${String(current.relationship).toLowerCase()}.`
@@ -220,9 +215,7 @@ export default function FaceRecallGame() {
               <button
                 onClick={tellMe}
                 className="w-full py-3.5 rounded-2xl border-2 border-dashed border-slate-300 text-slate-500 hover:border-teal-400 hover:text-teal-700 font-bold text-sm transition min-h-[50px]"
-              >
-                Just tell me
-              </button>
+              >{t('g_just_tell')}</button>
             </>
           ) : (
             /* Revealed — warm confirmation, never a verdict */
@@ -255,13 +248,11 @@ export default function FaceRecallGame() {
                   onClick={() => speak(current.voiceNote || current.answer)}
                   className="flex items-center justify-center gap-2 py-3.5 rounded-2xl border-2 border-slate-200 hover:border-teal-400 hover:text-teal-700 text-slate-600 font-extrabold text-sm transition min-h-[50px]"
                 >
-                  <Volume2 className="w-4 h-4" /> Say again
-                </button>
+                  <Volume2 className="w-4 h-4" />{t('g_say_again')}</button>
                 <button
                   onClick={next}
                   className="flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-sm transition active:scale-[0.98] min-h-[50px]"
-                >
-                  Next photo <Sparkles className="w-4 h-4" />
+                >{t('g_next_photo')}<Sparkles className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -281,8 +272,7 @@ export default function FaceRecallGame() {
           onClick={() => { setIndex(0); setSeen(0); }}
           className="flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-slate-700 transition min-h-[40px]"
         >
-          <RefreshCw className="w-3.5 h-3.5" /> Start over
-        </button>
+          <RefreshCw className="w-3.5 h-3.5" />{t('g_start_over')}</button>
       </div>
 
       <DisclaimerBanner />

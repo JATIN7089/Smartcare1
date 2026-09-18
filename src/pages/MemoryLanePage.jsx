@@ -24,7 +24,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function MemoryLanePage() {
-  const { familyMemories, handleAddMemory, user } = useApp();
+  const { familyMemories, handleAddMemory, user, t } = useApp();
 
   const [revealedIds, setRevealedIds] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -113,12 +113,8 @@ export default function MemoryLanePage() {
       {/* Header */}
       <div className="bg-gradient-to-r from-teal-800 via-teal-700 to-rose-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl flex flex-wrap items-center justify-between gap-6">
         <div className="max-w-xl space-y-2">
-          <span className="text-xs font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full">
-            Personalized Reminiscence Companion
-          </span>
-          <h1 className="text-3xl sm:text-4xl font-black">
-            Family Memory Lane (স্মৃতি বীথি)
-          </h1>
+          <span className="text-xs font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full">{t('ml_sub')}</span>
+          <h1 className="text-3xl sm:text-4xl font-black">{t('ml_title')}</h1>
           <p className="text-teal-100 text-sm sm:text-base leading-relaxed">
             Cherished family photographs, ancestral journeys, and family milestones curated by Sunita Sharma for Asha. Reconnecting with biographical milestones sparks positive emotional warmth.
           </p>
@@ -128,8 +124,7 @@ export default function MemoryLanePage() {
           onClick={() => setShowAddModal(true)}
           className="bg-white hover:bg-slate-100 text-slate-900 font-extrabold px-6 py-3 rounded-2xl text-sm shadow-md transition flex items-center gap-2 min-h-[44px]"
         >
-          <Plus className="w-5 h-5 text-rose-600" /> Add Cherished Memory
-        </button>
+          <Plus className="w-5 h-5 text-rose-600" />{t('ml_add')}</button>
       </div>
 
       {/* Privacy & Consent Badge as required */}
@@ -137,12 +132,10 @@ export default function MemoryLanePage() {
         <div className="flex items-center gap-2.5">
           <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
           <span>
-            <strong>Consent & Privacy Protected:</strong> Memory cards are encrypted locally and shared exclusively within Asha's verified caregiver circle.
+            <strong>{t('ml_consent')}</strong> Memory cards are encrypted locally and shared exclusively within Asha's verified caregiver circle.
           </span>
         </div>
-        <span className="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full text-xs">
-          HIPAA & SIH Compliant Sandbox
-        </span>
+        <span className="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full text-xs">{t('ml_hipaa')}</span>
       </div>
 
       {/* Memory Cards Grid */}
@@ -195,8 +188,7 @@ export default function MemoryLanePage() {
               <div className="p-6 space-y-4">
                 <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2">
                   <div className="flex items-center gap-2 text-teal-700 font-bold text-xs uppercase tracking-wide">
-                    <Sparkles className="w-4 h-4" /> Reminiscence Question
-                  </div>
+                    <Sparkles className="w-4 h-4" />{t('ml_question')}</div>
                   <p className="font-bold text-slate-800 text-base">{memory.question}</p>
                 </div>
 
@@ -204,13 +196,11 @@ export default function MemoryLanePage() {
                 {isRevealed ? (
                   <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-4 text-emerald-950 space-y-1 animate-in zoom-in-95">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-emerald-800 uppercase">Answer & Cherished Story</span>
+                      <span className="text-xs font-bold text-emerald-800 uppercase">{t('ml_answer')}</span>
                       <button
                         onClick={() => toggleReveal(memory.id)}
                         className="text-xs text-emerald-700 hover:underline font-bold"
-                      >
-                        Hide
-                      </button>
+                      >{t('ml_hide')}</button>
                     </div>
                     <p className="text-sm font-semibold">{memory.answer}</p>
                   </div>
@@ -220,7 +210,7 @@ export default function MemoryLanePage() {
                     className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-2xl text-xs sm:text-sm shadow-xs transition flex items-center justify-center gap-2 min-h-[44px]"
                   >
                     <HelpCircle className="w-4 h-4" />
-                    <span>Reveal Who & Where This Was</span>
+                    <span>{t('ml_reveal')}</span>
                   </button>
                 )}
               </div>
@@ -234,7 +224,7 @@ export default function MemoryLanePage() {
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h3 className="font-extrabold text-xl text-slate-900">Add Family Memory</h3>
+              <h3 className="font-extrabold text-xl text-slate-900">{t('ml_add_family')}</h3>
               <button
                 onClick={() => setShowAddModal(false)}
                 className="text-slate-400 hover:text-slate-700 p-1"
@@ -245,11 +235,10 @@ export default function MemoryLanePage() {
 
             <form onSubmit={handleCreateMemory} className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Memory Title / Person</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">{t('ml_mem_title')}</label>
                 {/* ---- Photo ---- */}
                 <div className="space-y-2 pb-3 mb-3 border-b border-slate-200">
-                  <label className="text-xs font-bold text-slate-700 block">
-                    Photo <span className="font-medium text-slate-400">— a clear face, or the front of the house</span>
+                  <label className="text-xs font-bold text-slate-700 block">{t('g_photo')}<span className="font-medium text-slate-400">{t('ml_photo_hint')}</span>
                   </label>
 
                   {photo ? (
@@ -260,7 +249,7 @@ export default function MemoryLanePage() {
                         className="w-20 h-20 rounded-2xl object-cover border-2 border-teal-200"
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-bold text-emerald-700">Photo ready</p>
+                        <p className="text-xs font-bold text-emerald-700">{t('ml_photo_ready')}</p>
                         <p className="text-[10px] text-slate-400">
                           Resized to about {approxSizeKB(photo)} KB so it loads on a slow connection.
                         </p>
@@ -268,17 +257,15 @@ export default function MemoryLanePage() {
                           type="button"
                           onClick={() => setPhoto(null)}
                           className="text-[11px] font-bold text-rose-600 hover:underline mt-1"
-                        >
-                          Remove photo
-                        </button>
+                        >{t('ml_remove')}</button>
                       </div>
                     </div>
                   ) : (
                     <label className="flex items-center justify-center gap-2 py-5 rounded-2xl border-2 border-dashed border-slate-300 hover:border-teal-400 hover:bg-teal-50/50 text-slate-500 hover:text-teal-700 font-bold text-xs cursor-pointer transition min-h-[64px]">
                       {photoBusy ? (
-                        <><Loader2 className="w-4 h-4 animate-spin" /> Preparing photo…</>
+                        <><Loader2 className="w-4 h-4 animate-spin" />{t('ml_preparing')}</>
                       ) : (
-                        <><Camera className="w-4 h-4" /> Take photo or choose from gallery</>
+                        <><Camera className="w-4 h-4" />{t('ml_take')}</>
                       )}
                       <input
                         type="file"
@@ -332,17 +319,14 @@ export default function MemoryLanePage() {
                         className="w-4 h-4 accent-teal-600"
                       />
                       <HomeIcon className="w-4 h-4 text-teal-700" />
-                      <span className="text-xs font-bold text-teal-900">
-                        This is their home
-                      </span>
+                      <span className="text-xs font-bold text-teal-900">{t('ml_is_home')}</span>
                     </label>
                   )}
                 </div>
 
                 {/* ---- Who or what is it ---- */}
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Who or what is this? <span className="text-rose-500">*</span>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">{t('ml_who')}<span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -351,9 +335,7 @@ export default function MemoryLanePage() {
                     placeholder={category === 'Person' ? 'e.g. Ananya' : 'e.g. My Home'}
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 outline-none"
                   />
-                  <p className="text-[10px] text-slate-400 mt-1">
-                    Just the name. This is the answer in the recognition activity.
-                  </p>
+                  <p className="text-[10px] text-slate-400 mt-1">{t('ml_who_hint')}</p>
                 </div>
 
                 <input
@@ -368,17 +350,17 @@ export default function MemoryLanePage() {
 
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Relation</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">{t('ml_relation')}</label>
                   <input
                     type="text"
                     value={relationship}
                     onChange={(e) => setRelationship(e.target.value)}
-                    placeholder="Granddaughter"
+                    placeholder={t('ml_ph_rel')}
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl px-2 py-1.5 text-xs text-slate-900"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Year</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">{t('ml_year')}</label>
                   <input
                     type="text"
                     value={year}
@@ -388,7 +370,7 @@ export default function MemoryLanePage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Location</label>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">{t('ml_location')}</label>
                   <input
                     type="text"
                     value={location}
@@ -400,31 +382,30 @@ export default function MemoryLanePage() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Reminiscence Question</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">{t('ml_question')}</label>
                 <input
                   type="text"
                   required
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
-                  placeholder="e.g. Who performed the graceful dance in the red dress?"
+                  placeholder={t('ml_ph_q')}
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Answer</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">{t('ml_answer2')}</label>
                 <input
                   type="text"
                   value={answer}
                   onChange={(e) => setAnswer(e.target.value)}
-                  placeholder="e.g. Your granddaughter Ananya at the school annual day."
+                  placeholder={t('ml_ph_a')}
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
-                  Spoken reassurance <span className="font-medium text-slate-400">(read aloud)</span>
+                <label className="text-xs font-bold text-slate-700 block mb-1">{t('ml_spoken')}<span className="font-medium text-slate-400">{t('ml_read_aloud')}</span>
                 </label>
                 <input
                   type="text"
@@ -433,13 +414,11 @@ export default function MemoryLanePage() {
                   placeholder="e.g. This is Ananya, your granddaughter. She visits on Sundays."
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900"
                 />
-                <p className="text-[10px] text-slate-400 mt-1">
-                  Leave blank and we will build a gentle sentence for you.
-                </p>
+                <p className="text-[10px] text-slate-400 mt-1">{t('ml_blank')}</p>
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">Family Story / Note</label>
+                <label className="text-xs font-bold text-slate-700 block mb-1">{t('ml_story')}</label>
                 <textarea
                   rows={2}
                   value={notes}
@@ -454,15 +433,11 @@ export default function MemoryLanePage() {
                   type="button"
                   onClick={() => setShowAddModal(false)}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100"
-                >
-                  Cancel
-                </button>
+                >{t('rem_cancel')}</button>
                 <button
                   type="submit"
                   className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow transition"
-                >
-                  Save to Memory Lane
-                </button>
+                >{t('ml_save')}</button>
               </div>
             </form>
           </div>

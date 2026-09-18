@@ -24,13 +24,14 @@ export default function AccessibilityBar() {
     toggleSimpleLanguage,
     language,
     setLanguage,
-    supportedLanguages
+    supportedLanguages,
+    t,
   } = useApp();
 
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <aside aria-label="Accessibility Controls" className="fixed bottom-4 right-4 z-40 print:hidden">
+    <aside aria-label={t('acc_controls')} className="fixed bottom-4 right-4 z-40 print:hidden">
       {/* Floating Toggle Button */}
       <div className="flex flex-col items-end gap-2">
         {expanded && (
@@ -38,7 +39,7 @@ export default function AccessibilityBar() {
             <div className="flex items-center justify-between pb-2 border-b border-slate-200">
               <div className="flex items-center gap-2">
                 <Eye className="w-5 h-5 text-teal-600" />
-                <h3 className="font-bold text-base text-slate-900">Accessibility & Language</h3>
+                <h3 className="font-bold text-base text-slate-900">{t('acc_title')}</h3>
               </div>
               <button
                 onClick={() => setExpanded(false)}
@@ -51,8 +52,7 @@ export default function AccessibilityBar() {
             {/* Language Selector (All 11 Languages) */}
             <div>
               <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1.5 flex items-center gap-1.5">
-                <Globe className="w-4 h-4 text-teal-600" /> Language (11 Languages)
-              </label>
+                <Globe className="w-4 h-4 text-teal-600" />{t('acc_language')}</label>
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
@@ -69,8 +69,7 @@ export default function AccessibilityBar() {
             {/* Font Size controls */}
             <div>
               <label className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-1.5 flex items-center gap-1.5">
-                <Type className="w-4 h-4 text-teal-600" /> Text Size
-              </label>
+                <Type className="w-4 h-4 text-teal-600" />{t('acc_textsize')}</label>
               <div className="grid grid-cols-3 gap-1.5">
                 {[
                   { id: 'normal', label: 'Normal', sizeDesc: '100%' },
@@ -98,8 +97,8 @@ export default function AccessibilityBar() {
               <div className="flex items-center gap-2">
                 <Contrast className="w-4 h-4 text-amber-600" />
                 <div>
-                  <span className="text-sm font-bold block text-slate-800">High Contrast</span>
-                  <span className="text-xs text-slate-500">Sharper borders & text</span>
+                  <span className="text-sm font-bold block text-slate-800">{t('acc_contrast')}</span>
+                  <span className="text-xs text-slate-500">{t('acc_contrast_desc')}</span>
                 </div>
               </div>
               <button
@@ -121,8 +120,8 @@ export default function AccessibilityBar() {
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-indigo-600" />
                 <div>
-                  <span className="text-sm font-bold block text-slate-800">Reduce Motion</span>
-                  <span className="text-xs text-slate-500">Limits spinning animations</span>
+                  <span className="text-sm font-bold block text-slate-800">{t('acc_motion')}</span>
+                  <span className="text-xs text-slate-500">{t('acc_motion_desc')}</span>
                 </div>
               </div>
               <button
@@ -148,8 +147,8 @@ export default function AccessibilityBar() {
                   <VolumeX className="w-4 h-4 text-slate-400" />
                 )}
                 <div>
-                  <span className="text-sm font-bold block text-slate-800">Voice Assistance</span>
-                  <span className="text-xs text-slate-500">Spoken guidance & chimes</span>
+                  <span className="text-sm font-bold block text-slate-800">{t('acc_voice')}</span>
+                  <span className="text-xs text-slate-500">{t('acc_voice_desc')}</span>
                 </div>
               </div>
               <button
@@ -171,8 +170,8 @@ export default function AccessibilityBar() {
               <div className="flex items-center gap-2">
                 <Smile className="w-4 h-4 text-emerald-600" />
                 <div>
-                  <span className="text-sm font-bold block text-slate-800">Simple Language</span>
-                  <span className="text-xs text-slate-500">Easiest words & prompts</span>
+                  <span className="text-sm font-bold block text-slate-800">{t('acc_simple')}</span>
+                  <span className="text-xs text-slate-500">{t('acc_simple_desc')}</span>
                 </div>
               </div>
               <button
@@ -195,10 +194,10 @@ export default function AccessibilityBar() {
         <button
           onClick={() => setExpanded(!expanded)}
           className="h-12 px-4 rounded-full bg-slate-900 text-white font-bold shadow-xl hover:bg-slate-800 border-2 border-white flex items-center gap-2 group transition"
-          aria-label="Open accessibility toolbar"
+          aria-label={t('acc_controls')}
         >
           <Eye className="w-5 h-5 text-teal-400 group-hover:scale-110 transition-transform" />
-          <span className="text-sm hidden sm:inline">Accessibility Controls</span>
+          <span className="text-sm hidden sm:inline">{t('acc_controls')}</span>
           {expanded ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
         </button>
       </div>

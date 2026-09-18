@@ -23,7 +23,7 @@ const ROLE_ICON = { caregiver: Users, healthcare: Stethoscope };
 const HINTS = { sunita: 'care123', barua: 'doctor123' };
 
 export default function LoginPage() {
-  const { enterAsResident, login, register } = useApp();
+  const { enterAsResident, login, register, t } = useApp();
 
   const [accounts, setAccounts] = useState([]);
   // 'welcome' | 'staff' | 'signin' | 'register'
@@ -120,7 +120,7 @@ export default function LoginPage() {
           <div className="space-y-4">
             <div className="bg-white rounded-3xl border-2 border-teal-200 shadow-sm p-5 sm:p-6 space-y-4">
               <div className="text-center space-y-1">
-                <p className="text-sm font-bold text-slate-500">Welcome back</p>
+                <p className="text-sm font-bold text-slate-500">{t('log_welcome')}</p>
                 <p className="text-2xl font-black text-slate-900">
                   {resident ? resident.name : 'Asha Sharma'}
                 </p>
@@ -141,14 +141,10 @@ export default function LoginPage() {
                 <span className="text-xl font-black">
                   {busy ? 'Opening…' : 'Open My Home'}
                 </span>
-                <span className="text-xs font-semibold opacity-90">
-                  No password needed
-                </span>
+                <span className="text-xs font-semibold opacity-90">{t('log_no_pass')}</span>
               </button>
 
-              <p className="text-center text-[11px] text-slate-400 leading-relaxed">
-                Your reminders and routine are always one tap away.
-              </p>
+              <p className="text-center text-[11px] text-slate-400 leading-relaxed">{t('log_one_tap')}</p>
             </div>
 
             {/* Staff entrance, deliberately quieter */}
@@ -156,14 +152,9 @@ export default function LoginPage() {
               onClick={() => { reset(); setScreen('staff'); }}
               className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border-2 border-slate-200 bg-white/70 text-slate-600 hover:bg-white hover:border-slate-300 font-bold text-sm transition min-h-[52px]"
             >
-              <Lock className="w-4 h-4" />
-              Caregiver or Health Worker sign in
-            </button>
+              <Lock className="w-4 h-4" />{t('log_staff')}</button>
 
-            <p className="text-center text-[10px] text-slate-400 leading-relaxed">
-              SmarTCARE is a supportive cognitive engagement companion.<br />
-              It does not diagnose any medical condition.
-            </p>
+            <p className="text-center text-[10px] text-slate-400 leading-relaxed">{t('log_supportive')}<br />{t('log_no_diagnose')}</p>
           </div>
         )}
 
@@ -174,12 +165,9 @@ export default function LoginPage() {
               onClick={() => { reset(); setScreen('welcome'); }}
               className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition min-h-[40px]"
             >
-              <ArrowLeft className="w-4 h-4" /> Back
-            </button>
+              <ArrowLeft className="w-4 h-4" />{t('back')}</button>
 
-            <p className="text-sm font-bold text-slate-600 text-center">
-              Sign in to your account
-            </p>
+            <p className="text-sm font-bold text-slate-600 text-center">{t('log_signin')}</p>
 
             {errorBox}
 
@@ -211,8 +199,7 @@ export default function LoginPage() {
               onClick={() => { reset(); setScreen('register'); }}
               className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border-2 border-dashed border-slate-300 text-slate-600 hover:bg-white hover:border-teal-400 hover:text-teal-700 font-bold text-sm transition min-h-[52px]"
             >
-              <UserPlus className="w-4 h-4" /> Register a new account
-            </button>
+              <UserPlus className="w-4 h-4" />{t('log_register')}</button>
           </div>
         )}
 
@@ -223,8 +210,7 @@ export default function LoginPage() {
               onClick={() => { reset(); setScreen('staff'); }}
               className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition min-h-[40px]"
             >
-              <ArrowLeft className="w-4 h-4" /> Not you? Choose another
-            </button>
+              <ArrowLeft className="w-4 h-4" />{t('log_not_you')}</button>
 
             <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
               <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${(ROLES[selected.role] || ROLES.caregiver).theme.gradient} text-white flex items-center justify-center font-black text-lg`}>
@@ -240,7 +226,7 @@ export default function LoginPage() {
 
             <form onSubmit={submitSignIn} className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1.5">Password</label>
+                <label className="text-xs font-bold text-slate-600 block mb-1.5">{t('log_password')}</label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
                   <input
@@ -248,7 +234,7 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => { setPassword(e.target.value); setError(''); }}
                     autoFocus
-                    placeholder="Enter password"
+                    placeholder={t('log_ph_pass')}
                     className="w-full bg-white border-2 border-slate-200 focus:border-teal-500 rounded-2xl pl-11 pr-11 py-3 text-sm outline-none transition min-h-[48px]"
                   />
                   <button
@@ -273,9 +259,7 @@ export default function LoginPage() {
 
             {HINTS[selected.username] && (
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 text-center">
-                <p className="text-[10px] font-black uppercase tracking-wide text-slate-400 mb-1">
-                  Demo credentials
-                </p>
+                <p className="text-[10px] font-black uppercase tracking-wide text-slate-400 mb-1">{t('log_demo_creds')}</p>
                 <p className="text-xs font-bold text-slate-700">
                   {selected.username} / {HINTS[selected.username]}
                 </p>
@@ -291,14 +275,11 @@ export default function LoginPage() {
               onClick={() => { reset(); setScreen('staff'); }}
               className="flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition min-h-[40px]"
             >
-              <ArrowLeft className="w-4 h-4" /> Back
-            </button>
+              <ArrowLeft className="w-4 h-4" />{t('back')}</button>
 
             <div>
-              <h2 className="text-lg font-black text-slate-900">Create your account</h2>
-              <p className="text-xs text-slate-500">
-                For caregivers and health workers. Seniors do not need an account.
-              </p>
+              <h2 className="text-lg font-black text-slate-900">{t('log_create')}</h2>
+              <p className="text-xs text-slate-500">{t('log_for_staff')}</p>
             </div>
 
             {errorBox}
@@ -335,36 +316,36 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1.5">Full name</label>
+                <label className="text-xs font-bold text-slate-600 block mb-1.5">{t('log_fullname')}</label>
                 <input
                   value={form.name}
                   onChange={field('name')}
-                  placeholder="e.g. Sunita Sharma"
+                  placeholder={t('log_ph_name')}
                   className="w-full bg-white border-2 border-slate-200 focus:border-teal-500 rounded-2xl px-4 py-3 text-sm outline-none transition min-h-[48px]"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1.5">Username</label>
+                <label className="text-xs font-bold text-slate-600 block mb-1.5">{t('log_username')}</label>
                 <input
                   value={form.username}
                   onChange={field('username')}
                   autoCapitalize="none"
                   autoCorrect="off"
-                  placeholder="3-20 letters or numbers"
+                  placeholder={t('log_ph_user')}
                   className="w-full bg-white border-2 border-slate-200 focus:border-teal-500 rounded-2xl px-4 py-3 text-sm outline-none transition min-h-[48px]"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1.5">Password</label>
+                <label className="text-xs font-bold text-slate-600 block mb-1.5">{t('log_password')}</label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={form.password}
                     onChange={field('password')}
-                    placeholder="At least 6 characters"
+                    placeholder={t('log_ph_pass2')}
                     className="w-full bg-white border-2 border-slate-200 focus:border-teal-500 rounded-2xl pl-11 pr-11 py-3 text-sm outline-none transition min-h-[48px]"
                   />
                   <button
@@ -379,8 +360,7 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1.5">
-                  Role detail <span className="font-medium text-slate-400">(optional)</span>
+                <label className="text-xs font-bold text-slate-600 block mb-1.5">{t('log_role_detail')}<span className="font-medium text-slate-400">{t('log_optional')}</span>
                 </label>
                 <input
                   value={form.detail}
@@ -396,7 +376,7 @@ export default function LoginPage() {
                   Join code{' '}
                   {form.role === 'caregiver'
                     ? <span className="text-rose-500">*</span>
-                    : <span className="font-medium text-slate-400">(optional)</span>}
+                    : <span className="font-medium text-slate-400">{t('log_optional')}</span>}
                 </label>
                 <div className="relative">
                   <KeyRound className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
@@ -415,15 +395,11 @@ export default function LoginPage() {
                   onClick={() => setShowCodeHelp(h => !h)}
                   className="flex items-center gap-1.5 text-[11px] font-bold text-teal-700 hover:text-teal-800 mt-2 min-h-[36px]"
                 >
-                  <HelpCircle className="w-3.5 h-3.5" />
-                  Where do I get this code?
-                </button>
+                  <HelpCircle className="w-3.5 h-3.5" />{t('log_where_code')}</button>
 
                 {showCodeHelp && (
                   <div className="mt-1 rounded-2xl bg-teal-50 border border-teal-200 p-4 space-y-2.5">
-                    <p className="text-xs font-black text-teal-900">
-                      On the senior's phone:
-                    </p>
+                    <p className="text-xs font-black text-teal-900">{t('log_on_senior')}</p>
                     <ol className="space-y-1.5 text-[11px] text-teal-900/80 font-medium">
                       {[
                         'Open SmarTCARE and tap "Open My Home".',
@@ -444,16 +420,12 @@ export default function LoginPage() {
                       you instead.
                     </p>
                     <div className="border-t border-teal-200 pt-2">
-                      <p className="text-[10px] font-black uppercase tracking-wide text-teal-700/60 mb-1">
-                        Demo code
-                      </p>
+                      <p className="text-[10px] font-black uppercase tracking-wide text-teal-700/60 mb-1">{t('log_demo_code')}</p>
                       <button
                         type="button"
                         onClick={() => { setForm(f => ({ ...f, joinCode: 'SMT-4821' })); setError(''); }}
                         className="text-xs font-black font-mono tracking-widest text-teal-800 bg-white border border-teal-300 rounded-xl px-3 py-2 hover:bg-teal-100 transition"
-                      >
-                        SMT-4821 — tap to fill
-                      </button>
+                      >{t('log_tap_fill')}</button>
                     </div>
                   </div>
                 )}

@@ -27,7 +27,7 @@ import {
  */
 export default function MyPeoplePage() {
   const navigate = useNavigate();
-  const { familyMemories = [], language, user } = useApp();
+  const { familyMemories = [], language, user, t } = useApp();
 
   const [open, setOpen] = useState(null);
 
@@ -56,7 +56,7 @@ export default function MyPeoplePage() {
           <div className="w-16 h-16 rounded-3xl bg-rose-50 text-rose-500 flex items-center justify-center mx-auto">
             <ImagePlus className="w-8 h-8" />
           </div>
-          <h2 className="text-xl font-black text-slate-900">No photos yet</h2>
+          <h2 className="text-xl font-black text-slate-900">{t('g_no_photos')}</h2>
           <p className="text-sm text-slate-500 leading-relaxed max-w-sm mx-auto">
             When a family member adds photos of your loved ones and your home,
             they will always be here for you to look at.
@@ -65,8 +65,7 @@ export default function MyPeoplePage() {
             onClick={() => navigate('/memory-lane')}
             className="inline-flex items-center gap-2 bg-rose-500 hover:bg-rose-600 text-white font-extrabold px-6 py-3.5 rounded-2xl text-sm transition min-h-[50px]"
           >
-            <Heart className="w-4 h-4" /> Open Memory Lane
-          </button>
+            <Heart className="w-4 h-4" />{t('g_open_memorylane')}</button>
         </div>
       </div>
     );
@@ -91,8 +90,7 @@ export default function MyPeoplePage() {
           <p className="text-xs font-bold text-rose-600 mt-0.5">{m.relationship}</p>
         )}
         <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 font-semibold mt-1.5">
-          <Volume2 className="w-3 h-3" /> Tap to hear
-        </span>
+          <Volume2 className="w-3 h-3" />{t('mp_tap_hear')}</span>
       </div>
     </button>
   );
@@ -101,11 +99,8 @@ export default function MyPeoplePage() {
     <div className="max-w-3xl mx-auto space-y-6 pb-8">
       <div>
         <h1 className="text-2xl font-black text-slate-900 flex items-center gap-2">
-          <Heart className="w-6 h-6 text-rose-500" /> My People &amp; Places
-        </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          Everyone who loves you. Tap any photo to hear about them.
-        </p>
+          <Heart className="w-6 h-6 text-rose-500" />{t('role_people')}</h1>
+        <p className="text-sm text-slate-500 mt-1">{t('mp_sub')}</p>
       </div>
 
       {/* Home first — the question that causes the most distress */}
@@ -116,7 +111,7 @@ export default function MyPeoplePage() {
               <HomeIcon className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-lg font-black text-teal-900">Yes, this is your home</p>
+              <p className="text-lg font-black text-teal-900">{t('mp_home_yes')}</p>
               <p className="text-xs text-teal-700 flex items-center gap-1">
                 <MapPin className="w-3 h-3" /> {home.location || 'Tezpur, Assam'}
               </p>
@@ -140,7 +135,7 @@ export default function MyPeoplePage() {
 
           <div className="flex items-center gap-2 text-xs font-bold text-teal-800 bg-white/70 rounded-2xl px-4 py-3">
             <ShieldCheck className="w-4 h-4 flex-shrink-0" />
-            <span>You are safe here.</span>
+            <span>{t('mp_safe')}</span>
           </div>
         </div>
       )}
@@ -149,8 +144,7 @@ export default function MyPeoplePage() {
       {people.length > 0 && (
         <div className="space-y-3">
           <h2 className="text-sm font-black uppercase tracking-wide text-slate-400 flex items-center gap-2">
-            <Users className="w-4 h-4" /> My Family
-          </h2>
+            <Users className="w-4 h-4" />{t('mp_family')}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {people.map(m => <PhotoTile key={m.id} m={m} />)}
           </div>
@@ -161,8 +155,7 @@ export default function MyPeoplePage() {
       {places.length > 0 && (
         <div className="space-y-3">
           <h2 className="text-sm font-black uppercase tracking-wide text-slate-400 flex items-center gap-2">
-            <MapPin className="w-4 h-4" /> Places I Know
-          </h2>
+            <MapPin className="w-4 h-4" />{t('mp_places')}</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {places.map(m => <PhotoTile key={m.id} m={m} />)}
           </div>
@@ -174,8 +167,7 @@ export default function MyPeoplePage() {
         onClick={() => navigate('/games/faces')}
         className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl border-2 border-dashed border-slate-300 text-slate-500 hover:border-rose-400 hover:text-rose-600 font-bold text-sm transition min-h-[52px]"
       >
-        <Sparkle /> Practise remembering these faces
-      </button>
+        <Sparkle />{t('mp_practise')}</button>
 
       {/* ---------- Full-screen viewer ---------- */}
       {open && (
@@ -226,8 +218,7 @@ export default function MyPeoplePage() {
                 onClick={() => speak(open.voiceNote || open.answer || `This is ${open.subject}.`)}
                 className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-teal-600 hover:bg-teal-700 text-white font-extrabold text-sm transition active:scale-[0.98] min-h-[50px]"
               >
-                <Volume2 className="w-4 h-4" /> Say it again
-              </button>
+                <Volume2 className="w-4 h-4" />{t('mp_say_again')}</button>
             </div>
           </div>
         </div>

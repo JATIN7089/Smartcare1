@@ -56,7 +56,7 @@ const ICON_MAP = {
 };
 
 export default function NERCulturalGame() {
-  const { culturalRegion, setCulturalRegion, cognitiveProfile, updateProfileAfterGame, user } = useApp();
+  const { culturalRegion, setCulturalRegion, cognitiveProfile, updateProfileAfterGame, user, t } = useApp();
 
   const [cards, setCards] = useState([]);
   const [flippedIndices, setFlippedIndices] = useState([]);
@@ -201,8 +201,7 @@ export default function NERCulturalGame() {
           to="/games"
           className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2 rounded-xl border border-teal-200 transition"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Game Hub
-        </Link>
+          <ArrowLeft className="w-4 h-4" />{t('g_back_hub')}</Link>
 
         {/* Region preference picker */}
         <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-xs">
@@ -239,7 +238,7 @@ export default function NERCulturalGame() {
 
         <div className="flex items-center gap-3">
           <div className="bg-slate-50 border border-slate-200 px-3 py-2 rounded-xl text-center min-w-[70px]">
-            <span className="text-[11px] font-bold text-slate-400 block uppercase">Time</span>
+            <span className="text-[11px] font-bold text-slate-400 block uppercase">{t('time')}</span>
             <span className="text-lg font-black text-slate-800 flex items-center justify-center gap-1">
               <Clock className="w-3.5 h-3.5 text-teal-600" /> {elapsedSeconds}s
             </span>
@@ -248,8 +247,7 @@ export default function NERCulturalGame() {
             onClick={initDeck}
             className="flex items-center gap-1 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-300 shadow-xs"
           >
-            <RotateCcw className="w-3.5 h-3.5" /> Restart
-          </button>
+            <RotateCcw className="w-3.5 h-3.5" />{t('g_restart')}</button>
         </div>
       </div>
 
@@ -331,15 +329,15 @@ export default function NERCulturalGame() {
 
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-white rounded-xl p-3 border border-teal-100 text-center">
-              <span className="text-xs text-slate-500 font-bold block">Accuracy</span>
+              <span className="text-xs text-slate-500 font-bold block">{t('g_accuracy')}</span>
               <span className="text-xl font-black text-teal-800">{gameResult.accuracy}%</span>
             </div>
             <div className="bg-white rounded-xl p-3 border border-teal-100 text-center">
-              <span className="text-xs text-slate-500 font-bold block">Time</span>
+              <span className="text-xs text-slate-500 font-bold block">{t('time')}</span>
               <span className="text-xl font-black text-slate-800">{gameResult.time}s</span>
             </div>
             <div className="bg-white rounded-xl p-3 border border-teal-100 text-center">
-              <span className="text-xs text-slate-500 font-bold block">Score</span>
+              <span className="text-xs text-slate-500 font-bold block">{t('g_score')}</span>
               <span className="text-xl font-black text-indigo-700">{gameResult.score}/100</span>
             </div>
           </div>
@@ -353,9 +351,7 @@ export default function NERCulturalGame() {
             <button
               onClick={initDeck}
               className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-6 py-3 rounded-xl text-sm shadow-md transition"
-            >
-              Play Again
-            </button>
+            >{t('g_play_again')}</button>
             <Link
               to="/cultural-mode"
               className="bg-sky-600 hover:bg-sky-700 text-white font-extrabold px-5 py-3 rounded-xl text-sm shadow-md transition"
