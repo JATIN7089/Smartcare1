@@ -11,7 +11,7 @@
     <!-- ===================================================================
          INSTANT SPLASH / LOADING SCREEN
          Inlined so it paints immediately, before the JS bundle downloads.
-         Removed by src/main.jsx once React has mounted.
+         Driven to completion and removed by src/main.jsx once React mounts.
          =================================================================== -->
     <style>
       #smartcare-splash {
@@ -22,17 +22,17 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 0;
         padding: 24px;
         background:
-          radial-gradient(circle at 20% 15%, #ccfbf1 0%, rgba(204, 251, 241, 0) 55%),
-          radial-gradient(circle at 82% 82%, #dcfce7 0%, rgba(220, 252, 231, 0) 55%),
-          linear-gradient(160deg, #f8fafc 0%, #f0fdfa 100%);
+          radial-gradient(circle at 18% 12%, #99f6e4 0%, rgba(153, 246, 228, 0) 50%),
+          radial-gradient(circle at 84% 86%, #bbf7d0 0%, rgba(187, 247, 208, 0) 50%),
+          linear-gradient(165deg, #ffffff 0%, #f0fdfa 55%, #ecfdf5 100%);
         font-family: 'Aquitha', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         text-align: center;
         opacity: 1;
-        transition: opacity 0.55s ease, visibility 0.55s ease;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
         -webkit-font-smoothing: antialiased;
+        overflow: hidden;
       }
 
       #smartcare-splash.is-hidden {
@@ -41,126 +41,225 @@
         pointer-events: none;
       }
 
-      .sc-splash__badge {
+      /* Soft drifting orbs add depth without distracting motion */
+      .sc-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(48px);
+        opacity: 0.5;
+        animation: sc-drift 14s ease-in-out infinite alternate;
+      }
+      .sc-orb--a { width: 300px; height: 300px; top: -80px; left: -70px;  background: #5eead4; }
+      .sc-orb--b { width: 260px; height: 260px; bottom: -70px; right: -60px; background: #86efac; animation-delay: -5s; }
+      .sc-orb--c { width: 200px; height: 200px; top: 45%; right: -90px;  background: #a5f3fc; animation-delay: -9s; }
+
+      .sc-stage {
         position: relative;
-        width: 116px;
-        height: 116px;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 420px;
+      }
+
+      /* ---------- Logo badge with breathing rings ---------- */
+      .sc-badge-wrap {
+        position: relative;
+        width: 150px;
+        height: 150px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 34px;
-        background: linear-gradient(145deg, #0d9488 0%, #16a34a 100%);
-        box-shadow: 0 18px 38px -12px rgba(13, 148, 136, 0.55);
-        animation: sc-badge-in 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
       }
 
-      /* Calm breathing halo — echoes the app's 4-2-6 breathing pacer */
-      .sc-splash__badge::before,
-      .sc-splash__badge::after {
-        content: '';
+      .sc-ring {
         position: absolute;
-        inset: -14px;
-        border-radius: 44px;
-        border: 3px solid rgba(13, 148, 136, 0.35);
-        animation: sc-halo 2.6s ease-out infinite;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid rgba(13, 148, 136, 0.45);
+        animation: sc-halo 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+      .sc-ring:nth-child(2) { animation-delay: 1.13s; }
+      .sc-ring:nth-child(3) { animation-delay: 2.26s; }
+
+      .sc-badge {
+        position: relative;
+        width: 108px;
+        height: 108px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 32px;
+        background: linear-gradient(145deg, #14b8a6 0%, #0d9488 45%, #16a34a 100%);
+        box-shadow:
+          0 20px 44px -14px rgba(13, 148, 136, 0.6),
+          inset 0 2px 0 rgba(255, 255, 255, 0.28);
+        animation:
+          sc-badge-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both,
+          sc-badge-breathe 4.2s ease-in-out 0.8s infinite;
       }
 
-      .sc-splash__badge::after {
-        animation-delay: 1.3s;
-      }
-
-      .sc-splash__badge svg {
-        width: 60px;
-        height: 60px;
+      .sc-badge svg {
+        width: 56px;
+        height: 56px;
         stroke: #ffffff;
       }
 
-      .sc-splash__title {
+      /* ---------- Wordmark ---------- */
+      .sc-title {
         margin: 26px 0 0;
-        font-size: 2.1rem;
-        line-height: 1.15;
+        font-size: 2.15rem;
+        line-height: 1.1;
         font-weight: 700;
-        letter-spacing: -0.02em;
+        letter-spacing: -0.025em;
         color: #0f172a;
-        animation: sc-rise 0.6s ease-out 0.15s both;
+        animation: sc-rise 0.65s ease-out 0.18s both;
       }
+      .sc-title span { color: #0d9488; }
 
-      .sc-splash__title span {
-        color: #0d9488;
-      }
-
-      .sc-splash__tagline {
-        margin: 10px 0 0;
-        font-size: 1.03rem;
+      .sc-tagline {
+        margin: 9px 0 0;
+        font-size: 1rem;
         font-weight: 500;
         color: #475569;
-        animation: sc-rise 0.6s ease-out 0.28s both;
+        animation: sc-rise 0.65s ease-out 0.3s both;
       }
 
-      .sc-splash__track {
+      /* ---------- Determinate progress ---------- */
+      .sc-track {
         position: relative;
-        width: min(260px, 72vw);
-        height: 8px;
-        margin-top: 34px;
+        width: min(280px, 74vw);
+        height: 9px;
+        margin-top: 32px;
         border-radius: 999px;
-        background: rgba(13, 148, 136, 0.16);
+        background: rgba(13, 148, 136, 0.15);
         overflow: hidden;
-        animation: sc-rise 0.6s ease-out 0.4s both;
+        animation: sc-rise 0.65s ease-out 0.42s both;
       }
 
-      .sc-splash__bar {
-        position: absolute;
-        inset: 0 auto 0 0;
-        width: 42%;
+      .sc-bar {
+        height: 100%;
+        width: 0%;
         border-radius: 999px;
-        background: linear-gradient(90deg, #0d9488, #16a34a);
-        animation: sc-sweep 1.45s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+        background: linear-gradient(90deg, #14b8a6, #16a34a);
+        transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        position: relative;
+        overflow: hidden;
       }
 
-      .sc-splash__status {
-        margin: 16px 0 0;
-        font-size: 0.9rem;
-        font-weight: 500;
-        letter-spacing: 0.01em;
-        color: #0f766e;
-        animation: sc-rise 0.6s ease-out 0.5s both;
-      }
-
-      .sc-splash__footer {
+      /* Sheen sweeping across the filled portion */
+      .sc-bar::after {
+        content: '';
         position: absolute;
-        bottom: max(26px, env(safe-area-inset-bottom, 0px));
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+        animation: sc-sheen 1.5s ease-in-out infinite;
+      }
+
+      .sc-meta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 15px;
+        animation: sc-rise 0.65s ease-out 0.52s both;
+      }
+
+      .sc-status {
+        font-size: 0.92rem;
+        font-weight: 600;
+        color: #0f766e;
+        min-height: 1.25em;
+        transition: opacity 0.28s ease;
+      }
+      .sc-status.is-swapping { opacity: 0; }
+
+      .sc-pct {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #0d9488;
+        background: rgba(13, 148, 136, 0.1);
+        border-radius: 999px;
+        padding: 2px 9px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ---------- Footer ---------- */
+      .sc-footer {
+        position: absolute;
+        bottom: max(24px, env(safe-area-inset-bottom, 0px));
         left: 0;
         right: 0;
         padding: 0 24px;
-        font-size: 0.78rem;
+        z-index: 1;
+        animation: sc-rise 0.65s ease-out 0.66s both;
+      }
+
+      .sc-dots {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        margin-bottom: 11px;
+      }
+      .sc-dots i {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #0d9488;
+        opacity: 0.3;
+        animation: sc-bounce 1.3s ease-in-out infinite;
+      }
+      .sc-dots i:nth-child(2) { animation-delay: 0.18s; }
+      .sc-dots i:nth-child(3) { animation-delay: 0.36s; }
+
+      .sc-pillars {
+        font-size: 0.79rem;
+        font-weight: 600;
+        color: #0f766e;
+        letter-spacing: 0.02em;
+      }
+
+      .sc-note {
+        margin: 6px 0 0;
+        font-size: 0.71rem;
         line-height: 1.5;
-        color: #64748b;
-        animation: sc-rise 0.6s ease-out 0.62s both;
+        color: #94a3b8;
       }
 
+      /* ---------- Keyframes ---------- */
       @keyframes sc-badge-in {
-        from { opacity: 0; transform: scale(0.82); }
-        to   { opacity: 1; transform: scale(1); }
+        from { opacity: 0; transform: scale(0.8) translateY(8px); }
+        to   { opacity: 1; transform: scale(1) translateY(0); }
       }
-
+      @keyframes sc-badge-breathe {
+        0%, 100% { transform: scale(1); }
+        50%      { transform: scale(1.05); }
+      }
       @keyframes sc-halo {
-        0%   { opacity: 0.75; transform: scale(0.9); }
-        70%  { opacity: 0;    transform: scale(1.32); }
-        100% { opacity: 0;    transform: scale(1.32); }
+        0%   { opacity: 0.7; transform: scale(0.72); }
+        80%  { opacity: 0;   transform: scale(1.18); }
+        100% { opacity: 0;   transform: scale(1.18); }
       }
-
       @keyframes sc-rise {
-        from { opacity: 0; transform: translateY(10px); }
+        from { opacity: 0; transform: translateY(12px); }
         to   { opacity: 1; transform: translateY(0); }
       }
-
-      @keyframes sc-sweep {
-        0%   { left: -45%; width: 45%; }
-        55%  { width: 62%; }
-        100% { left: 100%; width: 45%; }
+      @keyframes sc-sheen {
+        0%   { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+      @keyframes sc-bounce {
+        0%, 100% { opacity: 0.25; transform: translateY(0); }
+        50%      { opacity: 1;    transform: translateY(-5px); }
+      }
+      @keyframes sc-drift {
+        from { transform: translate(0, 0) scale(1); }
+        to   { transform: translate(26px, -22px) scale(1.12); }
       }
 
-      /* Respect users who prefer calmer motion (and the app's own a11y stance) */
+      /* Calmer experience for motion-sensitive users */
       @media (prefers-reduced-motion: reduce) {
         #smartcare-splash *,
         #smartcare-splash *::before,
@@ -168,17 +267,22 @@
           animation-duration: 0.001s !important;
           animation-iteration-count: 1 !important;
         }
-        .sc-splash__bar {
-          left: 0 !important;
-          width: 100% !important;
-          opacity: 0.85;
-        }
+        .sc-orb { opacity: 0.3; }
       }
 
       @media (max-width: 360px) {
-        .sc-splash__badge { width: 96px; height: 96px; border-radius: 28px; }
-        .sc-splash__badge svg { width: 50px; height: 50px; }
-        .sc-splash__title { font-size: 1.8rem; }
+        .sc-badge-wrap { width: 126px; height: 126px; }
+        .sc-badge { width: 92px; height: 92px; border-radius: 26px; }
+        .sc-badge svg { width: 48px; height: 48px; }
+        .sc-title { font-size: 1.82rem; }
+        .sc-tagline { font-size: 0.92rem; }
+      }
+
+      @media (max-height: 560px) {
+        .sc-footer { display: none; }
+        .sc-badge-wrap { width: 112px; height: 112px; }
+        .sc-badge { width: 84px; height: 84px; }
+        .sc-badge svg { width: 44px; height: 44px; }
       }
     </style>
   </head>
@@ -186,30 +290,107 @@
     <div id="root"></div>
 
     <div id="smartcare-splash" role="status" aria-live="polite" aria-label="SmarTCARE is loading">
-      <div class="sc-splash__badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-4 4 4 4 0 0 0 4 4h8a4 4 0 0 0 4-4 4 4 0 0 0-4-4V6a4 4 0 0 0-4-4z"/>
-          <path d="M12 18v4"/>
-          <path d="M8 22h8"/>
-        </svg>
+      <div class="sc-orb sc-orb--a"></div>
+      <div class="sc-orb sc-orb--b"></div>
+      <div class="sc-orb sc-orb--c"></div>
+
+      <div class="sc-stage">
+        <div class="sc-badge-wrap">
+          <div class="sc-ring"></div>
+          <div class="sc-ring"></div>
+          <div class="sc-ring"></div>
+
+          <div class="sc-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2a4 4 0 0 0-4 4v1a4 4 0 0 0-4 4 4 4 0 0 0 4 4h8a4 4 0 0 0 4-4 4 4 0 0 0-4-4V6a4 4 0 0 0-4-4z"/>
+              <path d="M12 18v4"/>
+              <path d="M8 22h8"/>
+            </svg>
+          </div>
+        </div>
+
+        <h1 class="sc-title">Smar<span>TCARE</span></h1>
+        <p class="sc-tagline">Cognitive Care for Brighter Tomorrows</p>
+
+        <div class="sc-track"><div class="sc-bar" id="sc-bar"></div></div>
+
+        <div class="sc-meta">
+          <span class="sc-status" id="sc-status">Waking up your companion</span>
+          <span class="sc-pct" id="sc-pct">0%</span>
+        </div>
       </div>
 
-      <h1 class="sc-splash__title">Smar<span>TCARE</span></h1>
-      <p class="sc-splash__tagline">Cognitive Care for Brighter Tomorrows</p>
-
-      <div class="sc-splash__track"><div class="sc-splash__bar"></div></div>
-      <p class="sc-splash__status">Getting things ready for you&hellip;</p>
-
-      <p class="sc-splash__footer">
-        Play &bull; Recall &bull; Stay Connected &bull; Live Better<br />
-        A supportive companion &mdash; it does not diagnose any medical condition.
-      </p>
+      <div class="sc-footer">
+        <div class="sc-dots"><i></i><i></i><i></i></div>
+        <div class="sc-pillars">Play &bull; Recall &bull; Stay Connected &bull; Live Better</div>
+        <p class="sc-note">A supportive companion &mdash; it does not diagnose any medical condition.</p>
+      </div>
     </div>
 
     <script>
-      // Timestamp the very first paint so the splash can honour a minimum
-      // on-screen duration instead of flashing past on fast connections.
-      window.__SMARTCARE_SPLASH_START__ = Date.now();
+      // Splash progress runs here (not in React) so it animates while the
+      // main bundle is still downloading and parsing.
+      (function () {
+        window.__SMARTCARE_SPLASH_START__ = Date.now();
+
+        var bar = document.getElementById('sc-bar');
+        var pct = document.getElementById('sc-pct');
+        var status = document.getElementById('sc-status');
+        if (!bar || !pct || !status) return;
+
+        var steps = [
+          { at: 0,  text: 'Waking up your companion' },
+          { at: 26, text: 'Loading your activities' },
+          { at: 50, text: 'Checking today\u2019s reminders' },
+          { at: 72, text: 'Preparing the voice assistant' },
+          { at: 90, text: 'Almost ready' }
+        ];
+
+        var progress = 0;
+        var stepIndex = -1;
+
+        function setStatus(text) {
+          status.classList.add('is-swapping');
+          window.setTimeout(function () {
+            status.textContent = text;
+            status.classList.remove('is-swapping');
+          }, 280);
+        }
+
+        function render() {
+          bar.style.width = progress + '%';
+          pct.textContent = Math.round(progress) + '%';
+
+          for (var i = steps.length - 1; i >= 0; i--) {
+            if (progress >= steps[i].at) {
+              if (stepIndex !== i) {
+                stepIndex = i;
+                if (i === 0) status.textContent = steps[i].text;
+                else setStatus(steps[i].text);
+              }
+              break;
+            }
+          }
+        }
+
+        // Ease towards 90% while loading; main.jsx calls finish() for the rest.
+        var timer = window.setInterval(function () {
+          if (progress >= 90) return;
+          progress += Math.max(0.8, (90 - progress) * 0.045);
+          render();
+        }, 90);
+
+        render();
+
+        window.__SMARTCARE_SPLASH_FINISH__ = function (onDone) {
+          window.clearInterval(timer);
+          setStatus('Ready');
+          progress = 100;
+          bar.style.width = '100%';
+          pct.textContent = '100%';
+          window.setTimeout(function () { if (onDone) onDone(); }, 420);
+        };
+      })();
     </script>
 
     <script type="module" src="/src/main.jsx"></script>

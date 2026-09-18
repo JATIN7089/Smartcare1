@@ -7,23 +7,34 @@ import './index.css';
  * Minimum time (ms) the splash stays visible.
  * Prevents an abrupt flash on fast loads while still feeling snappy.
  */
-const SPLASH_MIN_DURATION = 1400;
+const SPLASH_MIN_DURATION = 1600;
 
 /** Matches the CSS opacity transition on #smartcare-splash. */
-const SPLASH_FADE_DURATION = 550;
+const SPLASH_FADE_DURATION = 600;
 
-function dismissSplash() {
+let splashDismissed = false;
+
+function removeSplash() {
   const splash = document.getElementById('smartcare-splash');
   if (!splash) return;
+  splash.classList.add('is-hidden');
+  // Remove from the DOM after fading so it never traps focus or taps.
+  window.setTimeout(() => splash.remove(), SPLASH_FADE_DURATION);
+}
+
+function dismissSplash() {
+  if (splashDismissed) return;
+  splashDismissed = true;
 
   const startedAt = window.__SMARTCARE_SPLASH_START__ || Date.now();
   const elapsed = Date.now() - startedAt;
   const remaining = Math.max(0, SPLASH_MIN_DURATION - elapsed);
 
   window.setTimeout(() => {
-    splash.classList.add('is-hidden');
-    // Remove from the DOM after fading so it never traps focus or taps.
-    window.setTimeout(() => splash.remove(), SPLASH_FADE_DURATION);
+    // Let the inline script run the bar to 100% and show "Ready" before fading.
+    const finish = window.__SMARTCARE_SPLASH_FINISH__;
+    if (typeof finish === 'function') finish(removeSplash);
+    else removeSplash();
   }, remaining);
 }
 
@@ -38,6 +49,6 @@ if (document.readyState === 'complete') {
   dismissSplash();
 } else {
   window.addEventListener('load', dismissSplash, { once: true });
-  // Safety net: never let the splash outlive a slow/failed asset.
-  window.setTimeout(dismissSplash, 5000);
+  // Safety net: never let the splash outlive a slow or failed asset.
+  window.setTimeout(dismissSplash, 6000);
 }
