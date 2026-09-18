@@ -164,8 +164,18 @@ const PHRASES = [
   [/\bwhat\s*(is\s*)?(the\s*)?time\b/g, ' WHAT TIME '],
   [/\bsamay\s*kya\b/g, ' WHAT TIME '],
 
+  // ---- Medicine + taken-verb pairs, in BOTH word orders ------------------
+  // ASR very often hears "medical" for "medicine" and clips "liya" to "lee",
+  // so "kaun si medical lee" must still fold to WHICH + MEDICINE + TAKEN.
+  [/\b(medical|medicin\w*|dawai|davai|dawa|goli|tablet|pill|pills)\s+(li|lee|liya|lia|le|kha|khai|khaya|ho\s*(gaya|gayi|gyi))\b/g, ' TAKEN MEDICINE '],
+  [/\b(li|lee|liya|lia|kha|khai|khaya)\s+(li|liya)?\s*(thi|tha|the|hai|hain)?\s*(medical|medicin\w*|dawai|davai|dawa|goli|tablet|pill|pills)\b/g, ' TAKEN MEDICINE '],
+  // A trailing clipped taken-verb ("... dawai li", "... medical lee").
+  [/(?:^|\s)(li|lee|liya|lia|khai|khaya)(?=\s*$)/g, ' TAKEN '],
+
   // ---- Question framings -------------------------------------------------
-  [/\b(kaun|kon|kaun\s*si|konsi|kaunsi|kaun\s*sa|konsa|kaunsa)\b/g, ' WHICH '],
+  // Longest alternatives first, otherwise "kaun si" folds as bare "kaun"
+  // and leaves a stray "si" token behind.
+  [/\b(kaun\s*si|kaun\s*sa|koun\s*si|koun\s*sa|konsi|kaunsi|kounsi|konsa|kaunsa|kounsa|kaun|koun|kon)\b/g, ' WHICH '],
   [/(?:^|\s)कौन\s*(सी|सा)(?=\s|$)/g, ' WHICH '],
   [/\bwhich\s+one\b/g, ' WHICH '],
   [/\bkya\s*maine\b/g, ' DIDI '],
@@ -182,6 +192,10 @@ const PHRASES = [
   [/(?:^|\s)मैं\s*कैस(ा|ी)\s*कर\s*रह(ा|ी)(?=\s|$)/g, ' PROGRESS '],
 
   // ---- Game names (before the generic GAME token) ------------------------
+  // "khelna (hai)" expresses the wish to play, so it carries START as well;
+  // without it "game khelna hai" collapses to a bare GAME token and gets
+  // mis-read as a recommendation request.
+  [/\b(khelna|khelni|khelenge|kheloon|khelu)\b/g, ' GAME START '],
   [/\b(memory|memori|yaad(dasht)?|smriti|yaddasht)\s*(match|game|khel)?\b/g, ' MEMORY '],
   [/(?:^|\s)(याद(दाश्त)?|स्मृति|मेमोरी)(?=\s|$)/g, ' MEMORY '],
   [/\bcard\s*(flip|match)\b/g, ' MEMORY '],
@@ -236,12 +250,23 @@ const PHRASES = [
 const LEXICON = {
   // MEDICINE
   medicine: 'MEDICINE', medicines: 'MEDICINE', medicin: 'MEDICINE', med: 'MEDICINE',
+  medical: 'MEDICINE', medicale: 'MEDICINE', medicene: 'MEDICINE', medicien: 'MEDICINE',
+  medecine: 'MEDICINE', medcin: 'MEDICINE', medici: 'MEDICINE',
   meds: 'MEDICINE', pill: 'MEDICINE', pills: 'MEDICINE', tablet: 'MEDICINE',
   tablets: 'MEDICINE', dawa: 'MEDICINE', dawai: 'MEDICINE', davai: 'MEDICINE',
   dava: 'MEDICINE', dvai: 'MEDICINE', goli: 'MEDICINE', aushadhi: 'MEDICINE',
   oukhod: 'MEDICINE', hidak: 'MEDICINE', damdawi: 'MEDICINE', bwtwi: 'MEDICINE',
   'दवा': 'MEDICINE', 'दवाई': 'MEDICINE', 'गोली': 'MEDICINE', 'औषधि': 'MEDICINE',
-  'ঔষধ': 'MEDICINE', 'দৰৱ': 'MEDICINE',
+  'ঔষধ': 'MEDICINE', 'দৰৱ': 'MEDICINE', 'ভেষজ': 'MEDICINE',
+  'औषधि': 'MEDICINE', 'दवाइ': 'MEDICINE',
+
+  // WHICH — Bengali / Assamese / Nepali question words
+  'কোন': 'WHICH', 'কোনটো': 'WHICH', 'কোনটা': 'WHICH', 'কোনটি': 'WHICH',
+  'कुन': 'WHICH', 'कुनचाहिँ': 'WHICH',
+
+  // TAKEN — conjugated "have eaten/took" forms per script
+  'খাইছো': 'TAKEN', 'খাইছি': 'TAKEN', 'খেয়েছি': 'TAKEN', 'খালো': 'TAKEN',
+  'खाएँ': 'TAKEN', 'खाएको': 'TAKEN', 'खाइसकेको': 'TAKEN', 'लिएको': 'TAKEN',
 
   // GAME
   game: 'GAME', games: 'GAME', gaem: 'GAME', khel: 'GAME', khelna: 'GAME',
@@ -267,7 +292,8 @@ const LEXICON = {
   kaise: 'HOW', 'कैसे': 'HOW',
 
   // STATE
-  taken: 'TAKEN', liya: 'TAKEN', li: 'TAKEN', khaya: 'TAKEN', khai: 'TAKEN',
+  taken: 'TAKEN', liya: 'TAKEN', li: 'TAKEN', lee: 'TAKEN', ley: 'TAKEN',
+  khaya: 'TAKEN', khai: 'TAKEN',
   done: 'TAKEN', complete: 'TAKEN', completed: 'TAKEN', finished: 'TAKEN',
   'खाया': 'TAKEN', 'लिया': 'TAKEN',
   pending: 'PENDING', baaki: 'PENDING', bachi: 'PENDING', remaining: 'PENDING',
@@ -317,7 +343,9 @@ const STOPWORDS = new Set([
   'ko', 'se', 'me', 'mein', 'main', 'maine', 'mera', 'meri', 'mujhe', 'muje',
   'aur', 'ya', 'bhi', 'to', 'toh', 'na', 'ne', 'wala', 'wali', 'zara', 'thoda',
   'please', 'kar', 'karo', 'karna', 'do', 'de', 'dijiye', 'kripya',
-  'है', 'हूँ', 'था', 'थी', 'का', 'की', 'के', 'को', 'से', 'में', 'मैं', 'मुझे', 'और'
+  'है', 'हूँ', 'था', 'थी', 'का', 'की', 'के', 'को', 'से', 'में', 'मैं', 'मुझे', 'और',
+  // Bengali / Assamese / Nepali pronouns & particles
+  'মই', 'আমি', 'আপুনি', 'আপনি', 'মোৰ', 'আমাৰ', 'मैले', 'मलाई', 'मेरो'
 ]);
 
 /* ============================================================
@@ -386,7 +414,7 @@ const INTENT_DEFS = [
   {
     intent: INTENT.GAME_START,
     all: [['GAME'], ['START', 'OPEN', 'WANT']],
-    weight: 8
+    weight: 9
   },
   {
     intent: INTENT.GAME_LIST,

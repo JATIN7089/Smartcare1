@@ -16,6 +16,7 @@
  */
 
 import { INTENT, GAME_CATALOG } from './nluEngine.js';
+import { respondInLanguage } from './dialogueTranslations.js';
 
 /* ============================================================
    TIME HELPERS
@@ -171,6 +172,16 @@ export function respond(nlu, ctx = {}) {
   const name = (user?.name || 'Asha').split(' ')[0];
   const intent = nlu.intent;
   const ent = nlu.entities || {};
+
+  /* ---------- Answer in the language that was actually spoken ----------
+     The engine below writes full English/Hindi dialogue. For the other nine
+     supported languages we hand the same live state to the localised
+     template table, so an Assamese question gets an Assamese answer instead
+     of silently switching to English. */
+  if (L !== 'en' && L !== 'hi' && intent && intent !== INTENT.UNKNOWN) {
+    const local = buildLocalisedReply(nlu, ctx, L);
+    if (local) return local;
+  }
 
   /* ---------- Empty input ---------- */
   if (nlu.empty) {
@@ -800,6 +811,78 @@ function defaultChips(L) {
 }
 
 /** Normalise a partial reply object into the full shape. */
+/**
+ * Computes the live facts (what was taken, what is pending, what is next,
+ * which game to suggest) once, then asks the localised template table for
+ * a reply in `lang`. Also re-attaches the action the English/Hindi path
+ * would have produced, so a localised "start memory game" still opens it.
+ */
+function buildLocalisedReply(nlu, ctx, lang) {
+  const { reminders = [], cognitiveProfile = {}, user = {} } = ctx;
+  const ent = nlu.entities || {};
+
+  const meds = medicineReminders(reminders);
+  const taken = takenMedicines(reminders);
+  const pend = pendingMedicines(reminders);
+  const next = nextUpcoming(pend) || pend[0] || null;
+  const suggested = ent.game || recommendGame(cognitiveProfile);
+
+  let targetCompleted = null;
+  let focusTitle = next ? shortTitle(next.title) : '';
+  let focusTime = next ? next.time : '';
+
+  if (nlu.intent === INTENT.MED_DID_I_TAKE) {
+    let target = ent.medicineHint ? meds.find(r => matchesMedicineHint(r, ent.medicineHint)) : null;
+    if (!target && ent.timeOfDay) target = meds.find(r => matchesTimeOfDay(r.time, ent.timeOfDay));
+    if (!target) target = meds[0];
+    if (target) {
+      targetCompleted = Boolean(target.completed);
+      focusTitle = shortTitle(target.title);
+      focusTime = target.time;
+    }
+  }
+
+  const local = respondInLanguage(nlu, {
+    user,
+    targetCompleted,
+    locals: {
+      takenList: listTitles(taken),
+      takenCount: taken.length,
+      pendingList: listTitles(pend),
+      pendingCount: pend.length,
+      nextTitle: focusTitle,
+      nextTime: focusTime,
+      gameLabel: suggested ? suggested.label : ''
+    }
+  }, lang);
+
+  if (!local) return null;
+
+  // Keep stateful actions working in every language.
+  if (nlu.intent === INTENT.GAME_START && suggested) {
+    local.action = {
+      type: 'NAVIGATE',
+      route: suggested.route,
+      autostart: true,
+      label: `Open ${suggested.label}`
+    };
+  }
+  if (nlu.intent === INTENT.BREATHING_START) {
+    local.action = { type: 'NAVIGATE', route: '/breathing', autostart: true, label: 'Start Breathing' };
+  }
+  if (nlu.intent === INTENT.GROUNDING_START) {
+    local.action = { type: 'NAVIGATE', route: '/grounding', autostart: true, label: 'Start Grounding' };
+  }
+
+  return reply({
+    text: local.reply,
+    spoken: local.spoken,
+    action: local.action,
+    chips: local.chips,
+    pendingSlot: local.pendingSlot
+  });
+}
+
 function reply({ text, spoken, action = null, chips = [], pendingSlot = null, lowConfidence = false }) {
   return {
     reply: text,

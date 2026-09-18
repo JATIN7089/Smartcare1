@@ -38,7 +38,18 @@ export default function VoiceAssistantPage() {
   // Dynamic follow-up chips returned by the dialogue engine.
   const [chips, setChips] = useState([]);
 
+  // The microphone follows the language the user actually speaks, not just
+  // the UI setting: after the first Hindi answer, the next listen expects
+  // Hindi. Resets whenever the UI language is changed deliberately.
+  const [listenLang, setListenLang] = useState(language);
+  const [replyLang, setReplyLang] = useState(language);
+
   const conversationEndRef = useRef(null);
+
+  const langObjFor = (code) =>
+    supportedLanguages.find(l => l.code === code) || currentLanguageObj;
+  const listenLangObj = langObjFor(listenLang);
+  const replyLangObj = langObjFor(replyLang);
 
   // Initialize or update conversation on role or language change
   useEffect(() => {
@@ -52,6 +63,8 @@ export default function VoiceAssistantPage() {
     ]);
     setChips(greetingMsg.chips || []);
     setSession({ pendingSlot: null, lastIntent: null });
+    setListenLang(language);
+    setReplyLang(greetingMsg.detectedLanguage || language);
   }, [role, language]);
 
   // Keep the newest message in view as the conversation grows.
@@ -102,9 +115,13 @@ export default function VoiceAssistantPage() {
       lastIntent: result.intent || null
     });
 
-    // Speak aloud in the selected language if enabled
+    // Speak aloud in the language the reply was written in — which is the
+    // language the user spoke, detected per utterance.
+    const spokenLang = result.detectedLanguage || language;
+    setReplyLang(spokenLang);
+    setListenLang(spokenLang);
     if (accessibility.voiceEnabled && result.spoken) {
-      voiceService.speak(result.spoken, language);
+      voiceService.speak(result.spoken, spokenLang);
     }
 
     executeAction(result.action);
@@ -150,7 +167,7 @@ export default function VoiceAssistantPage() {
     } else {
       setMicError(null);
       const started = voiceService.startListening({
-        lang: language,
+        lang: listenLang,
         onResult: (transcript) => {
           setIsListening(false);
           handleSend(transcript);
@@ -258,7 +275,11 @@ export default function VoiceAssistantPage() {
         </button>
 
         <p className="text-sm font-bold text-slate-700">
-          {isListening ? `Listening in ${currentLanguageObj.native}... Speak naturally` : `Active language: ${currentLanguageObj.flag} ${currentLanguageObj.native} (${currentLanguageObj.name})`}
+          {isListening
+            ? `Listening in ${listenLangObj.native}... Speak naturally`
+            : replyLang !== language
+              ? `Replying in ${replyLangObj.flag} ${replyLangObj.native} — detected from your speech`
+              : `Active language: ${currentLanguageObj.flag} ${currentLanguageObj.native} (${currentLanguageObj.name})`}
         </p>
 
         {micError && (

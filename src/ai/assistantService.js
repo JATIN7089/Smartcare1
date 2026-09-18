@@ -12,6 +12,7 @@ import { SUPPORTED_LANGUAGES, TRANSLATIONS } from '../data/translations.js';
 import { detectIntent, INTENTS } from '../services/intentService.js';
 import { understand } from './nluEngine.js';
 import { respond } from './dialogueEngine.js';
+import { detectLanguage, ttsLocale } from './languageDetector.js';
 
 export const ASSISTANT_LANGUAGES = SUPPORTED_LANGUAGES;
 
@@ -24,6 +25,18 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
     cognitiveProfile = {},
     language = 'en'
   } = contextData;
+
+  /* ------------------------------------------------------------
+     Reply in the language that was SPOKEN, not the language the UI
+     happens to be set to. Someone asking "kaun si dawai li" in an
+     English-configured app still deserves a Hindi answer; switching
+     the UI to Hindi and saying "which medicine did I take" still
+     deserves English. Detection falls back to the UI language when
+     the utterance carries no language signal of its own.
+     ------------------------------------------------------------ */
+  const detected = query ? detectLanguage(input) : { code: language, script: 'none', confidence: 0 };
+  const detectedSupported = SUPPORTED_LANGUAGES.some(l => l.code === detected.code);
+  const replyLanguage = detectedSupported ? detected.code : language;
 
   const userName = activeUser?.name || 'Asha';
 
@@ -42,7 +55,7 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
     ne: { elderly: `नमस्ते ${userName} ज्यू! म तपाईंको स्मार्टकेयर साथी हुँ।`, caregiver: 'हेरचाहकर्ता सहायक अनलाइन छ।', healthcare: 'स्वास्थ्य सेवा सहायक तयार छ।' }
   };
 
-  const activeGreeting = greetings[language] ? greetings[language][role] || greetings.en[role] : greetings.en[role];
+  const activeGreeting = greetings[replyLanguage] ? greetings[replyLanguage][role] || greetings.en[role] : greetings.en[role];
 
   // If query is empty, return an opening greeting.
   // For elderly users we enrich it with a live status line so the very first
@@ -54,14 +67,14 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
       );
 
       const statusLine = pendingMeds.length
-        ? (language === 'hi'
+        ? (replyLanguage === 'hi'
             ? ` आज ${pendingMeds.length} दवा बाकी है।`
             : ` You have ${pendingMeds.length} medicine${pendingMeds.length === 1 ? '' : 's'} pending today.`)
-        : (language === 'hi'
+        : (replyLanguage === 'hi'
             ? ' आज सब कुछ ठीक चल रहा है।'
             : ' Everything is on track today.');
 
-      const askLine = language === 'hi'
+      const askLine = replyLanguage === 'hi'
         ? ' क्या करना चाहेंगी?'
         : ' What would you like to do?';
 
@@ -71,7 +84,7 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
         reply: greetingText,
         spoken: greetingText,
         action: null,
-        chips: language === 'hi'
+        chips: replyLanguage === 'hi'
           ? [
               { label: '🎮 गेम खेलना है', cmd: 'game khelna hai' },
               { label: '💊 कौन सी दवा ली?', cmd: 'kaunsi medicine li thi' },
@@ -84,12 +97,17 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
               { label: '⏰ When is my next medicine?', cmd: 'when is my next medicine' },
               { label: '🫁 Start breathing', cmd: 'start breathing' }
             ],
-        pendingSlot: null
+        pendingSlot: null,
+        detectedLanguage: replyLanguage,
+        detectedScript: detected.script,
+        ttsLocale: ttsLocale(replyLanguage)
       };
     }
 
     return {
       reply: activeGreeting,
+      detectedLanguage: replyLanguage,
+      ttsLocale: ttsLocale(replyLanguage),
       action: { type: 'SUGGESTION', items: ['Start memory game', 'Start breathing', 'When is my medicine?'] },
       spoken: activeGreeting
     };
@@ -104,7 +122,7 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
       cognitiveProfile,
       user: activeUser,
       role,
-      language
+      language: replyLanguage
     });
 
     return {
@@ -112,7 +130,10 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
       intent: nlu.intent,
       confidence: nlu.confidence,
       concepts: nlu.concepts,
-      action: normaliseAction(result.action)
+      action: normaliseAction(result.action),
+      detectedLanguage: replyLanguage,
+      detectedScript: detected.script,
+      ttsLocale: ttsLocale(replyLanguage)
     };
   }
 
