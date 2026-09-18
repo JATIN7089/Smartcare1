@@ -22,7 +22,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function HealthcarePage() {
-  const { activityPlans, handleTogglePlanTask } = useApp();
+  const { activityPlans, handleTogglePlanTask, t } = useApp();
 
   const [plans, setPlans] = useState(activityPlans);
   const [showAddPlanModal, setShowAddPlanModal] = useState(false);

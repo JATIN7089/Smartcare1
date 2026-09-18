@@ -14,7 +14,7 @@ import { KeyRound, Copy, Check, Share2, Eye, EyeOff } from 'lucide-react';
  * request access to the senior's health data.
  */
 export default function JoinCodeCard() {
-  const { user } = useApp();
+  const { user, t } = useApp();
   const code = user?.joinCode || 'SMT-4821';
 
   const [revealed, setRevealed] = useState(false);

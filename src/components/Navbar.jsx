@@ -33,7 +33,8 @@ export default function Navbar() {
     currentLanguageObj,
     supportedLanguages,
     setDemoTourStep,
-  } = useApp();
+    t,
+} = useApp();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);

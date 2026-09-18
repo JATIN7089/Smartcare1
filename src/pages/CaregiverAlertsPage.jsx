@@ -16,7 +16,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function CaregiverAlertsPage() {
-  const { alerts, handleDismissAlert } = useApp();
+  const { alerts, handleDismissAlert, t } = useApp();
   const [activeNoteAlertId, setActiveNoteAlertId] = useState(null);
   const [noteText, setNoteText] = useState('');
   const [noteSuccess, setNoteSuccess] = useState(false);

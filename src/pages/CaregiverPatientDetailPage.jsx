@@ -37,7 +37,7 @@ import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function CaregiverPatientDetailPage() {
   const { id } = useParams();
-  const { cognitiveProfile, reminders, handleAddReminder, activityPlans } = useApp();
+  const { cognitiveProfile, reminders, handleAddReminder, activityPlans, t } = useApp();
 
   const [timeRange, setTimeRange] = useState('7d'); // 7d, 30d, 90d
   const [patientData, setPatientData] = useState(null);

@@ -148,7 +148,7 @@ export const DEMO_STEPS = [
 ];
 
 export default function DemoTourModal() {
-  const { demoTourStep, setDemoTourStep, setRole } = useApp();
+  const { demoTourStep, setDemoTourStep, setRole, t } = useApp();
   const navigate = useNavigate();
 
   if (!demoTourStep || demoTourStep < 1 || demoTourStep > DEMO_STEPS.length) {

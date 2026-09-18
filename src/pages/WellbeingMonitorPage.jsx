@@ -19,7 +19,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function WellbeingMonitorPage() {
-  const { breathingSessions } = useApp();
+  const { breathingSessions, t } = useApp();
   const [deviceConnected, setDeviceConnected] = useState(false);
   const [telemetry, setTelemetry] = useState({
     heartRate: 72,

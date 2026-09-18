@@ -1,3 +1,4 @@
+import { useApp } from '../context/AppContext.jsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -13,6 +14,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function ProblemPage() {
+  const { t } = useApp();
   const problemCards = [
     {
       id: 1,

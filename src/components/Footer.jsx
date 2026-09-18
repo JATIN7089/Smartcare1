@@ -1,8 +1,10 @@
+import { useApp } from '../context/AppContext.jsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Brain, Heart, MapPin, Award, Shield, Cpu, ExternalLink } from 'lucide-react';
 
 export default function Footer() {
+  const { t } = useApp();
   return (
     <footer className="bg-slate-900 text-slate-300 pt-10 pb-8 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">

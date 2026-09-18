@@ -1,3 +1,4 @@
+import { useApp } from '../context/AppContext.jsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -17,6 +18,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function SolutionPage() {
+  const { t } = useApp();
   const pillars = [
     { title: 'Cognitive Games', icon: Brain, desc: '7 working games targeting memory, sequence, pattern logic, and routine recall.', color: 'text-teal-600 bg-teal-50 border-teal-200' },
     { title: 'AI Personalization', icon: Sparkles, desc: 'Mathematical performance calibration adjusting difficulty without sudden jumps.', color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },

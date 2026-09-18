@@ -1,3 +1,4 @@
+import { useApp } from '../context/AppContext.jsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -24,6 +25,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function FeaturesPage() {
+  const { t } = useApp();
   const featureList = [
     { title: 'Adaptive Memory Match', cat: 'Games', route: '/games/memory', icon: Brain, desc: 'Real working memory card game with AI difficulty calibration and chime feedback.' },
     { title: 'NER Cultural Match', cat: 'Games & Culture', route: '/games/cultural', icon: Sparkles, desc: 'Covers Assam, Sikkim, Manipur, Mizoram, Nagaland, Meghalaya, Tripura, Arunachal.' },

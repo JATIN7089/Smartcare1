@@ -22,7 +22,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function ArchitecturePage() {
-  const { syncState, toggleSimulatedOffline, syncNow } = useApp();
+  const { syncState, toggleSimulatedOffline, syncNow, t } = useApp();
 
   const [simulating, setSimulating] = useState(false);
   const [syncFeedback, setSyncFeedback] = useState(null);

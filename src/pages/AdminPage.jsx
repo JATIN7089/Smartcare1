@@ -1,3 +1,4 @@
+import { useApp } from '../context/AppContext.jsx';
 import React, { useState, useEffect } from 'react';
 import { api } from '../services/api.js';
 import { 
@@ -17,6 +18,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function AdminPage() {
+  const { t } = useApp();
   const [metrics, setMetrics] = useState({
     totalRegisteredUsers: 1420,
     activeElderlyUsersNER: 894,

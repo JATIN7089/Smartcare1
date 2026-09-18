@@ -1,3 +1,4 @@
+import { useApp } from '../context/AppContext.jsx';
 import React from 'react';
 import { 
   Award, 
@@ -13,6 +14,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function AboutPage() {
+  const { t } = useApp();
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
       {/* Header */}

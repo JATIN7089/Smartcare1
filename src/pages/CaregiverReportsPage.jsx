@@ -31,7 +31,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function CaregiverReportsPage() {
-  const { user, cognitiveProfile } = useApp();
+  const { user, cognitiveProfile, t } = useApp();
   const [range, setRange] = useState('7d'); // 7d, 30d, 90d
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 

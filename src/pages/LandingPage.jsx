@@ -27,7 +27,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function LandingPage() {
-  const { setDemoTourStep, setRole, user, culturalRegion } = useApp();
+  const { setDemoTourStep, setRole, user, culturalRegion, t } = useApp();
   const navigate = useNavigate();
 
   const handleStartElderly = () => {
