@@ -1,44 +1,138 @@
 /**
  * Voice Command Orchestrator Service
- * 
+ *
  * Flow:
- * USER SPEAKS
- *   ↓
- * Speech Recognition (Web Speech API)
- *   ↓
- * AI Natural Language Intent Detection (intentService.js)
- *   ↓
- * Command Router (commandRouter.js)
- *   ↓
- * Existing React Navigation / Application Action
- * 
- * Also supports direct text and quick prompt execution for full accessibility.
+ *   USER SPEAKS
+ *     ↓
+ *   Speech Recognition (Web Speech API)
+ *     ↓
+ *   Advanced NLU  (ai/nluEngine.js)      → intent + entities + confidence
+ *     ↓
+ *   Dialogue Engine (ai/dialogueEngine.js) → reply + action + follow-up chips
+ *     ↓
+ *   Action execution (navigate / mark reminder / call / speak)
+ *
+ * This powers the global microphone available on every screen. It shares the
+ * exact same brain as the full Assistant page, so "maine dawai kha li" works
+ * from anywhere in the app — not just inside the assistant.
  */
 
 import { voiceService } from './voiceService.js';
+import { understand, INTENT } from '../ai/nluEngine.js';
+import { respond } from '../ai/dialogueEngine.js';
+
+// Kept for backward compatibility with any older imports.
 import { detectIntent, INTENTS } from './intentService.js';
 import { executeCommand } from './commandRouter.js';
 
 class VoiceCommandService {
   constructor() {
     this.isListening = false;
+    // Multi-turn memory for the global mic, so a clarifying question asked in
+    // one pop-up can be answered the next time the user taps the microphone.
+    this.session = { pendingSlot: null, lastIntent: null };
+  }
+
+  resetSession() {
+    this.session = { pendingSlot: null, lastIntent: null };
   }
 
   /**
-   * Process a text or recognized speech utterance
+   * Understand an utterance and carry out whatever it asks for.
+   *
+   * @param {string} text     the spoken or typed utterance
+   * @param {object} context  { navigate, user, reminders, routine,
+   *                            cognitiveProfile, role, language,
+   *                            onCompleteReminder, onComplete }
    */
   processTextCommand(text = '', context = {}) {
-    const intentResult = detectIntent(text, context);
-    const execution = executeCommand(intentResult, context);
+    const {
+      navigate,
+      user = {},
+      reminders = [],
+      routine = [],
+      cognitiveProfile = {},
+      role = 'elderly',
+      language = 'en',
+      onCompleteReminder,
+      onComplete
+    } = context;
+
+    const nlu = understand(text, this.session);
+    const result = respond(nlu, {
+      reminders,
+      routine,
+      cognitiveProfile,
+      user,
+      role,
+      language
+    });
+
+    // Remember any clarifying question for the next turn.
+    this.session = {
+      pendingSlot: result.pendingSlot || null,
+      lastIntent: nlu.intent
+    };
+
+    // Speak the reply.
+    if (result.spoken && voiceService.enabled) {
+      voiceService.speak(result.spoken, language);
+    }
+
+    // Carry out the action.
+    const action = result.action;
+    let navigated = false;
+
+    if (action) {
+      if (action.type === 'COMPLETE_REMINDER' && action.reminderId) {
+        if (onCompleteReminder) onCompleteReminder(action.reminderId);
+      } else if (action.type === 'STOP_SPEAKING') {
+        voiceService.stopSpeaking();
+      } else if (action.type === 'NAVIGATE' && action.route && navigate) {
+        const delay = typeof action.delay === 'number' ? action.delay : 900;
+        navigated = true;
+        setTimeout(() => {
+          navigate(action.route, {
+            state: {
+              autostart: action.autostart !== false,
+              readAloud: Boolean(action.readAloud),
+              intent: nlu.intent,
+              voiceTriggered: true
+            }
+          });
+        }, delay);
+      }
+    }
+
+    const understood = nlu.intent !== INTENT.UNKNOWN;
+
+    const execution = {
+      success: understood,
+      intent: nlu.intent,
+      confidence: nlu.confidence,
+      text: result.reply,
+      spoken: result.spoken,
+      route: action?.route || null,
+      navigated,
+      chips: result.chips || [],
+      pendingSlot: result.pendingSlot || null,
+      // Keep the pop-up open when the assistant asked a question or simply
+      // answered one — closing it would hide the answer.
+      keepOpen: Boolean(result.pendingSlot) || (!navigated && understood)
+    };
+
+    if (onComplete) onComplete(execution);
+
     return {
       rawText: text,
-      intentResult,
+      nlu,
+      intentResult: result,
       execution
     };
   }
 
   /**
-   * Start microphone listening, recognize speech, detect intent, and execute action
+   * Start microphone listening, recognise speech, understand it, and act.
    */
   listenAndExecute({
     onListeningStart,
@@ -90,4 +184,5 @@ class VoiceCommandService {
 }
 
 export const voiceCommandService = new VoiceCommandService();
+export { INTENT, understand, respond };
 export { INTENTS, detectIntent, executeCommand };

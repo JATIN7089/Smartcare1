@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { soundService } from '../services/soundService.js';
+import { compressPhoto, approxSizeKB } from '../services/photoService.js';
 import { 
   Heart, 
   Plus, 
@@ -13,7 +14,12 @@ import {
   HelpCircle, 
   Lock, 
   X,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Camera,
+  Loader2,
+  Home as HomeIcon,
+  User as UserIcon,
+  MapPinned
 } from 'lucide-react';
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
@@ -30,6 +36,30 @@ export default function MemoryLanePage() {
   const [answer, setAnswer] = useState('');
   const [notes, setNotes] = useState('');
 
+  // Photo + recognition fields. A face without a name teaches nothing, so the
+  // subject is what the senior is asked to recall.
+  const [photo, setPhoto] = useState(null);
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoError, setPhotoError] = useState('');
+  const [subject, setSubject] = useState('');
+  const [voiceNote, setVoiceNote] = useState('');
+  const [category, setCategory] = useState('Person');
+  const [isHome, setIsHome] = useState(false);
+
+  const handlePhotoPick = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPhotoBusy(true);
+    setPhotoError('');
+    try {
+      const { dataUrl } = await compressPhoto(file);
+      setPhoto(dataUrl);
+    } catch (err) {
+      setPhotoError(err.message || 'Could not use that photo.');
+    }
+    setPhotoBusy(false);
+  };
+
   const toggleReveal = (id) => {
     soundService.playFlipTone();
     if (revealedIds.includes(id)) {
@@ -43,15 +73,25 @@ export default function MemoryLanePage() {
     e.preventDefault();
     if (!title.trim() || !question.trim()) return;
 
+    const who = subject.trim() || title.trim();
+
     await handleAddMemory({
       title,
       relationship,
       location,
       year,
       question,
-      answer: answer || 'A joyful family memory.',
+      answer: answer || `This is ${who}.`,
       notes,
-      category: 'Family'
+      category,
+      photo,
+      subject: who,
+      // Spoken back to the senior, so it reads as reassurance not data.
+      voiceNote: voiceNote.trim() ||
+        (relationship
+          ? `This is ${who}, your ${String(relationship).toLowerCase()}.`
+          : `This is ${who}.`),
+      isHome
     });
 
     soundService.playSuccessChime();
@@ -59,6 +99,12 @@ export default function MemoryLanePage() {
     setQuestion('');
     setAnswer('');
     setNotes('');
+    setPhoto(null);
+    setSubject('');
+    setVoiceNote('');
+    setCategory('Person');
+    setIsHome(false);
+    setPhotoError('');
     setShowAddModal(false);
   };
 
@@ -126,10 +172,18 @@ export default function MemoryLanePage() {
                   </span>
                 </div>
 
-                {/* Decorative Fictional Avatar / Silhouette */}
-                <div className="w-20 h-20 rounded-full bg-white shadow-md mx-auto my-4 flex items-center justify-center border-2 border-teal-200">
-                  <Heart className="w-10 h-10 text-rose-500 fill-rose-100" />
-                </div>
+                {/* The real photograph, when the family has added one. */}
+                {memory.photo ? (
+                  <img
+                    src={memory.photo}
+                    alt={memory.subject || memory.title}
+                    className="w-28 h-28 rounded-full object-cover shadow-md mx-auto my-4 border-4 border-white ring-2 ring-teal-200"
+                  />
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-white shadow-md mx-auto my-4 flex items-center justify-center border-2 border-teal-200">
+                    <Heart className="w-10 h-10 text-rose-500 fill-rose-100" />
+                  </div>
+                )}
 
                 <h3 className="text-xl font-black text-slate-900 text-center">{memory.title}</h3>
                 {memory.notes && (
@@ -192,6 +246,116 @@ export default function MemoryLanePage() {
             <form onSubmit={handleCreateMemory} className="space-y-3">
               <div>
                 <label className="text-xs font-bold text-slate-700 block mb-1">Memory Title / Person</label>
+                {/* ---- Photo ---- */}
+                <div className="space-y-2 pb-3 mb-3 border-b border-slate-200">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    Photo <span className="font-medium text-slate-400">— a clear face, or the front of the house</span>
+                  </label>
+
+                  {photo ? (
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={photo}
+                        alt="Selected"
+                        className="w-20 h-20 rounded-2xl object-cover border-2 border-teal-200"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-emerald-700">Photo ready</p>
+                        <p className="text-[10px] text-slate-400">
+                          Resized to about {approxSizeKB(photo)} KB so it loads on a slow connection.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setPhoto(null)}
+                          className="text-[11px] font-bold text-rose-600 hover:underline mt-1"
+                        >
+                          Remove photo
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <label className="flex items-center justify-center gap-2 py-5 rounded-2xl border-2 border-dashed border-slate-300 hover:border-teal-400 hover:bg-teal-50/50 text-slate-500 hover:text-teal-700 font-bold text-xs cursor-pointer transition min-h-[64px]">
+                      {photoBusy ? (
+                        <><Loader2 className="w-4 h-4 animate-spin" /> Preparing photo…</>
+                      ) : (
+                        <><Camera className="w-4 h-4" /> Take photo or choose from gallery</>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handlePhotoPick}
+                        disabled={photoBusy}
+                      />
+                    </label>
+                  )}
+
+                  {photoError && (
+                    <p className="text-[11px] font-bold text-rose-600">{photoError}</p>
+                  )}
+
+                  {/* ---- What kind of memory ---- */}
+                  <div className="grid grid-cols-3 gap-2 pt-1">
+                    {[
+                      { id: 'Person', label: 'A person', icon: UserIcon },
+                      { id: 'Place', label: 'A place', icon: MapPinned },
+                      { id: 'Event', label: 'An event', icon: Sparkles }
+                    ].map(opt => {
+                      const active = category === opt.id;
+                      const OptIcon = opt.icon;
+                      return (
+                        <button
+                          key={opt.id}
+                          type="button"
+                          onClick={() => { setCategory(opt.id); if (opt.id !== 'Place') setIsHome(false); }}
+                          className={`flex flex-col items-center gap-1 py-2.5 rounded-xl border-2 text-[11px] font-black transition ${
+                            active
+                              ? 'bg-teal-50 border-teal-400 text-teal-800'
+                              : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50'
+                          }`}
+                        >
+                          <OptIcon className="w-4 h-4" />
+                          {opt.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Marking the home pins it to the top of My People & Places,
+                      where "is this my home?" gets answered without asking. */}
+                  {category === 'Place' && (
+                    <label className="flex items-center gap-2.5 bg-teal-50 border border-teal-200 rounded-xl px-3 py-2.5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isHome}
+                        onChange={(e) => setIsHome(e.target.checked)}
+                        className="w-4 h-4 accent-teal-600"
+                      />
+                      <HomeIcon className="w-4 h-4 text-teal-700" />
+                      <span className="text-xs font-bold text-teal-900">
+                        This is their home
+                      </span>
+                    </label>
+                  )}
+                </div>
+
+                {/* ---- Who or what is it ---- */}
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    Who or what is this? <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder={category === 'Person' ? 'e.g. Ananya' : 'e.g. My Home'}
+                    className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 outline-none"
+                  />
+                  <p className="text-[10px] text-slate-400 mt-1">
+                    Just the name. This is the answer in the recognition activity.
+                  </p>
+                </div>
+
                 <input
                   type="text"
                   required
@@ -256,6 +420,22 @@ export default function MemoryLanePage() {
                   placeholder="e.g. Your granddaughter Ananya at the school annual day."
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900"
                 />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-slate-700 block mb-1">
+                  Spoken reassurance <span className="font-medium text-slate-400">(read aloud)</span>
+                </label>
+                <input
+                  type="text"
+                  value={voiceNote}
+                  onChange={(e) => setVoiceNote(e.target.value)}
+                  placeholder="e.g. This is Ananya, your granddaughter. She visits on Sundays."
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900"
+                />
+                <p className="text-[10px] text-slate-400 mt-1">
+                  Leave blank and we will build a gentle sentence for you.
+                </p>
               </div>
 
               <div>

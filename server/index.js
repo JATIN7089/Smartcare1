@@ -11,8 +11,96 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '8mb' }));
 app.use(express.static(distPath));
+
+
+/* ============================================================
+   DEMO ACCOUNTS
+   ------------------------------------------------------------
+   A deliberately simple credential store for the SIH demo. Passwords are
+   kept in plain text here ONLY because this is an offline demo with fixed
+   judge-facing logins; a production deployment would hash them and back
+   this with the real user database.
+
+   The important part for the product is the ROLE each account carries:
+   a senior can never open the caregiver or clinical portals, because the
+   role is decided by the credentials, not by a UI toggle.
+   ============================================================ */
+const ACCOUNTS = [
+  {
+    id: 'user-asha-68',
+    username: 'asha',
+    // No password and no PIN by design. Asking someone living with dementia
+    // to recall a secret is exactly the barrier this product exists to remove,
+    // so the senior's device opens straight into their own home screen.
+    role: 'elderly',
+    name: 'Asha Sharma',
+    detail: 'Tezpur, Assam • 68 yrs',
+    avatar: 'A'
+  },
+  {
+    id: 'care-sunita',
+    username: 'sunita',
+    password: 'care123',
+    role: 'caregiver',
+    name: 'Sunita Sharma',
+    detail: 'Daughter • Primary Caregiver',
+    avatar: 'S',
+    linkedPatients: ['user-asha-68']
+  },
+  {
+    id: 'cho-barua',
+    username: 'barua',
+    password: 'doctor123',
+    role: 'healthcare',
+    name: 'Dr. B. K. Barua',
+    detail: 'Community Health Officer • Sonitpur SDH',
+    avatar: 'B',
+    linkedPatients: ['user-asha-68', 'user-biren-74', 'user-mary-71']
+  }
+];
+
+/** Active sessions: token -> account id. In-memory for the demo. */
+const SESSIONS = new Map();
+
+function publicAccount(acc) {
+  if (!acc) return null;
+  const { password, pin, ...safe } = acc;
+  return safe;
+}
+
+function newToken() {
+  return 'tok-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+/** Resolves the account behind an Authorization: Bearer <token> header. */
+function accountFromRequest(req) {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  if (!token) return null;
+  const accountId = SESSIONS.get(token);
+  if (!accountId) return null;
+  return ACCOUNTS.find(a => a.id === accountId) || null;
+}
+
+/** Express guard: rejects anyone whose role is not in `allowed`. */
+function requireRole(...allowed) {
+  return (req, res, next) => {
+    const acc = accountFromRequest(req);
+    if (!acc) {
+      return res.status(401).json({ success: false, message: 'Please sign in to continue.' });
+    }
+    if (!allowed.includes(acc.role)) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account does not have access to this area.'
+      });
+    }
+    req.account = acc;
+    next();
+  };
+}
 
 // In-Memory Database store with rich initial data
 let state = {
@@ -194,7 +282,10 @@ let state = {
       year: '2025',
       question: 'Who is this visiting you during Rongali Bihu?',
       answer: 'Rita, your elder daughter who lives in Guwahati.',
-      category: 'Family',
+      category: 'Person',
+      subject: 'Rita',
+      voiceNote: 'This is Rita, your elder daughter. She lives in Guwahati and calls you every evening.',
+      photo: '/memories/rita.jpg',
       notes: 'Rita calls every evening at 6:00 PM to talk about the grandchildren.',
       themeColor: '#3b82f6'
     },
@@ -207,6 +298,9 @@ let state = {
       question: 'Which festival were we celebrating when we prepared fresh Pitha and Laru?',
       answer: 'Rongali Bihu in the month of Bohag!',
       category: 'Event',
+      subject: 'Rongali Bihu',
+      voiceNote: 'This is Rongali Bihu at your Tezpur courtyard.',
+      photo: null,
       notes: 'Asha made Til Pitha and played the Tokari with her grandchildren.',
       themeColor: '#ea580c'
     },
@@ -219,6 +313,9 @@ let state = {
       question: 'Where did we take the ferry across the mighty Brahmaputra river?',
       answer: 'Majuli Island, visiting the peaceful Satras and pottery makers.',
       category: 'Place',
+      subject: 'Majuli Island',
+      voiceNote: 'This is Majuli Island, where you took the ferry across the Brahmaputra.',
+      photo: null,
       notes: 'Asha loved hearing the devotional Borgeet and seeing traditional masks.',
       themeColor: '#0d9488'
     },
@@ -230,8 +327,42 @@ let state = {
       year: '2024',
       question: 'Whose science exhibition did you attend with your red silk chador?',
       answer: 'Aarav, your grandson who won the science trophy.',
-      category: 'Family',
+      category: 'Person',
+      subject: 'Aarav',
+      voiceNote: 'This is Aarav, your grandson. He won the science trophy.',
+      photo: '/memories/aarav.jpg',
       notes: 'Aarav loves when Dadi tells stories about the Eastern Himalayas.',
+      themeColor: '#7c3aed'
+    },
+    {
+      id: 'mem-5',
+      title: 'My Home',
+      relationship: 'Home',
+      location: 'Tezpur, Assam',
+      year: 'Present',
+      question: 'Is this your home?',
+      answer: 'Yes, this is your home in Tezpur where you live.',
+      category: 'Place',
+      subject: 'My Home',
+      voiceNote: 'Yes, this is your home in Tezpur. You are safe here.',
+      photo: '/memories/home.jpg',
+      isHome: true,
+      notes: 'The green gate and the tulsi plant in the courtyard.',
+      themeColor: '#0d9488'
+    },
+    {
+      id: 'mem-6',
+      title: 'Sunita — Younger Daughter',
+      relationship: 'Daughter',
+      location: 'Tezpur, Assam',
+      year: 'Present',
+      question: 'Who is this that looks after you every day?',
+      answer: 'Sunita, your younger daughter and primary caregiver.',
+      category: 'Person',
+      subject: 'Sunita',
+      voiceNote: 'This is Sunita, your younger daughter. She looks after you every day.',
+      photo: '/memories/sunita.jpg',
+      notes: 'Sunita manages the reminders and medicines.',
       themeColor: '#7c3aed'
     }
   ],
@@ -389,17 +520,135 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Auth & Role
-app.get('/api/auth/current-user', (req, res) => {
-  res.json(state.activeUser);
+/* ============================================================
+   AUTHENTICATION
+   ============================================================ */
+
+/** The three demo identities, shown on the sign-in screen. */
+app.get('/api/auth/accounts', (req, res) => {
+  res.json(ACCOUNTS.map(a => ({
+    username: a.username,
+    role: a.role,
+    name: a.name,
+    detail: a.detail,
+    avatar: a.avatar,
+    requiresPassword: a.role !== 'elderly'
+  })));
 });
 
-app.post('/api/auth/switch-role', (req, res) => {
-  const { role } = req.body;
-  if (role) {
-    state.activeUser.role = role;
+/** Sign in with username + password, or username + 4-digit PIN. */
+function issueToken(acc) {
+  const token = newToken();
+  SESSIONS.set(token, acc.id);
+  return token;
+}
+
+/**
+ * Senior entry — no credentials.
+ *
+ * Someone living with memory loss cannot be asked to remember a password or
+ * a PIN; they would be locked out of the very reminders and support meant to
+ * help them. Their phone is the key. The account is still role-locked, so
+ * this door only ever opens the elderly experience, never a clinical one.
+ */
+app.post('/api/auth/enter', (req, res) => {
+  const { username } = req.body || {};
+  const id = String(username || 'asha').trim().toLowerCase();
+
+  const acc = ACCOUNTS.find(a => a.username === id && a.role === 'elderly');
+  if (!acc) {
+    return res.status(404).json({ success: false, message: 'No resident profile found on this device.' });
   }
-  res.json({ success: true, user: state.activeUser });
+
+  state.activeUser.role = 'elderly';
+  res.json({ success: true, token: issueToken(acc), account: publicAccount(acc) });
+});
+
+/** Staff sign-in. Caregivers and health workers only — they handle real data. */
+app.post('/api/auth/login', (req, res) => {
+  const { username, password } = req.body || {};
+  const id = String(username || '').trim().toLowerCase();
+
+  const acc = ACCOUNTS.find(a => a.username === id);
+  if (!acc || acc.role === 'elderly') {
+    return res.status(401).json({ success: false, message: 'We could not find that account.' });
+  }
+
+  if (!password || password !== acc.password) {
+    return res.status(401).json({ success: false, message: 'Incorrect password. Please try again.' });
+  }
+
+  res.json({ success: true, token: issueToken(acc), account: publicAccount(acc) });
+});
+
+/**
+ * Staff registration. A new caregiver or health worker creates their own
+ * account here; seniors never register, their profile is set up for them.
+ */
+app.post('/api/auth/register', (req, res) => {
+  const { name, username, password, role, detail, joinCode } = req.body || {};
+
+  const id = String(username || '').trim().toLowerCase();
+  const fullName = String(name || '').trim();
+
+  if (!fullName || !id || !password) {
+    return res.status(400).json({ success: false, message: 'Please fill in your name, username and password.' });
+  }
+  if (!/^[a-z0-9_.]{3,20}$/.test(id)) {
+    return res.status(400).json({ success: false, message: 'Username must be 3-20 letters, numbers, dot or underscore.' });
+  }
+  if (String(password).length < 6) {
+    return res.status(400).json({ success: false, message: 'Password must be at least 6 characters.' });
+  }
+  if (!['caregiver', 'healthcare'].includes(role)) {
+    return res.status(400).json({ success: false, message: 'Choose whether you are a caregiver or a health worker.' });
+  }
+  if (ACCOUNTS.some(a => a.username === id)) {
+    return res.status(409).json({ success: false, message: 'That username is already taken.' });
+  }
+
+  // A caregiver must prove they belong to the family, using the join code
+  // printed in the senior's profile. Health workers are verified by the
+  // facility, represented here by the same shared code.
+  if (joinCode && String(joinCode).trim().toUpperCase() !== state.activeUser.joinCode) {
+    return res.status(403).json({ success: false, message: 'That join code does not match this family.' });
+  }
+  if (role === 'caregiver' && !joinCode) {
+    return res.status(400).json({ success: false, message: 'Enter the join code from the senior\'s profile.' });
+  }
+
+  const acc = {
+    id: `${role}-${id}`,
+    username: id,
+    password: String(password),
+    role,
+    name: fullName,
+    detail: String(detail || '').trim() ||
+      (role === 'caregiver' ? 'Family Caregiver' : 'Community Health Officer'),
+    avatar: fullName[0].toUpperCase(),
+    linkedPatients: ['user-asha-68']
+  };
+  ACCOUNTS.push(acc);
+
+  res.status(201).json({ success: true, token: issueToken(acc), account: publicAccount(acc) });
+});
+
+app.post('/api/auth/logout', (req, res) => {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  if (token) SESSIONS.delete(token);
+  res.json({ success: true });
+});
+
+/** Restores a session on page reload. */
+app.get('/api/auth/me', (req, res) => {
+  const acc = accountFromRequest(req);
+  if (!acc) return res.status(401).json({ success: false, message: 'Not signed in.' });
+  res.json({ success: true, account: publicAccount(acc) });
+});
+
+app.get('/api/auth/current-user', (req, res) => {
+  res.json(state.activeUser);
 });
 
 // Join code linking
@@ -575,7 +824,11 @@ app.get('/api/memories', (req, res) => {
 });
 
 app.post('/api/memories', (req, res) => {
-  const { title, relationship, location, year, question, answer, category, notes, themeColor } = req.body;
+  const {
+    title, relationship, location, year, question, answer,
+    category, notes, themeColor, photo, subject, voiceNote, isHome
+  } = req.body;
+
   const newMemory = {
     id: `mem-${Date.now()}`,
     title: title || 'Cherished Memory',
@@ -584,7 +837,15 @@ app.post('/api/memories', (req, res) => {
     year: year || '2025',
     question: question || 'Do you remember this special day?',
     answer: answer || 'A joyful family celebration.',
-    category: category || 'Family',
+    category: category || 'Person',
+    // Who or what the photo shows — this is the answer the recognition
+    // game checks against, so it is kept separate from the display title.
+    subject: subject || title || 'Someone special',
+    // Spoken reassurance, read aloud when the senior asks or answers.
+    voiceNote: voiceNote || '',
+    // A compressed data URL uploaded by the caregiver.
+    photo: photo || null,
+    isHome: Boolean(isHome),
     notes: notes || '',
     themeColor: themeColor || '#3b82f6'
   };
@@ -593,11 +854,11 @@ app.post('/api/memories', (req, res) => {
 });
 
 // Caregiver & Healthcare Portals
-app.get('/api/caregiver/patients', (req, res) => {
+app.get('/api/caregiver/patients', requireRole('caregiver', 'healthcare'), (req, res) => {
   res.json(state.connectedPatients);
 });
 
-app.get('/api/caregiver/patients/:id', (req, res) => {
+app.get('/api/caregiver/patients/:id', requireRole('caregiver', 'healthcare'), (req, res) => {
   const patient = state.connectedPatients.find(p => p.id === req.params.id) || state.connectedPatients[0];
   res.json({
     patient,
@@ -613,7 +874,7 @@ app.get('/api/caregiver/patients/:id', (req, res) => {
   });
 });
 
-app.post('/api/caregiver/notes', (req, res) => {
+app.post('/api/caregiver/notes', requireRole('caregiver', 'healthcare'), (req, res) => {
   const { author, text } = req.body;
   const note = {
     id: `note-${Date.now()}`,
@@ -641,7 +902,7 @@ app.get('/api/activity-plans', (req, res) => {
   res.json(state.activityPlans);
 });
 
-app.post('/api/activity-plans', (req, res) => {
+app.post('/api/activity-plans', requireRole('healthcare'), (req, res) => {
   const { title, createdBy, priority, tasks } = req.body;
   const plan = {
     id: `plan-${Date.now()}`,
@@ -670,7 +931,7 @@ app.put('/api/activity-plans/:planId/tasks/:taskId/toggle', (req, res) => {
 });
 
 // Admin Metrics
-app.get('/api/admin/metrics', (req, res) => {
+app.get('/api/admin/metrics', requireRole('healthcare'), (req, res) => {
   res.json(state.adminMetrics);
 });
 

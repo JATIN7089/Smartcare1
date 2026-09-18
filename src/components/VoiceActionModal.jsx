@@ -16,33 +16,36 @@ import {
 
 export default function VoiceActionModal({ isOpen, onClose }) {
   const navigate = useNavigate();
-  const { user, role, reminders, language, t } = useApp();
+  const { user, role, reminders, routine, cognitiveProfile, language, t, handleToggleReminder } = useApp();
 
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [feedback, setFeedback] = useState('');
   const [status, setStatus] = useState('idle'); // 'idle' | 'listening' | 'acting' | 'error'
   const [manualInput, setManualInput] = useState('');
+  const [replyChips, setReplyChips] = useState([]);
 
   const modalRef = useRef(null);
 
   // Suggested voice commands
   const quickChips = [
-    { label: '▶️ Start Memory Game', cmd: 'Start memory game' },
-    { label: '🫁 Start Breathing', cmd: 'Start breathing' },
-    { label: '⏰ Show My Reminders', cmd: 'Show my reminders' },
-    { label: '🎯 Start Attention Game', cmd: 'Start attention game' },
-    { label: '🧩 Start Pattern Game', cmd: 'Start pattern game' },
-    { label: '📈 Show My Progress', cmd: 'Show my progress' },
-    { label: '🌿 Start Grounding', cmd: 'Start grounding' },
-    { label: '🏠 Go Home', cmd: 'Go home' }
+    { label: '🎮 Game khelna hai', cmd: 'game khelna hai' },
+    { label: '💊 Kaunsi medicine li?', cmd: 'kaunsi medicine li thi' },
+    { label: '✅ Maine dawai kha li', cmd: 'maine dawai kha li' },
+    { label: '⏰ Agli dawai kab hai?', cmd: 'agli dawai kab hai' },
+    { label: '▶️ Start Memory Game', cmd: 'start memory game' },
+    { label: '🫁 Start Breathing', cmd: 'start breathing' },
+    { label: '📈 How am I doing?', cmd: 'how am I doing' },
+    { label: '🏠 Go Home', cmd: 'go home' }
   ];
 
   useEffect(() => {
     if (isOpen) {
       setTranscript('');
       setFeedback('');
+      setReplyChips([]);
       setStatus('listening');
+      voiceCommandService.resetSession();
       startVoiceListening();
     } else {
       stopVoice();
@@ -58,31 +61,46 @@ export default function VoiceActionModal({ isOpen, onClose }) {
     setIsListening(false);
   };
 
+  /** Everything the NLU + dialogue engine needs, in one place. */
+  const buildContext = () => ({
+    navigate,
+    user,
+    reminders,
+    routine,
+    cognitiveProfile,
+    role,
+    language,
+    onCompleteReminder: handleToggleReminder,
+    onComplete: handleEngineResult
+  });
+
+  /**
+   * Show the assistant's answer. The pop-up only closes when it actually
+   * navigated somewhere — if the assistant answered a question or asked one
+   * back, it stays open so the user can read and reply.
+   */
+  const handleEngineResult = (res) => {
+    setReplyChips(res.chips || []);
+
+    if (res.success) {
+      setStatus('acting');
+      setFeedback(res.text || 'Done.');
+      if (!res.keepOpen) {
+        setTimeout(() => onClose(), 1400);
+      }
+    } else {
+      setStatus('error');
+      setFeedback(res.text || "Sorry, I didn't understand. Try 'start memory game' or 'which medicine did I take'.");
+    }
+  };
+
   const startVoiceListening = () => {
     setIsListening(true);
     setStatus('listening');
     setFeedback(t('listening', 'Listening... Speak now.'));
 
     const started = voiceCommandService.listenAndExecute({
-      context: {
-        navigate,
-        user,
-        reminders,
-        role,
-        language,
-        onComplete: (res) => {
-          if (res.success) {
-            setStatus('acting');
-            setFeedback(res.text || 'Action complete.');
-            setTimeout(() => {
-              onClose();
-            }, 1200);
-          } else {
-            setStatus('error');
-            setFeedback("Sorry, I didn't understand. Try saying 'Open memory game' or 'Start breathing'.");
-          }
-        }
-      },
+      context: buildContext(),
       onListeningStart: () => {
         setIsListening(true);
         setStatus('listening');
@@ -116,24 +134,7 @@ export default function VoiceActionModal({ isOpen, onClose }) {
     setTranscript(text);
     setStatus('acting');
 
-    const result = voiceCommandService.processTextCommand(text, {
-      navigate,
-      user,
-      reminders,
-      role,
-      language,
-      onComplete: (res) => {
-        if (res.success) {
-          setFeedback(res.text || 'Action executed.');
-          setTimeout(() => {
-            onClose();
-          }, 900);
-        } else {
-          setStatus('error');
-          setFeedback("Sorry, I didn't understand. Try saying 'Open memory game' or 'Start breathing'.");
-        }
-      }
-    });
+    voiceCommandService.processTextCommand(text, buildContext());
 
     setManualInput('');
   };
@@ -215,13 +216,13 @@ export default function VoiceActionModal({ isOpen, onClose }) {
           </p>
         </div>
 
-        {/* Quick Suggestion Chips */}
+        {/* Suggestion chips — follow-ups from the assistant take priority */}
         <div className="space-y-2">
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block text-center">
-            Or tap any action:
+            {replyChips.length > 0 ? 'Tap to reply:' : 'Or tap any action:'}
           </span>
           <div className="flex flex-wrap gap-2 justify-center max-h-36 overflow-y-auto p-1">
-            {quickChips.map((chip, idx) => (
+            {(replyChips.length > 0 ? replyChips : quickChips).map((chip, idx) => (
               <button
                 key={idx}
                 onClick={() => handleManualExecute(chip.cmd)}

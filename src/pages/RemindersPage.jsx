@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
 import { soundService } from '../services/soundService.js';
 import { voiceService } from '../services/voiceService.js';
+import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 import { 
   Bell, 
   Plus, 

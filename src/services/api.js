@@ -4,6 +4,7 @@
  */
 
 import { syncEngine } from './syncEngine.js';
+import { authService } from './authService.js';
 
 export const api = {
   // Current user
@@ -211,7 +212,7 @@ export const api = {
   // Caregiver patient detail
   async getCaregiverPatient(id = 'user-asha-68') {
     try {
-      const res = await fetch(`/api/caregiver/patients/${id}`);
+      const res = await fetch(`/api/caregiver/patients/${id}`, { headers: authService.authHeaders() });
       if (res.ok) return await res.json();
     } catch (e) {}
     return null;
@@ -219,7 +220,7 @@ export const api = {
 
   async getConnectedPatients() {
     try {
-      const res = await fetch('/api/caregiver/patients');
+      const res = await fetch('/api/caregiver/patients', { headers: authService.authHeaders() });
       if (res.ok) return await res.json();
     } catch (e) {}
     return [];
@@ -286,7 +287,7 @@ export const api = {
   // Admin
   async getAdminMetrics() {
     try {
-      const res = await fetch('/api/admin/metrics');
+      const res = await fetch('/api/admin/metrics', { headers: authService.authHeaders() });
       if (res.ok) return await res.json();
     } catch (e) {}
     return {};
