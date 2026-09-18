@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -968,7 +969,41 @@ app.post('/api/sync', (req, res) => {
 // Serve frontend for non-API routes
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
-  res.sendFile(path.join(distPath, 'index.html'));
+
+  const indexPath = path.join(distPath, 'index.html');
+
+  /* Port 5000 only serves the UI once `npm run build` has produced dist/.
+     On a fresh clone it has not, and sendFile() would throw a bare ENOENT
+     that kills the request with an unhelpful 500 — which looks exactly
+     like a frozen splash screen. Explain instead. */
+  if (!fs.existsSync(indexPath)) {
+    return res.status(503).type('html').send(`<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmarTCARE API — no frontend build found</title>
+<style>
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f0fdfa;
+       font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#134e4a;padding:24px}
+  .card{max-width:520px;background:#fff;border:1px solid #99f6e4;border-radius:20px;padding:28px 30px;
+        box-shadow:0 12px 32px rgba(13,148,136,.12)}
+  h1{margin:0 0 8px;font-size:1.25rem}
+  p{margin:0 0 14px;line-height:1.6;font-size:.95rem}
+  code{background:#ccfbf1;padding:2px 7px;border-radius:6px;font-size:.88rem}
+  ol{margin:0;padding-left:20px;line-height:1.9;font-size:.92rem}
+  a{color:#0d9488;font-weight:700}
+</style></head><body>
+<div class="card">
+  <h1>This port serves the API, not the app</h1>
+  <p>Port <code>5000</code> is the Express REST API. It can also host the built
+     frontend, but no <code>dist/</code> folder exists yet, so there is nothing to serve.</p>
+  <ol>
+    <li>For development open <a href="http://localhost:3000">http://localhost:3000</a> (the Vite server).</li>
+    <li>To make this port serve the UI, run <code>npm run build</code> first.</li>
+  </ol>
+</div></body></html>`);
+  }
+
+  res.sendFile(indexPath);
 });
 
 app.listen(PORT, '0.0.0.0', () => {

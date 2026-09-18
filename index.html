@@ -157,6 +157,55 @@
         animation: sc-sheen 1.5s ease-in-out infinite;
       }
 
+      /* ---------- Load-failure panel ----------
+         Only revealed by the watchdog below when /src/main.jsx never
+         executed. Replaces an infinite silent 90% hang with the actual
+         reason plus the steps that fix it. */
+      .sc-fail {
+        width: min(460px, 86vw);
+        margin-top: 22px;
+        padding: 16px 18px;
+        border-radius: 16px;
+        border: 1px solid rgba(180, 83, 9, 0.35);
+        background: rgba(255, 251, 235, 0.94);
+        text-align: left;
+        animation: sc-rise 0.4s ease-out both;
+      }
+
+      .sc-fail[hidden] { display: none; }
+
+      .sc-fail-title {
+        margin: 0 0 6px;
+        font-size: 0.98rem;
+        font-weight: 800;
+        color: #92400e;
+      }
+
+      .sc-fail-reason {
+        margin: 0 0 10px;
+        font-size: 0.84rem;
+        font-weight: 600;
+        color: #b45309;
+        word-break: break-word;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      .sc-fail ol {
+        margin: 0;
+        padding-left: 18px;
+        font-size: 0.82rem;
+        line-height: 1.65;
+        color: #78350f;
+      }
+
+      .sc-fail code {
+        padding: 1px 5px;
+        border-radius: 6px;
+        background: rgba(180, 83, 9, 0.12);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.8rem;
+      }
+
       .sc-meta {
         display: flex;
         align-items: center;
@@ -318,6 +367,16 @@
           <span class="sc-status" id="sc-status">Waking up your companion</span>
           <span class="sc-pct" id="sc-pct">0%</span>
         </div>
+
+        <div class="sc-fail" id="sc-fail" hidden>
+          <p class="sc-fail-title">The app bundle did not finish loading</p>
+          <p class="sc-fail-reason" id="sc-fail-reason"></p>
+          <ol>
+            <li>Make sure you opened <code>http://localhost:3000</code> &mdash; port <code>5000</code> is the API.</li>
+            <li>Stop the dev server, delete the <code>node_modules/.vite</code> folder, then run <code>npm run dev</code> again.</li>
+            <li>Still stuck? Open DevTools (F12) &rarr; Console and read the first red error.</li>
+          </ol>
+        </div>
       </div>
 
       <div class="sc-footer">
@@ -348,6 +407,8 @@
 
         var progress = 0;
         var stepIndex = -1;
+        var finished = false;
+        var watchdog = null;
 
         function setStatus(text) {
           status.classList.add('is-swapping');
@@ -374,22 +435,87 @@
         }
 
         // Ease towards 90% while loading; main.jsx calls finish() for the rest.
+        // Clamped so it lands on exactly 90 instead of overshooting to 90.x
+        // (which used to render as a flickering "91%").
         var timer = window.setInterval(function () {
           if (progress >= 90) return;
-          progress += Math.max(0.8, (90 - progress) * 0.045);
+          progress = Math.min(90, progress + Math.max(0.8, (90 - progress) * 0.045));
           render();
         }, 90);
 
         render();
 
         window.__SMARTCARE_SPLASH_FINISH__ = function (onDone) {
+          finished = true;
           window.clearInterval(timer);
+          window.clearTimeout(watchdog);
+
+          // Self-healing: if the watchdog had already given up but the bundle
+          // then arrives, retract the failure panel rather than flashing it
+          // during the fade-out.
+          var panel = document.getElementById('sc-fail');
+          if (panel) panel.hidden = true;
+          bar.style.background = '';
+
           setStatus('Ready');
           progress = 100;
           bar.style.width = '100%';
           pct.textContent = '100%';
           window.setTimeout(function () { if (onDone) onDone(); }, 420);
         };
+
+        /* --------------------------------------------------------
+           Watchdog.
+
+           The bar above deliberately eases to 90% and then waits for
+           main.jsx to call finish(). If the module graph fails to link
+           (stale Vite dep cache, a missing export, the wrong port), that
+           call never happens and the splash used to sit at 90% forever
+           with no clue why. Instead, surface the real reason.
+
+           14s is safely above main.jsx's own 6s fallback, so this only
+           ever fires when main.jsx genuinely never executed.
+           -------------------------------------------------------- */
+        function showFailure(reason) {
+          if (finished || progress >= 100) return;
+          finished = true;
+          window.clearInterval(timer);
+          var panel = document.getElementById('sc-fail');
+          var reasonEl = document.getElementById('sc-fail-reason');
+          if (reasonEl && reason) reasonEl.textContent = reason;
+          if (panel) panel.hidden = false;
+          status.textContent = 'Loading stopped';
+          bar.style.background = 'linear-gradient(90deg, #f59e0b, #ef4444)';
+        }
+
+        window.__SMARTCARE_SPLASH_FAIL__ = showFailure;
+
+        // Capture phase, so failed <script>/<link> resource loads are seen too.
+        window.addEventListener('error', function (e) {
+          var el = e.target;
+          if (el && el !== window && (el.tagName === 'SCRIPT' || el.tagName === 'LINK')) {
+            showFailure('Could not load ' + (el.src || el.href || 'a required file'));
+          } else if (e && e.message) {
+            showFailure(e.message);
+          }
+        }, true);
+
+        function armWatchdog(ms, message) {
+          window.clearTimeout(watchdog);
+          watchdog = window.setTimeout(function () { showFailure(message); }, ms);
+        }
+
+        // Ceiling for a genuinely slow first load (cold Vite start, big dep
+        // graph). Deliberately generous so a slow laptop never gets a false
+        // "failed to load" panel while the bundle is still arriving.
+        armWatchdog(20000, 'No response from /src/main.jsx within 20 seconds.');
+
+        // Once every resource has arrived the window fires `load` — a 404'd or
+        // broken module still counts, so from here main.jsx has no excuse left.
+        // Short grace period means failures surface in ~3s instead of ~20s.
+        window.addEventListener('load', function () {
+          armWatchdog(3000, 'The page finished loading, but the app never started.');
+        }, { once: true });
       })();
     </script>
 
