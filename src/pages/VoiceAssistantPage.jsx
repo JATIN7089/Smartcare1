@@ -17,7 +17,9 @@ import {
   Info,
   Clock,
   Shield,
-  Globe
+  Globe,
+  ExternalLink,
+  AlertTriangle
 } from 'lucide-react';
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
@@ -30,6 +32,8 @@ export default function VoiceAssistantPage() {
   const [conversation, setConversation] = useState([]);
   const [lastAction, setLastAction] = useState(null);
   const [micError, setMicError] = useState(null);
+  const [micErrorCode, setMicErrorCode] = useState(null);
+  const [isIframe, setIsIframe] = useState(false);
 
   // Multi-turn memory: when the assistant asks a clarifying question it stores
   // the awaited slot here, so the next utterance is read in that context.
@@ -39,6 +43,18 @@ export default function VoiceAssistantPage() {
   const [chips, setChips] = useState([]);
 
   const conversationEndRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      setIsIframe(window.self !== window.top);
+    } catch {
+      setIsIframe(true);
+    }
+  }, []);
+
+  const openInNewTab = () => {
+    window.open(window.location.href, '_blank');
+  };
 
   // Initialize or update conversation on role or language change
   useEffect(() => {
@@ -149,6 +165,7 @@ export default function VoiceAssistantPage() {
       setIsListening(false);
     } else {
       setMicError(null);
+      setMicErrorCode(null);
       const started = voiceService.startListening({
         lang: language,
         onResult: (transcript) => {
@@ -157,7 +174,18 @@ export default function VoiceAssistantPage() {
         },
         onError: (err) => {
           setIsListening(false);
-          setMicError('Microphone not recognized or permission blocked. Please use the quick prompts or text input below.');
+          setMicErrorCode(err);
+          if (err === 'IFRAME_BLOCKED') {
+            setMicError('Microphone blocked in preview iframe. Open in new tab to use voice.');
+          } else if (err === 'PERMISSION_DENIED') {
+            setMicError('Microphone permission denied. Click 🔒 icon near address bar → Allow microphone, then reload.');
+          } else if (err === 'NO_SPEECH') {
+            setMicError('No speech detected. Speak louder or use text input below.');
+          } else if (err === 'NOT_SECURE_CONTEXT') {
+            setMicError('Microphone needs HTTPS secure context. Open in new tab.');
+          } else {
+            setMicError('Microphone not recognized or permission blocked. Please use the quick prompts or text input below.');
+          }
         },
         onEnd: () => {
           setIsListening(false);
@@ -167,7 +195,18 @@ export default function VoiceAssistantPage() {
       if (started) {
         setIsListening(true);
       } else {
-        setMicError('Speech recognition is not available in this browser environment. You can tap any sample question below or type.');
+        // Check if in iframe
+        try {
+          if (window.self !== window.top) {
+            setMicErrorCode('IFRAME_BLOCKED');
+            setMicError('Microphone blocked in preview iframe. Click button below to open in new tab.');
+          } else {
+            setMicError('Speech recognition is not available in this browser. Use Chrome/Edge desktop or tap sample questions.');
+          }
+        } catch {
+          setMicErrorCode('IFRAME_BLOCKED');
+          setMicError('Microphone blocked in preview iframe. Open in new tab for voice.');
+        }
       }
     }
   };
@@ -262,8 +301,31 @@ export default function VoiceAssistantPage() {
         </p>
 
         {micError && (
-          <div className="bg-amber-100 text-amber-900 border border-amber-300 text-xs px-4 py-2 rounded-xl max-w-md">
-            {micError}
+          <div className="bg-amber-100 text-amber-900 border border-amber-300 text-xs px-4 py-3 rounded-xl max-w-md space-y-2">
+            <p>{micError}</p>
+            {(micErrorCode === 'IFRAME_BLOCKED' || isIframe) && (
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-[11px] font-bold bg-amber-200/50 p-2 rounded-lg">
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                  <span>Preview iframe me mic block hota hai - ye browser security hai, aapki galti nahi</span>
+                </div>
+                <button
+                  onClick={openInNewTab}
+                  className="w-full bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold px-3 py-2.5 rounded-xl flex items-center justify-center gap-2 transition"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Open in New Tab - Voice Enable Hoga
+                </button>
+                <p className="text-[10px] text-amber-800">New tab me khulne ke baad mic pe click karo → Allow pe click karo → bolna start karo</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {isIframe && !micError && (
+          <div className="bg-sky-50 text-sky-900 border border-sky-200 text-[11px] px-3 py-2 rounded-xl max-w-md flex items-center gap-2">
+            <Info className="w-4 h-4 flex-shrink-0" />
+            <span>Tip: Voice ke liye best experience ke liye <button onClick={openInNewTab} className="underline font-bold">new tab me open karo</button> - mic permission easily milega</span>
           </div>
         )}
       </div>

@@ -69,9 +69,30 @@ class VoiceService {
     }
   }
 
+  isInIframe() {
+    try {
+      return typeof window !== 'undefined' && window.self !== window.top;
+    } catch {
+      return true;
+    }
+  }
+
+  isSecureContext() {
+    return typeof window !== 'undefined' && window.isSecureContext;
+  }
+
   startListening({ onResult, onError, onEnd, lang = 'en' }) {
     if (!this.recognition) {
-      if (onError) onError('Speech recognition is not supported in this browser. Please use text input or suggestions.');
+      const msg = this.isInIframe()
+        ? 'IFRAME_BLOCKED'
+        : 'Speech recognition is not supported in this browser. Please use text input or suggestions.';
+      if (onError) onError(msg);
+      return false;
+    }
+
+    // Check secure context - SpeechRecognition requires HTTPS
+    if (!this.isSecureContext()) {
+      if (onError) onError('NOT_SECURE_CONTEXT');
       return false;
     }
 
@@ -86,7 +107,15 @@ class VoiceService {
       };
       this.recognition.onerror = (event) => {
         this.isListening = false;
-        if (onError) onError(event.error || 'Microphone error');
+        const errorType = event.error || 'unknown';
+        // Handle common errors with specific codes
+        if (errorType === 'not-allowed' || errorType === 'service-not-allowed') {
+          if (onError) onError(this.isInIframe() ? 'IFRAME_BLOCKED' : 'PERMISSION_DENIED');
+        } else if (errorType === 'no-speech') {
+          if (onError) onError('NO_SPEECH');
+        } else {
+          if (onError) onError(errorType);
+        }
       };
       this.recognition.onend = () => {
         this.isListening = false;
@@ -96,7 +125,12 @@ class VoiceService {
       return true;
     } catch (e) {
       this.isListening = false;
-      if (onError) onError('Could not access microphone');
+      const errMsg = e.message || '';
+      if (errMsg.includes('not-allowed') || this.isInIframe()) {
+        if (onError) onError('IFRAME_BLOCKED');
+      } else {
+        if (onError) onError('Could not access microphone: ' + errMsg);
+      }
       return false;
     }
   }

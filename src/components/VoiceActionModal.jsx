@@ -11,7 +11,9 @@ import {
   ArrowRight, 
   Send, 
   RotateCcw,
-  Volume2
+  Volume2,
+  ExternalLink,
+  AlertTriangle
 } from 'lucide-react';
 
 export default function VoiceActionModal({ isOpen, onClose }) {
@@ -24,8 +26,21 @@ export default function VoiceActionModal({ isOpen, onClose }) {
   const [status, setStatus] = useState('idle'); // 'idle' | 'listening' | 'acting' | 'error'
   const [manualInput, setManualInput] = useState('');
   const [replyChips, setReplyChips] = useState([]);
+  const [isIframeBlocked, setIsIframeBlocked] = useState(false);
 
   const modalRef = useRef(null);
+
+  const checkIframe = () => {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  };
+
+  const openInNewTab = () => {
+    window.open(window.location.href, '_blank');
+  };
 
   // Suggested voice commands
   const quickChips = [
@@ -114,7 +129,18 @@ export default function VoiceActionModal({ isOpen, onClose }) {
       onError: (err) => {
         setIsListening(false);
         setStatus('idle');
-        setFeedback('Microphone unavailable or paused. Tap any command below or type to try.');
+        if (err === 'IFRAME_BLOCKED') {
+          setIsIframeBlocked(true);
+          setFeedback('Microphone is blocked inside preview iframe. Please open in new tab.');
+        } else if (err === 'PERMISSION_DENIED') {
+          setFeedback('Microphone permission denied. Please allow mic from browser address bar (🔒 icon) and try again.');
+        } else if (err === 'NO_SPEECH') {
+          setFeedback('No speech detected. Please speak louder or tap a command below.');
+        } else if (err === 'NOT_SECURE_CONTEXT') {
+          setFeedback('Microphone needs HTTPS. Open in new tab.');
+        } else {
+          setFeedback('Microphone unavailable or paused. Tap any command below or type to try.');
+        }
       },
       onEnd: () => {
         setIsListening(false);
@@ -124,7 +150,12 @@ export default function VoiceActionModal({ isOpen, onClose }) {
     if (!started) {
       setIsListening(false);
       setStatus('idle');
-      setFeedback('Microphone unavailable in this browser. Tap a prompt below or type.');
+      if (checkIframe()) {
+        setIsIframeBlocked(true);
+        setFeedback('Microphone blocked in preview iframe. Open in new tab for voice control.');
+      } else {
+        setFeedback('Microphone unavailable in this browser. Tap a prompt below or type.');
+      }
     }
   };
 
@@ -202,7 +233,7 @@ export default function VoiceActionModal({ isOpen, onClose }) {
         </div>
 
         {/* Transcription / Result Box */}
-        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center space-y-1.5 min-h-[72px] flex flex-col items-center justify-center">
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center space-y-3 min-h-[72px] flex flex-col items-center justify-center">
           {transcript && (
             <p className="text-xs text-slate-500 font-medium">
               You said: <strong className="text-slate-800">"{transcript}"</strong>
@@ -214,6 +245,25 @@ export default function VoiceActionModal({ isOpen, onClose }) {
           }`}>
             {feedback || "Try saying: 'Start memory game' or 'Start breathing'"}
           </p>
+
+          {isIframeBlocked && (
+            <div className="w-full bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-2">
+              <div className="flex items-center justify-center gap-2 text-amber-800 text-xs font-bold">
+                <AlertTriangle className="w-4 h-4" />
+                <span>Preview me mic blocked hai</span>
+              </div>
+              <p className="text-[11px] text-amber-700 leading-relaxed">
+                Browser security ki wajah se iframe me microphone kaam nahi karta. New tab me kholne ke liye button dabao, phir mic Allow karo.
+              </p>
+              <button
+                onClick={openInNewTab}
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-2.5 rounded-xl flex items-center justify-center gap-2 transition"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Open in New Tab for Voice
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Suggestion chips — follow-ups from the assistant take priority */}
