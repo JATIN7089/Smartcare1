@@ -16,6 +16,7 @@
  */
 
 import { INTENT, GAME_CATALOG } from './nluEngine.js';
+import { TRANSLATIONS } from '../data/translations.js';
 import { respondInLanguage } from './dialogueTranslations.js';
 import { HOME } from '../data/homeLocation.js';
 
@@ -817,19 +818,15 @@ function recommendGame(profile) {
 }
 
 function defaultChips(L) {
-  return L === 'hi'
-    ? [
-        { label: '🎮 गेम खेलना है', cmd: 'game khelna hai' },
-        { label: '💊 कौन सी दवा ली?', cmd: 'kaunsi medicine li thi' },
-        { label: '⏰ अगली दवा कब?', cmd: 'agli dawai kab hai' },
-        { label: '🫁 साँस का अभ्यास', cmd: 'saans ka abhyas shuru karo' }
-      ]
-    : [
-        { label: '🎮 I want to play a game', cmd: 'game khelna hai' },
-        { label: '💊 Which medicine did I take?', cmd: 'which medicine did I take' },
-        { label: '⏰ When is my next medicine?', cmd: 'when is my next medicine' },
-        { label: '🫁 Start breathing', cmd: 'start breathing' }
-      ];
+  const dict = (TRANSLATIONS[L] || {});
+  const label = (key) => dict[key] || TRANSLATIONS.en[key];
+  return [
+    { label: `🎮 ${label('chip_play')}`, cmd: 'game khelna hai' },
+    { label: `💊 ${label('chip_med_taken')}`, cmd: 'which medicine did I take' },
+    { label: `⏰ ${label('chip_med_next')}`, cmd: 'when is my next medicine' },
+    { label: `🫁 ${label('chip_breath')}`, cmd: 'start breathing' },
+    { label: `🏠 ${label('chip_home')}`, cmd: 'mera ghar kaha hai' }
+  ];
 }
 
 /** Normalise a partial reply object into the full shape. */

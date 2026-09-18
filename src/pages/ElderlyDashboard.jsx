@@ -207,7 +207,7 @@ export default function ElderlyDashboard() {
                   <div>
                     <span className="text-[11px] font-bold text-slate-400 block">{rem.time}</span>
                     <span className={`text-xs sm:text-sm font-bold ${rem.completed ? 'line-through opacity-70' : ''}`}>
-                      {rem.title}
+                      {t(REMINDER_TITLE_KEYS[rem.title] || '', rem.title)}
                     </span>
                   </div>
                 </div>

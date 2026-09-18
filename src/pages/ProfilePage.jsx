@@ -46,12 +46,12 @@ export default function ProfilePage() {
   };
 
   const radarData = [
-    { subject: 'Memory Recall', value: metrics.memory, fullMark: 100 },
-    { subject: 'Attention & Focus', value: metrics.attention, fullMark: 100 },
-    { subject: 'Pattern Logic', value: metrics.pattern, fullMark: 100 },
-    { subject: 'Daily Routine Recall', value: metrics.dailyRecall, fullMark: 100 },
-    { subject: 'Response Cadence', value: metrics.reactionTimeScore, fullMark: 100 },
-    { subject: 'Engagement Consistency', value: metrics.consistency, fullMark: 100 }
+    { subject: t('prm_memory'), value: metrics.memory, fullMark: 100 },
+    { subject: t('prm_attention'), value: metrics.attention, fullMark: 100 },
+    { subject: t('prm_pattern'), value: metrics.pattern, fullMark: 100 },
+    { subject: t('prm_routine'), value: metrics.dailyRecall, fullMark: 100 },
+    { subject: t('prm_cadence'), value: metrics.reactionTimeScore, fullMark: 100 },
+    { subject: t('prm_consistency'), value: metrics.consistency, fullMark: 100 }
   ];
 
   const trendData = cognitiveProfile?.sessionHistory || [
@@ -170,9 +170,9 @@ export default function ProfilePage() {
               <YAxis domain={[50, 100]} tick={{ fill: '#64748b', fontSize: 11 }} />
               <Tooltip contentStyle={{ backgroundColor: '#ffffff', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '12px' }} />
                 <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-                <Line type="monotone" dataKey="memory" name="Memory Recall" stroke="#0d9488" strokeWidth={3} dot={{ r: 4 }} />
-                <Line type="monotone" dataKey="pattern" name="Pattern Reasoning" stroke="#6366f1" strokeWidth={2} dot={{ r: 3 }} />
-                <Line type="monotone" dataKey="recall" name="Routine Recall" stroke="#f59e0b" strokeWidth={2} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="memory" name={t('prm_memory')} stroke="#0d9488" strokeWidth={3} dot={{ r: 4 }} />
+                <Line type="monotone" dataKey="pattern" name={t('prl_reasoning')} stroke="#6366f1" strokeWidth={2} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="recall" name={t('prl_routine')} stroke="#f59e0b" strokeWidth={2} dot={{ r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -182,12 +182,12 @@ export default function ProfilePage() {
       {/* Domain Metrics Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {[
-          { label: 'Memory Recall', val: `${metrics.memory}%`, tag: 'Strong', color: 'text-teal-700 bg-teal-50 border-teal-200' },
-          { label: 'Attention Focus', val: `${metrics.attention}%`, tag: 'Stable', color: 'text-sky-700 bg-sky-50 border-sky-200' },
-          { label: 'Pattern Logic', val: `${metrics.pattern}%`, tag: 'High', color: 'text-indigo-700 bg-indigo-50 border-indigo-200' },
-          { label: 'Routine Recall', val: `${metrics.dailyRecall}%`, tag: 'Reliable', color: 'text-emerald-700 bg-emerald-50 border-emerald-200' },
-          { label: 'Response Pace', val: `${metrics.reactionTimeScore}%`, tag: 'Comfortable', color: 'text-amber-700 bg-amber-50 border-amber-200' },
-          { label: 'Consistency', val: `${metrics.consistency}%`, tag: 'Consistent', color: 'text-purple-700 bg-purple-50 border-purple-200' }
+          { label: t('prm_memory'), val: `${metrics.memory}%`, tag: t('prs_strong'), color: 'text-teal-700 bg-teal-50 border-teal-200' },
+          { label: t('prm_attfocus'), val: `${metrics.attention}%`, tag: t('prs_stable'), color: 'text-sky-700 bg-sky-50 border-sky-200' },
+          { label: t('prm_pattern'), val: `${metrics.pattern}%`, tag: t('prs_high'), color: 'text-indigo-700 bg-indigo-50 border-indigo-200' },
+          { label: t('prl_routine'), val: `${metrics.dailyRecall}%`, tag: t('prs_reliable'), color: 'text-emerald-700 bg-emerald-50 border-emerald-200' },
+          { label: t('prm_pace'), val: `${metrics.reactionTimeScore}%`, tag: t('prs_comfortable'), color: 'text-amber-700 bg-amber-50 border-amber-200' },
+          { label: t('prm_cons'), val: `${metrics.consistency}%`, tag: t('prs_consistent'), color: 'text-purple-700 bg-purple-50 border-purple-200' }
         ].map((item, idx) => (
           <div key={idx} className={`p-4 rounded-2xl border ${item.color} text-center space-y-1`}>
             <span className="text-[11px] font-bold block opacity-80">{item.label}</span>
@@ -200,9 +200,7 @@ export default function ProfilePage() {
       {/* Mandatory Non-Clinical Statement as required by prompt */}
       <div className="bg-slate-100 rounded-2xl p-4 text-xs text-slate-600 space-y-1 border border-slate-200">
         <p className="font-bold text-slate-800">{t('prof_policy')}</p>
-        <p>
-          "These indicators describe interaction with SmarTCARE activities and are not clinical measurements. SmarTCARE does not diagnose, predict, or evaluate dementia or any medical disease. Consider discussing persistent changes with a qualified healthcare professional."
-        </p>
+        <p>{t('prof_quote')}</p>
       </div>
 
       <DisclaimerBanner />

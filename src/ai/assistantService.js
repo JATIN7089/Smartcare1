@@ -15,6 +15,9 @@ import { respond } from './dialogueEngine.js';
 import { detectLanguage, ttsLocale } from './languageDetector.js';
 
 export const ASSISTANT_LANGUAGES = SUPPORTED_LANGUAGES;
+/** Chip label in the given language (falls back to English). */
+const chipText = (lang, key) => (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) || TRANSLATIONS.en[key];
+
 
 export function processVoiceCommand(input = '', role = 'elderly', contextData = {}) {
   const query = (input || '').toLowerCase().trim();
@@ -84,20 +87,12 @@ export function processVoiceCommand(input = '', role = 'elderly', contextData = 
         reply: greetingText,
         spoken: greetingText,
         action: null,
-        chips: replyLanguage === 'hi'
-          ? [
-              { label: '🎮 गेम खेलना है', cmd: 'game khelna hai' },
-              { label: '💊 कौन सी दवा ली?', cmd: 'kaunsi medicine li thi' },
-              { label: '⏰ अगली दवा कब?', cmd: 'agli dawai kab hai' },
-              { label: '🫁 साँस का अभ्यास', cmd: 'saans ka abhyas shuru karo' },
-              { label: '🏠 मेरा घर कहाँ है?', cmd: 'mera ghar kaha hai' }
-            ]
-          : [
-              { label: '🎮 I want to play a game', cmd: 'game khelna hai' },
-              { label: '💊 Which medicine did I take?', cmd: 'which medicine did I take' },
-              { label: '⏰ When is my next medicine?', cmd: 'when is my next medicine' },
-              { label: '🫁 Start breathing', cmd: 'start breathing' },
-              { label: '🏠 Where is my home?', cmd: 'mera ghar kaha hai' }
+        chips: [
+              { label: `🎮 ${chipText(replyLanguage, 'chip_play')}`, cmd: 'game khelna hai' },
+              { label: `💊 ${chipText(replyLanguage, 'chip_med_taken')}`, cmd: 'which medicine did I take' },
+              { label: `⏰ ${chipText(replyLanguage, 'chip_med_next')}`, cmd: 'when is my next medicine' },
+              { label: `🫁 ${chipText(replyLanguage, 'chip_breath')}`, cmd: 'start breathing' },
+              { label: `🏠 ${chipText(replyLanguage, 'chip_home')}`, cmd: 'mera ghar kaha hai' }
             ],
         pendingSlot: null,
         detectedLanguage: replyLanguage,

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CHIP_KEYS } from '../data/translations.js';
 import { useApp } from '../context/AppContext.jsx';
 import { voiceService } from '../services/voiceService.js';
 import { processVoiceCommand } from '../ai/assistantService.js';
@@ -184,29 +185,29 @@ export default function VoiceAssistantPage() {
       if (started) {
         setIsListening(true);
       } else {
-        setMicError('Speech recognition is not available in this browser environment. You can tap any sample question below or type.');
+        setMicError(t('va_mic_err'));
       }
     }
   };
 
-  const samplePrompts = role === 'elderly' ? [
-    'When is my medicine?',
-    'What do I have today?',
-    'Start memory game',
-    'Start breathing',
-    'Call my caregiver'
-  ] : role === 'caregiver' ? [
-    "Summarize Asha's activity today",
-    'Check active alerts',
-    'Check reminder adherence'
-  ] : [
-    'Summarize patient cohort adherence',
-    'Review Asha cognitive trends'
-  ];
+  const samplePrompts = (role === 'elderly'
+    ? ['chip_med_time', 'chip_today', 'chip_memgame', 'chip_breath', 'chip_call']
+    : role === 'caregiver'
+      ? ['chip_sum_asha', 'chip_alerts', 'chip_adherence']
+      : ['chip_cohort', 'chip_trends']
+  ).map(k => t(k));
 
   // Engine-supplied follow-up chips take priority; otherwise show role samples.
+  /** Keeps any leading emoji but swaps the text into the portal language. */
+  const localiseChip = (label) => {
+    const m = String(label).match(/^(\p{Extended_Pictographic}[^\p{L}\p{N}]*)/u);
+    const emo = m ? m[1] : '';
+    const text = String(label).slice(emo.length).trim();
+    const key = CHIP_KEYS[text];
+    return key ? `${emo} ${t(key, text)}` : label;
+  };
   const activeChips = chips.length > 0
-    ? chips
+    ? chips.map(c => ({ ...c, label: localiseChip(c.label) }))
     : samplePrompts.map(p => ({ label: `💬 "${p}"`, cmd: p }));
 
   return (
@@ -216,10 +217,10 @@ export default function VoiceAssistantPage() {
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-black uppercase text-teal-700 tracking-wider">
-              {role === 'elderly' ? 'Spoken Elderly Companion' : role === 'caregiver' ? 'Caregiver Copilot' : 'Clinical Insights Voice'}
+              {role === 'elderly' ? t('va_tag_elderly') : role === 'caregiver' ? t('va_tag_caregiver') : t('va_tag_health')}
             </span>
             <span className="text-xs font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
-              Role: {role.toUpperCase()}
+              {t('va_role')}: {role.toUpperCase()}
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mt-1">
@@ -276,10 +277,10 @@ export default function VoiceAssistantPage() {
 
         <p className="text-sm font-bold text-slate-700">
           {isListening
-            ? `Listening in ${listenLangObj.native}... Speak naturally`
+            ? t('va_listening').replace('{lang}', listenLangObj.native)
             : replyLang !== language
-              ? `Replying in ${replyLangObj.flag} ${replyLangObj.native} — detected from your speech`
-              : `Active language: ${currentLanguageObj.flag} ${currentLanguageObj.native} (${currentLanguageObj.name})`}
+              ? t('va_replying').replace('{lang}', `${replyLangObj.flag} ${replyLangObj.native}`)
+              : `${t('va_active')} ${currentLanguageObj.flag} ${currentLanguageObj.native} (${currentLanguageObj.name})`}
         </p>
 
         {micError && (

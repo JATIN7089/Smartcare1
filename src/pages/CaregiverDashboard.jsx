@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../services/api.js';
+import { ALERT_KEYS, STATUS_KEYS } from '../data/translations.js';
 import { LiveBadge } from '../components/LiveToast.jsx';
 import { 
   Users, 
@@ -23,7 +24,7 @@ import {
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
 export default function CaregiverDashboard() {
-  const { alerts, handleDismissAlert } = useApp();
+  const { alerts, handleDismissAlert, t, user } = useApp();
   const navigate = useNavigate();
 
   const [patients, setPatients] = useState([]);
@@ -77,27 +78,27 @@ export default function CaregiverDashboard() {
         <div>
           <div className="flex items-center gap-2">
             <span className="text-xs font-black uppercase text-teal-700 tracking-wider">
-              Caregiver & Family Portal
+              {t('cg_portal')}
             </span>
             <span className="text-xs bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded-full">
-              Sunita Sharma (Daughter)
+              {user?.name || 'Sunita Sharma'} {t('cg_rel_daughter')}
             </span>
           </div>
           <LiveBadge /> <h1 className="text-3xl font-black text-slate-900 mt-1">
-            Connected Seniors Overview
+            {t('cg_title')}
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 mt-0.5">
-            Realtime cognitive engagement trends, reminder adherence, and explainable activity alerts.
+            {t('cg_sub')}
           </p>
         </div>
 
         {/* Join Code Box */}
         <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 flex flex-col gap-1.5 min-w-[260px]">
-          <span className="text-[11px] font-bold text-slate-500 uppercase">Asha's Secure Join Code</span>
+          <span className="text-[11px] font-bold text-slate-500 uppercase">{t('cg_join').replace('{name}', 'Asha')}</span>
           <div className="flex items-center justify-between">
             <span className="text-xl font-black text-teal-800 font-mono tracking-widest">SMT-4821</span>
             <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-              Verified & Paired
+              {t('cg_verified')}
             </span>
           </div>
         </div>
@@ -106,27 +107,27 @@ export default function CaregiverDashboard() {
       {/* Overview Stat Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-xs font-bold text-slate-500 block uppercase">Connected Seniors</span>
+          <span className="text-xs font-bold text-slate-500 block uppercase">{t('cg_st_sen')}</span>
           <span className="text-3xl font-black text-slate-900 mt-1 block">3</span>
-          <span className="text-xs text-teal-600 font-semibold mt-1 block">All active in NER</span>
+          <span className="text-xs text-teal-600 font-semibold mt-1 block">{t('cg_st_sen_sub')}</span>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-xs font-bold text-slate-500 block uppercase">Today's Sessions</span>
+          <span className="text-xs font-bold text-slate-500 block uppercase">{t('cg_st_ses')}</span>
           <span className="text-3xl font-black text-teal-700 mt-1 block">3</span>
-          <span className="text-xs text-slate-400 mt-1 block">Games & Breathing</span>
+          <span className="text-xs text-slate-400 mt-1 block">{t('cg_st_ses_sub')}</span>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-xs font-bold text-slate-500 block uppercase">Reminder Adherence</span>
+          <span className="text-xs font-bold text-slate-500 block uppercase">{t('cg_st_adh')}</span>
           <span className="text-3xl font-black text-emerald-700 mt-1 block">88%</span>
-          <span className="text-xs text-slate-400 mt-1 block">4/5 completed</span>
+          <span className="text-xs text-slate-400 mt-1 block">{t('cg_st_adh_sub').replace('{done}', '4').replace('{total}', '5')}</span>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-xs font-bold text-slate-500 block uppercase">Active Alerts</span>
+          <span className="text-xs font-bold text-slate-500 block uppercase">{t('cg_st_alt')}</span>
           <span className="text-3xl font-black text-amber-600 mt-1 block">{alerts.length}</span>
-          <span className="text-xs text-amber-700 font-semibold mt-1 block">Activity trend notices</span>
+          <span className="text-xs text-amber-700 font-semibold mt-1 block">{t('cg_st_alt_sub')}</span>
         </div>
       </div>
 
@@ -136,10 +137,10 @@ export default function CaregiverDashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-amber-600" />
-              <h3 className="font-extrabold text-base text-amber-950">Explainable Activity Alerts</h3>
+              <h3 className="font-extrabold text-base text-amber-950">{t('cg_alerts_head')}</h3>
             </div>
             <Link to="/caregiver/alerts" className="text-xs font-bold text-amber-800 hover:underline">
-              View All Alerts ({alerts.length}) →
+              {t('cg_view_all').replace('{n}', alerts.length)}
             </Link>
           </div>
 
@@ -148,13 +149,13 @@ export default function CaregiverDashboard() {
               <div key={alert.id} className="bg-white rounded-2xl p-4 border border-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-black text-sm text-slate-900">{alert.title}</span>
+                    <span className="font-black text-sm text-slate-900">{t((ALERT_KEYS[alert.id] || {}).title || '', alert.title)}</span>
                     <span className="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full">
                       Asha Sharma
                     </span>
                   </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">{alert.reason}</p>
-                  <p className="text-[11px] text-teal-800 font-semibold">Recommendation: {alert.recommendation}</p>
+                  <p className="text-xs text-slate-600 leading-relaxed">{t((ALERT_KEYS[alert.id] || {}).reason || '', alert.reason)}</p>
+                  <p className="text-[11px] text-teal-800 font-semibold">{t('cg_reco')} {t((ALERT_KEYS[alert.id] || {}).reco || '', alert.recommendation)}</p>
                 </div>
 
                 <div className="flex items-center gap-2 flex-shrink-0">
@@ -162,13 +163,13 @@ export default function CaregiverDashboard() {
                     onClick={() => handleDismissAlert(alert.id)}
                     className="text-xs font-bold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50"
                   >
-                    Acknowledge
+                    {t('cg_ack')}
                   </button>
                   <Link
                     to="/caregiver/patients/user-asha-68"
                     className="bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs"
                   >
-                    Inspect Profile
+                    {t('cg_inspect')}
                   </Link>
                 </div>
               </div>
@@ -180,8 +181,8 @@ export default function CaregiverDashboard() {
       {/* Connected Patients List */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-black text-slate-900">Assigned Seniors</h2>
-          <span className="text-xs text-slate-500 font-medium">Click on any card to view detailed multi-day charts</span>
+          <h2 className="text-xl font-black text-slate-900">{t('cg_assigned')}</h2>
+          <span className="text-xs text-slate-500 font-medium">{t('cg_assigned_sub')}</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -194,7 +195,7 @@ export default function CaregiverDashboard() {
                 <div className="flex items-start justify-between">
                   <div>
                     <h3 className="text-xl font-black text-slate-900">{patient.name}</h3>
-                    <span className="text-xs text-slate-500">Age: {patient.age} • {patient.location}</span>
+                    <span className="text-xs text-slate-500">{t('cg_age')} {patient.age} • {patient.location}</span>
                   </div>
                   <span className={`text-[11px] font-black px-2.5 py-1 rounded-full ${
                     patient.status === 'Stable activity'
@@ -203,21 +204,21 @@ export default function CaregiverDashboard() {
                       ? 'bg-amber-100 text-amber-900'
                       : 'bg-rose-100 text-rose-900'
                   }`}>
-                    {patient.status}
+                    {t(STATUS_KEYS[patient.status] || '', patient.status)}
                   </span>
                 </div>
 
                 <div className="mt-4 space-y-2 text-xs">
                   <div className="flex justify-between py-1 border-b border-slate-100">
-                    <span className="text-slate-500 font-medium">Memory Trend:</span>
+                    <span className="text-slate-500 font-medium">{t('cg_mem_trend')}</span>
                     <span className="font-bold text-slate-800">{patient.memoryTrend}</span>
                   </div>
                   <div className="flex justify-between py-1 border-b border-slate-100">
-                    <span className="text-slate-500 font-medium">Reminders:</span>
+                    <span className="text-slate-500 font-medium">{t('cg_rem')}</span>
                     <span className="font-bold text-slate-800">{patient.remindersAdherence}</span>
                   </div>
                   <div className="flex justify-between py-1 border-b border-slate-100">
-                    <span className="text-slate-500 font-medium">Last Active:</span>
+                    <span className="text-slate-500 font-medium">{t('cg_last')}</span>
                     <span className="font-bold text-teal-700">{patient.lastActive}</span>
                   </div>
                 </div>
@@ -228,7 +229,7 @@ export default function CaregiverDashboard() {
                   to={`/caregiver/patients/${patient.id}`}
                   className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-4 py-2 rounded-xl text-xs shadow-xs transition flex items-center gap-1.5 w-full justify-center min-h-[44px]"
                 >
-                  <span>View Clinical & Activity Charts</span>
+                  <span>{t('cg_view_charts')}</span>
                   <ChevronRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -243,10 +244,10 @@ export default function CaregiverDashboard() {
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
           <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
             <HeartHandshake className="w-5 h-5 text-rose-500" />
-            <span>Send Encouragement to Asha</span>
+            <span>{t('cg_send_enc').replace('{name}', 'Asha')}</span>
           </h3>
           <p className="text-xs text-slate-500">
-            A message from family boosts morale and eases loneliness.
+            {t('cg_enc_sub')}
           </p>
 
           <form onSubmit={sendEncouragement} className="space-y-3">
@@ -254,7 +255,7 @@ export default function CaregiverDashboard() {
               type="text"
               value={encouragementText}
               onChange={(e) => setEncouragementText(e.target.value)}
-              placeholder="e.g. You did great on the Bihu memory game today Ma!"
+              placeholder={t('cg_enc_ph')}
               className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2.5 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-teal-500"
             />
             <div className="flex justify-between items-center">

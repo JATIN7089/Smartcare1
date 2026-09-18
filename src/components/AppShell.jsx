@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
-import { NAV_LABEL_KEYS, ROLE_LABEL_KEYS } from '../data/translations.js';
+import { NAV_LABEL_KEYS, ROLE_LABEL_KEYS, TAGLINE_KEYS, PERSONA_KEYS } from '../data/translations.js';
 import LiveToast, { LiveBadge } from './LiveToast.jsx';
 import VoiceActionModal from './VoiceActionModal.jsx';
 import { getRole } from '../data/roles.js';
@@ -203,7 +203,7 @@ export default function AppShell({ children }) {
                   {cfg.badge}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 font-medium">{cfg.tagline}</p>
+              <p className="text-[11px] text-slate-400 font-medium">{t(TAGLINE_KEYS[cfg.tagline] || '', cfg.tagline)}</p>
             </div>
           </Link>
 
@@ -217,7 +217,7 @@ export default function AppShell({ children }) {
                 <p className="text-xs font-bold text-slate-800 leading-none truncate">
                   {role === 'elderly' ? (user?.name || cfg.persona.name) : cfg.persona.name}
                 </p>
-                <p className="text-[10px] text-slate-400 font-medium mt-0.5 truncate">{cfg.persona.detail}</p>
+                <p className="text-[10px] text-slate-400 font-medium mt-0.5 truncate">{t(PERSONA_KEYS[cfg.persona.detail] || '', cfg.persona.detail)}</p>
               </div>
             </div>
             <RoleSwitchButton />
