@@ -6,6 +6,121 @@ import { soundService } from '../services/soundService.js';
 import { voiceService } from '../services/voiceService.js';
 import { SUPPORTED_LANGUAGES, TRANSLATIONS } from '../data/translations.js';
 
+const INITIAL_REMINDERS = [
+  { id: 'rem-1', title: 'Blood Pressure & Heart Medicine', category: 'Medicine', time: '08:00 AM', date: 'Daily', completed: true, notes: 'Take with warm water after morning tea & breakfast' },
+  { id: 'rem-2', title: 'Hydration Break (Fresh Water / Chamomile)', category: 'Hydration', time: '10:00 AM', date: 'Daily', completed: true, notes: 'Drink a full glass of lukewarm water' },
+  { id: 'rem-3', title: 'Afternoon Memory Exercise', category: 'Cognitive Activity', time: '02:30 PM', date: 'Daily', completed: false, notes: 'Play 1 session of NER Cultural Match' },
+  { id: 'rem-4', title: 'Doctor Follow-Up Consultation', category: 'Appointments', time: '04:00 PM', date: 'Today', completed: false, notes: 'Dr. Barua tele-checkin or Sonitpur clinic' },
+  { id: 'rem-5', title: 'Evening Walk in Courtyard', category: 'Exercise', time: '05:30 PM', date: 'Daily', completed: false, notes: '15-minute gentle walk around tea garden garden' },
+  { id: 'rem-6', title: 'Evening Calming Breathing Session', category: 'Well-being', time: '08:30 PM', date: 'Daily', completed: false, notes: '5 minutes of paced breathing before sleep' }
+];
+
+const INITIAL_ROUTINE = [
+  { time: '07:00 AM', label: 'Wake up & gentle stretch', done: true, icon: 'Sun' },
+  { time: '08:00 AM', label: 'Morning Tea, Breakfast + Medication', done: true, icon: 'Coffee' },
+  { time: '10:00 AM', label: 'Morning Hydration & Garden walk', done: true, icon: 'Droplets' },
+  { time: '11:00 AM', label: 'SmarTCARE Cognitive Game Session', done: false, icon: 'Brain' },
+  { time: '01:00 PM', label: 'Nutritious lunch with family', done: false, icon: 'Utensils' },
+  { time: '02:30 PM', label: 'Rest & Memory Lane reminiscence', done: false, icon: 'BookOpen' },
+  { time: '04:00 PM', label: 'Doctor Tele-Consultation / Routine check', done: false, icon: 'Stethoscope' },
+  { time: '06:00 PM', label: 'Tea & Family conversation with Rita', done: false, icon: 'Users' },
+  { time: '08:30 PM', label: 'Evening Breathing & Lights out', done: false, icon: 'Moon' }
+];
+
+const INITIAL_MEMORIES = [
+  {
+    id: 'mem-1',
+    title: 'Rita — Elder Daughter',
+    relationship: 'Daughter',
+    location: 'Guwahati, Assam',
+    year: '2025',
+    question: 'Who is this visiting you during Rongali Bihu?',
+    answer: 'Rita, your elder daughter who lives in Guwahati.',
+    category: 'Person',
+    subject: 'Rita',
+    voiceNote: 'This is Rita, your elder daughter. She lives in Guwahati and calls you every evening.',
+    photo: '/memories/rita.jpg',
+    notes: 'Rita calls every evening at 6:00 PM to talk about the grandchildren.',
+    themeColor: '#3b82f6'
+  },
+  {
+    id: 'mem-2',
+    title: 'Bihu Celebration at Tezpur Courtyard',
+    relationship: 'Family Festival',
+    location: 'Tezpur Ancestral House',
+    year: '2024',
+    question: 'Which festival were we celebrating when we prepared fresh Pitha and Laru?',
+    answer: 'Rongali Bihu in the month of Bohag!',
+    category: 'Event',
+    subject: 'Rongali Bihu',
+    voiceNote: 'This is Rongali Bihu at your Tezpur courtyard.',
+    photo: null,
+    notes: 'Asha made Til Pitha and played the Tokari with her grandchildren.',
+    themeColor: '#ea580c'
+  },
+  {
+    id: 'mem-3',
+    title: 'Trip to Majuli Island',
+    relationship: 'Travel Memory',
+    location: 'Majuli River Island, Brahmaputra',
+    year: '2023',
+    question: 'Where did we take the ferry across the mighty Brahmaputra river?',
+    answer: 'Majuli Island, visiting the peaceful Satras and pottery makers.',
+    category: 'Place',
+    subject: 'Majuli Island',
+    voiceNote: 'This is Majuli Island, where you took the ferry across the Brahmaputra.',
+    photo: null,
+    notes: 'Asha loved hearing the devotional Borgeet and seeing traditional masks.',
+    themeColor: '#0d9488'
+  },
+  {
+    id: 'mem-4',
+    title: 'Grandson Aarav’s School Graduation',
+    relationship: 'Grandson',
+    location: 'Jorhat, Assam',
+    year: '2024',
+    question: 'Whose science exhibition did you attend with your red silk chador?',
+    answer: 'Aarav, your grandson who won the science trophy.',
+    category: 'Person',
+    subject: 'Aarav',
+    voiceNote: 'This is Aarav, your grandson. He won the science trophy.',
+    photo: '/memories/aarav.jpg',
+    notes: 'Aarav loves when Dadi tells stories about the Eastern Himalayas.',
+    themeColor: '#7c3aed'
+  },
+  {
+    id: 'mem-5',
+    title: 'My Home',
+    relationship: 'Home',
+    location: 'Tezpur, Assam',
+    year: 'Present',
+    question: 'Is this your home?',
+    answer: 'Yes, this is your home in Tezpur where you live.',
+    category: 'Place',
+    subject: 'My Home',
+    voiceNote: 'Yes, this is your home in Tezpur. You are safe here.',
+    photo: '/memories/home.jpg',
+    isHome: true,
+    notes: 'The green gate and the tulsi plant in the courtyard.',
+    themeColor: '#0d9488'
+  },
+  {
+    id: 'mem-6',
+    title: 'Sunita — Younger Daughter',
+    relationship: 'Daughter',
+    location: 'Tezpur, Assam',
+    year: 'Present',
+    question: 'Who is this that looks after you every day?',
+    answer: 'Sunita, your younger daughter and primary caregiver.',
+    category: 'Person',
+    subject: 'Sunita',
+    voiceNote: 'This is Sunita, your younger daughter. She looks after you every day.',
+    photo: '/memories/sunita.jpg',
+    notes: 'Sunita manages the reminders and medicines.',
+    themeColor: '#7c3aed'
+  }
+];
+
 const AppContext = createContext();
 
 export function AppProvider({ children }) {
@@ -48,12 +163,48 @@ export function AppProvider({ children }) {
   });
 
   // Reminders, Routine, Wellbeing
-  const [reminders, setReminders] = useState([]);
-  const [routine, setRoutine] = useState([]);
+  const [reminders, setReminders] = useState(() => {
+    try {
+      const saved = localStorage.getItem('smartcare_reminders_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return INITIAL_REMINDERS;
+  });
+
+  const [routine, setRoutine] = useState(() => {
+    try {
+      const saved = localStorage.getItem('smartcare_routine_v1');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return INITIAL_ROUTINE;
+  });
+
   const [breathingSessions, setBreathingSessions] = useState([]);
-  const [familyMemories, setFamilyMemories] = useState([]);
+  const [familyMemories, setFamilyMemories] = useState(INITIAL_MEMORIES);
   const [alerts, setAlerts] = useState([]);
   const [activityPlans, setActivityPlans] = useState([]);
+
+  useEffect(() => {
+    try {
+      if (reminders && reminders.length > 0) {
+        localStorage.setItem('smartcare_reminders_v1', JSON.stringify(reminders));
+      }
+    } catch (e) {}
+  }, [reminders]);
+
+  useEffect(() => {
+    try {
+      if (routine && routine.length > 0) {
+        localStorage.setItem('smartcare_routine_v1', JSON.stringify(routine));
+      }
+    } catch (e) {}
+  }, [routine]);
 
   // Cultural Region & Language
   const [culturalRegion, setCulturalRegion] = useState('Assam');
@@ -178,12 +329,29 @@ export function AppProvider({ children }) {
 
       if (u) setUser(u);
       if (prof) setCognitiveProfile(prof);
-      if (rem && rem.length) setReminders(rem);
-      if (rout && rout.length) setRoutine(rout);
-      if (br && br.length) setBreathingSessions(br);
-      if (mem && mem.length) setFamilyMemories(mem);
-      if (alt && alt.length) setAlerts(alt);
-      if (plans && plans.length) setActivityPlans(plans);
+      if (rem && Array.isArray(rem) && rem.length) {
+        setReminders(prev => {
+          if (!prev || prev.length === 0) return rem;
+          const localMap = new Map(prev.map(r => [r.id, r]));
+          const merged = rem.map(s => {
+            const local = localMap.get(s.id);
+            return local ? { ...s, completed: local.completed } : s;
+          });
+          const serverIds = new Set(rem.map(s => s.id));
+          const localOnly = prev.filter(p => !serverIds.has(p.id));
+          return [...merged, ...localOnly];
+        });
+      }
+      if (rout && Array.isArray(rout) && rout.length) {
+        setRoutine(prev => {
+          if (prev && prev.length === rout.length) return prev;
+          return rout;
+        });
+      }
+      if (br && Array.isArray(br) && br.length) setBreathingSessions(br);
+      if (mem && Array.isArray(mem) && mem.length) setFamilyMemories(mem);
+      if (alt && Array.isArray(alt) && alt.length) setAlerts(alt);
+      if (plans && Array.isArray(plans) && plans.length) setActivityPlans(plans);
     } catch (e) {
       console.warn('Initial data load note:', e);
     }
@@ -239,21 +407,43 @@ export function AppProvider({ children }) {
   };
 
   // Action methods
-  const handleToggleReminder = async (id) => {
-    setReminders(prev => prev.map(r => r.id === id ? { ...r, completed: !r.completed } : r));
+  const handleToggleReminder = async (id, forcedStatus) => {
+    setReminders(prev => prev.map(r => {
+      if (r.id === id) {
+        const nextStatus = typeof forcedStatus === 'boolean' ? forcedStatus : !r.completed;
+        return { ...r, completed: nextStatus };
+      }
+      return r;
+    }));
     soundService.playSuccessChime();
-    await api.toggleReminder(id);
+    await api.toggleReminder(id, forcedStatus);
+  };
+
+  const handleCompleteReminder = async (id) => {
+    return handleToggleReminder(id, true);
   };
 
   const handleAddReminder = async (newRem) => {
-    const res = await api.addReminder(newRem);
-    if (res?.reminder) {
-      setReminders(prev => [...prev, res.reminder]);
+    const tempId = newRem.id || `rem-${Date.now()}`;
+    const item = {
+      id: tempId,
+      title: newRem.title || 'New Reminder',
+      category: newRem.category || 'Medicine',
+      time: newRem.time || '09:00 AM',
+      date: newRem.date || 'Today',
+      completed: false,
+      notes: newRem.notes || ''
+    };
+    setReminders(prev => [...prev, item]);
+    const res = await api.addReminder(item);
+    if (res?.reminder?.id && res.reminder.id !== tempId) {
+      setReminders(prev => prev.map(r => r.id === tempId ? res.reminder : r));
     }
   };
 
   const handleDeleteReminder = async (id) => {
     setReminders(prev => prev.filter(r => r.id !== id));
+    soundService.playSoftRetry();
     await api.deleteReminder(id);
   };
 
@@ -326,6 +516,7 @@ export function AppProvider({ children }) {
         updateProfileAfterGame,
         reminders,
         handleToggleReminder,
+        handleCompleteReminder,
         handleAddReminder,
         handleDeleteReminder,
         routine,

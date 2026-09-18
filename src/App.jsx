@@ -35,6 +35,7 @@ import MemoryLanePage from './pages/MemoryLanePage.jsx';
 import MyPeoplePage from './pages/MyPeoplePage.jsx';
 import FaceRecallGame from './pages/FaceRecallGame.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
+import SafeMapPage from './pages/SafeMapPage.jsx';
 
 // Caregiver & Healthcare Portals
 import CaregiverDashboard from './pages/CaregiverDashboard.jsx';
@@ -126,6 +127,8 @@ function AuthenticatedApp() {
           <Route path="/memory-lane" element={<MemoryLanePage />} />
           <Route path="/my-people" element={<MyPeoplePage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/map" element={<SafeMapPage />} />
+          <Route path="/take-me-home" element={<SafeMapPage />} />
 
           {/* Caregiver Portal — caregiver + health worker only */}
           <Route path="/caregiver" element={<Protected path="/caregiver"><CaregiverDashboard /></Protected>} />

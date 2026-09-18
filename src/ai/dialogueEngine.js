@@ -662,6 +662,27 @@ export function respond(nlu, ctx = {}) {
      NAVIGATION & CHIT-CHAT
      ========================================================= */
 
+  if (intent === INTENT.TAKE_ME_HOME) {
+    return reply({
+      text: pick(L, {
+        en: 'Opening your Home Map and navigation to Tezpur, Assam. You are safe, and your family is right here.',
+        hi: 'आपके घर (तेजपुर, असम) का मैप और रास्ता खोल रही हूँ। आप बिल्कुल सुरक्षित हैं।'
+      }),
+      action: {
+        type: 'NAVIGATE',
+        route: '/map',
+        autostart: true,
+        label: 'Open Safe Home Map',
+        delay: 1100
+      },
+      chips: [
+        { label: '📞 Call Sunita', cmd: 'call daughter' },
+        { label: '🌸 Family Photos', cmd: 'open family photos' },
+        { label: '🫁 Start Breathing', cmd: 'start breathing' }
+      ]
+    });
+  }
+
   if (intent === INTENT.GO_HOME) {
     return reply({
       text: pick(L, { en: 'Going to your home screen.', hi: 'होम स्क्रीन पर ले जा रही हूँ।' }),

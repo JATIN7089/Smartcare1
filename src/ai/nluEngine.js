@@ -61,6 +61,7 @@ export const INTENT = {
   MEMORY_LANE: 'MEMORY_LANE',
 
   // --- Navigation ---------------------------------------------------------
+  TAKE_ME_HOME: 'TAKE_ME_HOME',
   GO_HOME: 'GO_HOME',
   OPEN_CAREGIVER_PORTAL: 'OPEN_CAREGIVER_PORTAL',
   OPEN_HEALTHCARE_PORTAL: 'OPEN_HEALTHCARE_PORTAL',
@@ -138,6 +139,10 @@ export const GAME_CATALOG = {
    ============================================================ */
 
 const PHRASES = [
+  // ---- Safe Navigation / Take Me Home (highest priority) -----------------
+  [/\b(mujhe\s*ghar\s*jana\s*hai|ghar\s*jana\s*hai|ghar\s*chalo|ghar\s*le\s*chalo|take\s*me\s*home|mera\s*ghar|where\s*is\s*my\s*home|rasta\s*dikhao|ghar\s*ka\s*rasta|map\s*khol\w*|open\s*map|show\s*map|map\s*dekhna\s*hai|naksha\s*dikhao|naksha|nakshe|google\s*map\w*)\b/gi, ' TAKEMEHOME '],
+  [/(?:^|\s)(घर\s*जाना\s*है|घर\s*ले\s*चलो|मेरा\s*घर|घर\s*का\s*रास्ता|नक्शा\s*दिखाओ|मैप\s*खोलो|नक्शा)(?=\s|$)/g, ' TAKEMEHOME '],
+
   // ---- "I already took it" (the single most important phrase family) ----
   [/\b(kha|kah|khaa)\s*(li|liya|lia|liye|li\s*hai|liya\s*hai)\b/g, ' TAKEN '],
   [/\b(le|lay|lai)\s*(li|liya|lia|liye|li\s*hai|liya\s*hai)\b/g, ' TAKEN '],
@@ -189,8 +194,8 @@ const PHRASES = [
   [/(?:^|\s)(सांस्कृतिक)(?=\s|$)/g, ' CULTURAL '],
   [/\b(attention|sequence|kram|order\s*game|dhyan)\b/g, ' ATTENTION '],
   [/(?:^|\s)(ध्यान|क्रम)(?=\s|$)/g, ' ATTENTION '],
-  [/\b(pattern|naksha|design)\b/g, ' PATTERN '],
-  [/(?:^|\s)(पैटर्न|नक्शा)(?=\s|$)/g, ' PATTERN '],
+  [/\b(pattern|design)\b/g, ' PATTERN '],
+  [/(?:^|\s)(पैटर्न)(?=\s|$)/g, ' PATTERN '],
   [/\b(daily\s*recall|routine\s*recall|dincharya\s*khel)\b/g, ' DAILYRECALL '],
   [/\b(object|objects|vastu|cheez\s*pehchan)\s*(recognition|pehchan)?\b/g, ' OBJECTGAME '],
   [/\b(sound|awaaz|dhvani|audio)\s*(game|memory|khel)?\b/g, ' SOUNDGAME '],
@@ -294,7 +299,9 @@ const LEXICON = {
   progress: 'PROGRESS', score: 'PROGRESS', pragati: 'PROGRESS',
   performance: 'PROGRESS', 'प्रगति': 'PROGRESS',
   profile: 'PROFILE', account: 'PROFILE', 'प्रोफाइल': 'PROFILE',
-  home: 'HOME', ghar: 'HOME', mukhya: 'HOME', 'घर': 'HOME', 'होम': 'HOME',
+  home: 'HOME', mukhya: 'HOME', 'होम': 'HOME',
+  map: 'TAKEMEHOME', maps: 'TAKEMEHOME', naksha: 'TAKEMEHOME', nakshe: 'TAKEMEHOME',
+  ghar: 'TAKEMEHOME', 'घर': 'TAKEMEHOME', 'नक्शा': 'TAKEMEHOME', 'मैप': 'TAKEMEHOME',
   caregiver: 'CAREGIVER', 'केयरगिवर': 'CAREGIVER',
   call: 'CALL', phone: 'CALL', bulao: 'CALL', baat: 'CALL', 'फोन': 'CALL', 'बुलाओ': 'CALL',
   help: 'HELP', madad: 'HELP', sahayata: 'HELP', 'मदद': 'HELP',
@@ -419,6 +426,7 @@ const INTENT_DEFS = [
   { intent: INTENT.MEMORY_LANE, all: [['MEMORYLANE']], weight: 9 },
 
   // ---------- NAVIGATION ----------
+  { intent: INTENT.TAKE_ME_HOME, all: [['TAKEMEHOME']], weight: 15 },
   { intent: INTENT.GO_HOME, all: [['HOME']], weight: 7 },
 
   // ---------- CONVERSATIONAL ----------

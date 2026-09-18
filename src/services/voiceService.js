@@ -51,13 +51,22 @@ class VoiceService {
     if (!this.enabled || !this.synth || !text) return;
 
     try {
-      this.synth.cancel(); // Stop any pending speech
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.88; // Slightly slower, calm pace for elderly comprehension
-      utterance.pitch = 1.0;
-      utterance.lang = this.getLocaleForLanguage(lang);
+      if (this.synth.paused) {
+        this.synth.resume();
+      }
+      this.synth.cancel();
 
-      this.synth.speak(utterance);
+      setTimeout(() => {
+        try {
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 0.88; // Slightly slower, calm pace for elderly comprehension
+          utterance.pitch = 1.0;
+          utterance.lang = this.getLocaleForLanguage(lang);
+          this.synth.speak(utterance);
+        } catch (e) {
+          console.warn('Speech synthesis error:', e);
+        }
+      }, 50);
     } catch (e) {
       console.warn('Speech synthesis error:', e);
     }
@@ -70,13 +79,21 @@ class VoiceService {
   }
 
   startListening({ onResult, onError, onEnd, lang = 'en' }) {
-    if (!this.recognition) {
+    const SpeechRecognition = typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition);
+    if (!SpeechRecognition) {
       if (onError) onError('Speech recognition is not supported in this browser. Please use text input or suggestions.');
       return false;
     }
 
     try {
+      if (this.recognition) {
+        try { this.recognition.abort(); } catch (e) {}
+      }
+      this.recognition = new SpeechRecognition();
+      this.recognition.continuous = false;
+      this.recognition.interimResults = false;
       this.recognition.lang = this.getLocaleForLanguage(lang);
+
       this.recognition.onstart = () => {
         this.isListening = true;
       };

@@ -22,6 +22,7 @@ import {
   Clock,
   Heart,
   Layers,
+  MapPin,
   Wifi,
   WifiOff,
   ChevronDown,
@@ -32,7 +33,7 @@ import {
 /** Icon names in roles.js are resolved through this map. */
 const ICONS = {
   Home, Puzzle, Brain, Wind, Bell, User, Mic, Users,
-  Activity, FileText, Clock, Heart, Sparkles, Layers
+  Activity, FileText, Clock, Heart, Sparkles, Layers, MapPin
 };
 
 function Icon({ name, className }) {

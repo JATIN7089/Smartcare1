@@ -173,6 +173,7 @@ export default function VoiceAssistantPage() {
   };
 
   const samplePrompts = role === 'elderly' ? [
+    'Mujhe ghar jana hai',
     'When is my medicine?',
     'What do I have today?',
     'Start memory game',

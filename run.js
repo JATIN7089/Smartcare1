@@ -6,21 +6,21 @@ console.log('  👉 Frontend Application : http://localhost:3000');
 console.log('  👉 Express REST API     : http://localhost:5000');
 console.log('==============================================================\n');
 
-// 1. Start Express Backend API Server
 const isWin = process.platform === 'win32';
-const server = spawn(isWin ? 'node.exe' : 'node', ['server/index.js'], { 
+const nodeBin = process.execPath;
+const npmCmd = isWin ? 'npm.cmd' : 'npm';
+
+// 1. Start Express Backend API Server
+const server = spawn(nodeBin, ['server/index.js'], { 
   stdio: 'inherit', 
-  shell: true 
+  shell: isWin 
 });
 
-// 2. Start Vite Frontend Dev Server after a short delay so backend is ready
-let vite = null;
-setTimeout(() => {
-  vite = spawn(isWin ? 'npm.cmd' : 'npm', ['run', 'dev:vite'], { 
-    stdio: 'inherit', 
-    shell: true 
-  });
-}, 1000);
+// 2. Start Vite Frontend Dev Server
+const vite = spawn(npmCmd, ['run', 'dev:vite'], { 
+  stdio: 'inherit', 
+  shell: isWin 
+});
 
 const cleanup = () => {
   try {

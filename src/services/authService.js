@@ -181,29 +181,36 @@ export const authService = {
     }
   },
 
-  /** Restores a session after a reload. Returns null when signed out. */
+  /** Restores a session after a reload. Returns default resident when signed out. */
   async restore() {
     const token = readToken();
-    if (!token) return null;
+    if (!token) {
+      const resident = allOfflineAccounts().find(a => a.role === 'elderly') || OFFLINE_ACCOUNTS[0];
+      writeToken('offline-' + resident.id);
+      return publicAccount(resident);
+    }
 
     // Offline tokens encode the account id directly.
     if (token.startsWith('offline-')) {
       const acc = allOfflineAccounts().find(a => a.id === token.replace('offline-', ''));
-      return acc ? publicAccount(acc) : null;
+      return acc ? publicAccount(acc) : publicAccount(OFFLINE_ACCOUNTS[0]);
     }
 
     try {
       const res = await fetch('/api/auth/me', { headers: { Authorization: `Bearer ${token}` } });
       if (res.ok) {
         const data = await res.json();
-        return data.account || null;
+        if (data.account) return data.account;
       }
-      // Token no longer valid on the server.
-      writeToken(null);
-      return null;
     } catch (e) {
-      return null;
+      /* fall through to offline recovery */
     }
+
+    const matched = allOfflineAccounts().find(a => token.includes(a.id));
+    if (matched) return publicAccount(matched);
+
+    const resident = allOfflineAccounts().find(a => a.role === 'elderly') || OFFLINE_ACCOUNTS[0];
+    return publicAccount(resident);
   },
 
   async logout() {

@@ -268,15 +268,27 @@ export function detectIntent(rawInput = '', context = {}) {
     };
   }
 
-  // 13. GO HOME
-  // "Go home", "Take me home", "Home screen", "Home"
-  if (/(go\s*home|take\s*me\s*home|home\s*screen|home|main\s*screen|back\s*home|घर|होम)/i.test(text)) {
+  // 12.5 TAKE ME HOME / SAFE MAP
+  // "Mujhe ghar jana hai", "Ghar jana hai", "Take me home", "Ghar le chalo", "Map kholo"
+  if (/(mujhe\s*ghar\s*jana\s*hai|ghar\s*jana\s*hai|ghar\s*le\s*chalo|ghar\s*chalo|take\s*me\s*home|mera\s*ghar|map|naksha|rasta|navigation|ghar)/i.test(text)) {
+    return {
+      intent: 'TAKE_ME_HOME',
+      route: '/map',
+      autostart: true,
+      text: 'Opening your Home Map and navigation to Tezpur, Assam...',
+      spoken: 'Opening your home map. You are safe.',
+      confidence: 0.99
+    };
+  }
+
+  // 13. GO HOME SCREEN (strictly UI home screen)
+  if (/(home\s*screen|main\s*screen|home\s*page|होम\s*स्क्रीन)/i.test(text)) {
     return {
       intent: INTENTS.GO_HOME,
       route: '/elderly',
       autostart: false,
       text: 'Going to Home screen...',
-      spoken: 'Going home.',
+      spoken: 'Opening home screen.',
       confidence: 0.98
     };
   }

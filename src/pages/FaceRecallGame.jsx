@@ -170,6 +170,10 @@ export default function FaceRecallGame() {
           src={current.photo}
           alt={revealed ? answerName : 'A family photo to recognise'}
           className="w-full aspect-square object-cover bg-slate-100"
+          onError={(e) => {
+            e.currentTarget.onerror = null;
+            e.currentTarget.src = '/memories/rita.jpg';
+          }}
         />
 
         <div className="p-5 space-y-4">
