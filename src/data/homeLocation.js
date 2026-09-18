@@ -16,11 +16,18 @@ export const HOME = {
   lat: 26.6338,
   lng: 92.8000,
   photo: '/memories/home.jpg',
-  landmarks: [
-    'The green wooden gate with the tulsi plant in the courtyard',
-    'Two lanes after the Chai Bagan gate, on the left',
-    'Behind the Sonitpur SDH road, near the tea garden quarters'
-  ],
+  landmarks: {
+    en: [
+      'The green wooden gate with the tulsi plant in the courtyard',
+      'Two lanes after the Chai Bagan gate, on the left',
+      'Behind the Sonitpur SDH road, near the tea garden quarters'
+    ],
+    hi: [
+      'आँगन में तुलसी के पौधे वाला हरा लकड़ी का गेट',
+      'चाय बागान गेट के बाद दो गलियाँ, बाईं ओर',
+      'सोनितपुर SDH रोड के पीछे, चाय बागान क्वार्टर्स के पास'
+    ]
+  },
   contact: { name: 'Sunita Sharma (Daughter)', phone: '+91 98640 12345' }
 };
 
@@ -37,6 +44,11 @@ export function osmLink({ lat, lng } = HOME) {
 /** Turn-by-turn directions in whatever map app the device prefers. */
 export function directionsUrl({ lat, lng } = HOME) {
   return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=walking`;
+}
+
+/** Landmark lines in the user's language, falling back to English. */
+export function landmarksFor(lang = 'en') {
+  return HOME.landmarks[lang] || HOME.landmarks.en;
 }
 
 export default HOME;

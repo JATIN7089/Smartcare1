@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../services/api.js';
+import { LiveBadge } from '../components/LiveToast.jsx';
 import { 
   Users, 
   Activity, 
@@ -33,6 +34,11 @@ export default function CaregiverDashboard() {
 
   useEffect(() => {
     loadPatients();
+    // Refresh the instant the senior completes anything (server push).
+    const unsubscribe = api.subscribeLive(evt => {
+      if (evt.kind !== 'hello') loadPatients();
+    });
+    return unsubscribe;
   }, []);
 
   const loadPatients = async () => {
@@ -77,7 +83,7 @@ export default function CaregiverDashboard() {
               Sunita Sharma (Daughter)
             </span>
           </div>
-          <h1 className="text-3xl font-black text-slate-900 mt-1">
+          <LiveBadge /> <h1 className="text-3xl font-black text-slate-900 mt-1">
             Connected Seniors Overview
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 mt-0.5">

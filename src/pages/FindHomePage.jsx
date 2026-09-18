@@ -5,7 +5,7 @@ import {
   WifiOff, ArrowLeft, HeartHandshake
 } from 'lucide-react';
 import { useApp } from '../context/AppContext.jsx';
-import { HOME, osmEmbedUrl, osmLink, directionsUrl } from '../data/homeLocation.js';
+import { HOME, landmarksFor, osmEmbedUrl, osmLink, directionsUrl } from '../data/homeLocation.js';
 import { voiceService } from '../services/voiceService.js';
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
@@ -135,7 +135,7 @@ export default function FindHomePage() {
           <Landmark className="w-5 h-5 text-teal-600" /> {t('fw_landmarks')}
         </h2>
         <ul className="space-y-2">
-          {HOME.landmarks.map((line, i) => (
+          {landmarksFor(language).map((line, i) => (
             <li
               key={line}
               className="flex items-start gap-3 bg-teal-50 border border-teal-100 rounded-2xl p-4 text-base sm:text-lg font-semibold text-slate-800"

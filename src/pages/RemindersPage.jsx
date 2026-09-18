@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { REMINDER_TITLE_KEYS } from '../data/translations.js';
 import { useApp } from '../context/AppContext.jsx';
 import { soundService } from '../services/soundService.js';
 import { voiceService } from '../services/voiceService.js';
@@ -57,7 +58,7 @@ export default function RemindersPage() {
     if (uncompleted.length === 0) {
       voiceService.speak("You have completed all reminders for today. Well done!", language);
     } else {
-      const summary = `You have ${uncompleted.length} pending items today: ${uncompleted.map(r => `${r.title} at ${r.time}`).join(', ')}.`;
+      const summary = `You have ${uncompleted.length} pending items today: ${uncompleted.map(r => `${t(REMINDER_TITLE_KEYS[r.title] || '', r.title)} at ${r.time}`).join(', ')}.`;
       voiceService.speak(summary, language);
     }
   };
@@ -195,7 +196,7 @@ export default function RemindersPage() {
                     </div>
 
                     <h3 className={`font-extrabold text-base sm:text-lg text-slate-900 ${reminder.completed ? 'line-through text-slate-500' : ''}`}>
-                      {reminder.title}
+                      {t(REMINDER_TITLE_KEYS[reminder.title] || '', reminder.title)}
                     </h3>
 
                     {reminder.notes && (

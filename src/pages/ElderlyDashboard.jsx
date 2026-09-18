@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { REMINDER_TITLE_KEYS } from '../data/translations.js';
 import { useApp } from '../context/AppContext.jsx';
 import { soundService } from '../services/soundService.js';
 import VoiceActionModal from '../components/VoiceActionModal.jsx';
@@ -36,36 +37,36 @@ export default function ElderlyDashboard() {
 
   const activities = [
     {
-      title: 'Memory Match',
-      desc: 'Match familiar cards',
-      tag: 'Memory',
+      title: t('gm_memory_title', 'Memory Match'),
+      desc: t('act_mem_desc', 'Match familiar cards'),
+      tag: t('gm_cat_memory', 'Memory'),
       icon: Brain,
       route: '/games/memory',
       color: 'bg-emerald-500 text-white',
       cardBg: 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
     },
     {
-      title: 'Attention Order',
-      desc: 'Remember the sequence',
-      tag: 'Attention',
+      title: t('act_att_title', 'Attention Order'),
+      desc: t('act_att_desc', 'Remember the sequence'),
+      tag: t('gm_cat_attention', 'Attention'),
       icon: Target,
       route: '/games/attention',
       color: 'bg-sky-500 text-white',
       cardBg: 'bg-sky-50/70 border-sky-200 text-sky-950'
     },
     {
-      title: 'Pattern Match',
-      desc: 'Find the next shape',
-      tag: 'Pattern',
+      title: t('gm_pattern_title', 'Pattern Match'),
+      desc: t('act_pat_desc', 'Find the next shape'),
+      tag: t('gm_cat_pattern', 'Pattern'),
       icon: Puzzle,
       route: '/games/pattern',
       color: 'bg-indigo-500 text-white',
       cardBg: 'bg-indigo-50/70 border-indigo-200 text-indigo-950'
     },
     {
-      title: 'Daily Recall',
-      desc: 'Remember your morning',
-      tag: 'Recall',
+      title: t('act_dr_title', 'Daily Recall'),
+      desc: t('act_dr_desc', 'Remember your morning'),
+      tag: t('gm_cat_daily', 'Recall'),
       icon: Calendar,
       route: '/games/daily-recall',
       color: 'bg-amber-500 text-white',

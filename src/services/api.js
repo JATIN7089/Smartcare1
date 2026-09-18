@@ -6,7 +6,43 @@
 import { syncEngine } from './syncEngine.js';
 import { authService } from './authService.js';
 
+
+/* ------------------------------------------------------------
+   Live activity stream.
+   One shared EventSource feeds every subscriber, so the caregiver
+   dashboard, the patient detail page and the clinical portal all
+   refresh the instant the senior does something. Fails silently
+   when offline — the sync engine already covers that case.
+   ------------------------------------------------------------ */
+const liveListeners = new Set();
+let liveSource = null;
+
+function ensureLiveSource() {
+  if (liveSource || typeof EventSource === 'undefined') return liveSource;
+  try {
+    liveSource = new EventSource('/api/events');
+    liveSource.onmessage = (e) => {
+      let data = null;
+      try { data = JSON.parse(e.data); } catch (err) { return; }
+      for (const cb of [...liveListeners]) {
+        try { cb(data); } catch (err) { /* one bad listener must not break others */ }
+      }
+    };
+    liveSource.onerror = () => { /* offline or server restarting: stay quiet */ };
+  } catch (e) {
+    liveSource = null;
+  }
+  return liveSource;
+}
+
 export const api = {
+  /** Subscribe to live senior-activity events. Returns an unsubscribe fn. */
+  subscribeLive(cb) {
+    ensureLiveSource();
+    liveListeners.add(cb);
+    return () => liveListeners.delete(cb);
+  },
+
   // Current user
   async getCurrentUser() {
     try {

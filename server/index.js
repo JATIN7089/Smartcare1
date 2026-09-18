@@ -65,6 +65,36 @@ const ACCOUNTS = [
 /** Active sessions: token -> account id. In-memory for the demo. */
 const SESSIONS = new Map();
 
+/* ============================================================
+   LIVE ACTIVITY STREAM (Server-Sent Events)
+   ------------------------------------------------------------
+   The moment a senior completes a game, ticks a reminder or finishes
+   a breathing session, every open caregiver / clinical portal refreshes.
+   Keyless, dependency-free push: one EventSource per open portal tab.
+   ============================================================ */
+const LIVE_CLIENTS = new Set();
+
+function broadcast(kind, meta = {}) {
+  const payload = JSON.stringify({ kind, patientId: 'user-asha-68', meta, at: new Date().toISOString() });
+  for (const res of LIVE_CLIENTS) {
+    try { res.write(`data: ${payload}\n\n`); } catch (e) { LIVE_CLIENTS.delete(res); }
+  }
+}
+
+app.get('/api/events', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('X-Accel-Buffering', 'no');
+  if (typeof res.flushHeaders === 'function') res.flushHeaders();
+  res.write(`data: ${JSON.stringify({ kind: 'hello', at: new Date().toISOString() })}\n\n`);
+  LIVE_CLIENTS.add(res);
+  const ping = setInterval(() => { try { res.write(': ping\n\n'); } catch (e) {} }, 25000);
+  req.on('close', () => { clearInterval(ping); LIVE_CLIENTS.delete(res); });
+});
+
+
+
 function publicAccount(acc) {
   if (!acc) return null;
   const { password, pin, ...safe } = acc;
@@ -758,6 +788,8 @@ app.post('/api/games/submit', (req, res) => {
   state.cognitiveProfile.explanation = explanation;
   state.cognitiveProfile.metrics.memory = Math.round((state.cognitiveProfile.metrics.memory * 0.7) + (newGame.accuracy * 0.3));
 
+  broadcast('game', { gameType: newGame.gameType, accuracy: newGame.accuracy, difficulty: newGame.difficulty });
+
   res.json({
     success: true,
     result: newGame,
@@ -793,6 +825,7 @@ app.put('/api/reminders/:id/toggle', (req, res) => {
   const item = state.reminders.find(r => r.id === id);
   if (item) {
     item.completed = !item.completed;
+    broadcast(item.completed ? 'reminder_done' : 'reminder_reopen', { title: item.title });
     res.json({ success: true, reminder: item });
   } else {
     res.status(404).json({ error: 'Reminder not found' });
@@ -814,6 +847,7 @@ app.put('/api/routines/toggle', (req, res) => {
   const { index } = req.body;
   if (index !== undefined && state.routine[index]) {
     state.routine[index].done = !state.routine[index].done;
+    broadcast('routine', { label: state.routine[index].label, done: state.routine[index].done });
     res.json({ success: true, routine: state.routine });
   } else {
     res.status(400).json({ error: 'Invalid routine index' });
@@ -838,6 +872,7 @@ app.post('/api/breathing', (req, res) => {
     timestamp: new Date().toISOString()
   };
   state.breathingSessions.push(session);
+  broadcast('breathing', { durationSeconds: session.durationSeconds });
   res.json({ success: true, session });
 });
 
@@ -937,6 +972,7 @@ app.post('/api/activity-plans', requireRole('healthcare'), (req, res) => {
     tasks: tasks || []
   };
   state.activityPlans.unshift(plan);
+  broadcast('plan', { title: plan.title });
   res.json({ success: true, plan });
 });
 
@@ -979,6 +1015,8 @@ app.post('/api/sync', (req, res) => {
       if (rem) rem.completed = item.data.completed;
     }
   });
+
+  if (syncedCount) broadcast('sync', { count: syncedCount });
 
   res.json({
     success: true,

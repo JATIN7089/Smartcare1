@@ -131,8 +131,18 @@ export function AppProvider({ children }) {
       setSyncState(state);
     });
 
+    // Any activity the senior completes pushes an event; refresh the whole
+    // data slice so every role sees it immediately.
+    const unsubscribeLive = api.subscribeLive(evt => {
+      if (evt.kind === 'hello') { setLiveConnected(true); return; }
+      setLiveConnected(true);
+      setLastLiveEvent(evt);
+      loadInitialData();
+    });
+
     return () => {
       unsubscribeSync();
+      unsubscribeLive();
     };
   }, [account]);
 
@@ -341,6 +351,8 @@ export function AppProvider({ children }) {
         culturalRegion,
         setCulturalRegion,
         language,
+        lastLiveEvent,
+        liveConnected,
         setLanguage: handleLanguageChange,
         t,
         currentLanguageObj,

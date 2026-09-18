@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
 import { getRecommendationsForTime } from '../ai/recommendationService.js';
+import { GAME_META_KEYS, CATEGORY_KEYS } from '../data/translations.js';
 import { 
   Brain, 
   Sparkles, 
@@ -26,92 +27,99 @@ export default function GameHubPage() {
 
   const recommendation = getRecommendationsForTime();
 
+  const meta = (id, field, fallback) => {
+    const keys = GAME_META_KEYS[id];
+    return keys ? t(keys[field], fallback) : fallback;
+  };
+  const fillRegion = (str) => String(str).replace('{region}', culturalRegion || 'Assam');
+  const diffLabel = (v) => t('diff_' + String(v).toLowerCase(), v);
+
   const games = [
     {
       id: 'memory',
-      title: 'Memory Match',
-      desc: 'Flip cards and find matching pairs. Trains working memory and visual recall.',
+      title: fillRegion(meta('memory','title','Memory Match')),
+      desc: fillRegion(meta('memory','desc','Flip cards and find matching pairs. Trains working memory and visual recall.')),
       category: 'Memory',
       route: '/games/memory',
       icon: Brain,
-      badge: 'Cognitive Baseline',
+      badge: fillRegion(meta('memory','badge','Cognitive Baseline')),
       color: 'from-teal-500 to-emerald-600',
       difficulty: cognitiveProfile?.difficultyLevel || 'Moderate'
     },
     {
       id: 'faces',
-      title: 'Who Is This?',
-      desc: 'Recognise your own family, your home and the places you love. No timer, no score.',
+      title: fillRegion(meta('faces','title','Who Is This?')),
+      desc: fillRegion(meta('faces','desc','Recognise your own family, your home and the places you love. No timer, no score.')),
       category: 'Memory',
       route: '/games/faces',
       icon: Heart,
-      badge: 'Personal Photos',
+      badge: fillRegion(meta('faces','badge','Personal Photos')),
       color: 'from-rose-500 to-pink-600',
       difficulty: 'Gentle'
     },
     {
       id: 'cultural',
-      title: 'NER Cultural Memory Match',
-      desc: `Match regional symbols from ${culturalRegion} & 8 North Eastern states. Fosters semantic familiarity.`,
+      title: fillRegion(meta('cultural','title','NER Cultural Memory Match')),
+      desc: fillRegion(meta('cultural','desc','Match regional symbols from ${culturalRegion} & 8 North Eastern states. Fosters semantic familiarity.')),
       category: 'Cultural',
       route: '/games/cultural',
       icon: Sparkles,
-      badge: 'NER Heritage',
+      badge: fillRegion(meta('cultural','badge','NER Heritage')),
       color: 'from-amber-500 to-orange-600',
       difficulty: 'Adaptive'
     },
     {
       id: 'attention',
-      title: 'Sequence Recall',
-      desc: 'Watch a sequence of symbols, memorize order, then reproduce step-by-step.',
+      title: fillRegion(meta('attention','title','Sequence Recall')),
+      desc: fillRegion(meta('attention','desc','Watch a sequence of symbols, memorize order, then reproduce step-by-step.')),
       category: 'Attention',
       route: '/games/attention',
       icon: Eye,
-      badge: 'Focus & Attention',
+      badge: fillRegion(meta('attention','badge','Focus & Attention')),
       color: 'from-sky-500 to-blue-600',
       difficulty: cognitiveProfile?.difficultyLevel || 'Moderate'
     },
     {
       id: 'pattern',
-      title: 'Pattern Match',
-      desc: 'Solve geometric, color, and textile weave sequences to stimulate pattern logic.',
+      title: fillRegion(meta('pattern','title','Pattern Match')),
+      desc: fillRegion(meta('pattern','desc','Solve geometric, color, and textile weave sequences to stimulate pattern logic.')),
       category: 'Pattern',
       route: '/games/pattern',
       icon: Layers,
-      badge: 'Reasoning',
+      badge: fillRegion(meta('pattern','badge','Reasoning')),
       color: 'from-indigo-500 to-purple-600',
       difficulty: 'Moderate'
     },
     {
       id: 'daily-recall',
-      title: 'Daily Routine Recall',
-      desc: 'Gentle sequencing questions regarding meals, hydration, and morning medication habits.',
+      title: fillRegion(meta('daily-recall','title','Daily Routine Recall')),
+      desc: fillRegion(meta('daily-recall','desc','Gentle sequencing questions regarding meals, hydration, and morning medication habits.')),
       category: 'Daily Recall',
       route: '/games/daily-recall',
       icon: Calendar,
-      badge: 'Everyday Independence',
+      badge: fillRegion(meta('daily-recall','badge','Everyday Independence')),
       color: 'from-emerald-500 to-teal-700',
       difficulty: 'Gentle'
     },
     {
       id: 'objects',
-      title: 'Familiar Object Recognition',
-      desc: 'Identify everyday household objects like tea cups, bamboo baskets, and handloom textiles.',
+      title: fillRegion(meta('objects','title','Familiar Object Recognition')),
+      desc: fillRegion(meta('objects','desc','Identify everyday household objects like tea cups, bamboo baskets, and handloom textiles.')),
       category: 'Memory',
       route: '/games/objects',
       icon: Coffee,
-      badge: 'Semantic Recall',
+      badge: fillRegion(meta('objects','badge','Semantic Recall')),
       color: 'from-orange-500 to-amber-700',
       difficulty: 'Gentle'
     },
     {
       id: 'sound',
-      title: 'Sound & Environmental Recall',
-      desc: 'Listen to synthesized soothing sounds: monsoon rain, singing bowls, morning birdsong.',
+      title: fillRegion(meta('sound','title','Sound & Environmental Recall')),
+      desc: fillRegion(meta('sound','desc','Listen to synthesized soothing sounds: monsoon rain, singing bowls, morning birdsong.')),
       category: 'Sound',
       route: '/games/sound',
       icon: Music,
-      badge: 'Auditory Memory',
+      badge: fillRegion(meta('sound','badge','Auditory Memory')),
       color: 'from-violet-500 to-fuchsia-600',
       difficulty: 'Calming'
     }
@@ -135,7 +143,7 @@ export default function GameHubPage() {
 
         <div className="flex flex-wrap items-center gap-2">
           <span className="bg-slate-50 border border-slate-200 text-xs font-bold px-3 py-2 rounded-xl text-slate-700 flex items-center gap-1.5">
-            <Layers className="w-4 h-4 text-teal-600" />{t('gh_level')}<strong className="text-teal-800">{cognitiveProfile?.difficultyLevel || 'Moderate'}</strong>
+            <Layers className="w-4 h-4 text-teal-600" />{t('gh_level')}<strong className="text-teal-800">{diffLabel(cognitiveProfile?.difficultyLevel || 'Moderate')}</strong>
           </span>
           <span className="bg-slate-50 border border-slate-200 text-xs font-bold px-3 py-2 rounded-xl text-slate-700 flex items-center gap-1.5">
             <MapPin className="w-4 h-4 text-rose-500" /> {culturalRegion}
@@ -176,7 +184,7 @@ export default function GameHubPage() {
                 : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200'
             }`}
           >
-            {cat === 'all' ? t('all_activities', 'All Activities') : cat}
+            {cat === 'all' ? t('all_activities', 'All Activities') : t(CATEGORY_KEYS[cat] || '', cat)}
           </button>
         ))}
       </div>
@@ -208,7 +216,7 @@ export default function GameHubPage() {
 
               <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-500">
-                  {t('level', 'Level')}: <strong className="text-slate-800">{game.difficulty}</strong>
+                  {t('level', 'Level')}: <strong className="text-slate-800">{diffLabel(game.difficulty)}</strong>
                 </span>
 
                 <Link

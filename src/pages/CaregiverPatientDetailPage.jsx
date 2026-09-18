@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import { useApp } from '../context/AppContext.jsx';
 import { api } from '../services/api.js';
+import { LiveBadge } from '../components/LiveToast.jsx';
 import { soundService } from '../services/soundService.js';
 import { 
   ArrowLeft, 

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext.jsx';
-import { NAV_LABEL_KEYS } from '../data/translations.js';
+import { NAV_LABEL_KEYS, ROLE_LABEL_KEYS } from '../data/translations.js';
+import LiveToast, { LiveBadge } from './LiveToast.jsx';
 import VoiceActionModal from './VoiceActionModal.jsx';
 import { getRole } from '../data/roles.js';
 import {
@@ -157,7 +158,7 @@ export default function AppShell({ children }) {
         <>
           <span className="flex items-center gap-1.5">
             <ArrowLeftRight className="w-3.5 h-3.5" />
-            <span>{cfg.label} · Account</span>
+            <span>{t(ROLE_LABEL_KEYS[cfg.label] || '', cfg.label)} · {t('shell_account')}</span>
           </span>
           <ChevronDown className="w-3.5 h-3.5 opacity-70" />
         </>
@@ -622,6 +623,7 @@ export default function AppShell({ children }) {
         isOpen={voiceModalOpen}
         onClose={() => setVoiceModalOpen(false)}
       />
+    {role !== 'elderly' && <LiveToast />}
     </div>
   );
 }
