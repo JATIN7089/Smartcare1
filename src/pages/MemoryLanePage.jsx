@@ -178,6 +178,10 @@ export default function MemoryLanePage() {
                     src={memory.photo}
                     alt={memory.subject || memory.title}
                     className="w-28 h-28 rounded-full object-cover shadow-md mx-auto my-4 border-4 border-white ring-2 ring-teal-200"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/memories/rita.jpg';
+                    }}
                   />
                 ) : (
                   <div className="w-20 h-20 rounded-full bg-white shadow-md mx-auto my-4 flex items-center justify-center border-2 border-teal-200">

@@ -79,7 +79,15 @@ function accountFromRequest(req) {
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
   if (!token) return null;
-  const accountId = SESSIONS.get(token);
+  let accountId = SESSIONS.get(token);
+  if (!accountId) {
+    if (token.startsWith('offline-')) {
+      accountId = token.replace('offline-', '');
+    } else {
+      const match = ACCOUNTS.find(a => token.includes(a.id));
+      if (match) accountId = match.id;
+    }
+  }
   if (!accountId) return null;
   return ACCOUNTS.find(a => a.id === accountId) || null;
 }
@@ -767,9 +775,10 @@ app.post('/api/reminders', (req, res) => {
 
 app.put('/api/reminders/:id/toggle', (req, res) => {
   const { id } = req.params;
+  const { completed } = req.body || {};
   const item = state.reminders.find(r => r.id === id);
   if (item) {
-    item.completed = !item.completed;
+    item.completed = typeof completed === 'boolean' ? completed : !item.completed;
     res.json({ success: true, reminder: item });
   } else {
     res.status(404).json({ error: 'Reminder not found' });

@@ -81,6 +81,10 @@ export default function MyPeoplePage() {
         src={m.photo}
         alt={m.subject || m.title}
         className={`w-full object-cover bg-slate-100 ${big ? 'aspect-video' : 'aspect-square'}`}
+        onError={(e) => {
+          e.currentTarget.onerror = null;
+          e.currentTarget.src = '/memories/rita.jpg';
+        }}
       />
       <div className="p-3.5">
         {/* Always labelled. Never a guessing game. */}
@@ -131,6 +135,10 @@ export default function MyPeoplePage() {
               src={home.photo}
               alt="Your home"
               className="w-full aspect-video object-cover bg-slate-100"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = '/memories/home.jpg';
+              }}
             />
           </button>
 

@@ -171,16 +171,21 @@ export default function RemindersPage() {
             return (
               <div
                 key={reminder.id}
-                className={`bg-white rounded-2xl p-4 sm:p-5 border-2 transition-all flex items-start sm:items-center justify-between gap-4 ${
+                onClick={() => handleToggleReminder(reminder.id)}
+                className={`bg-white rounded-2xl p-4 sm:p-5 border-2 transition-all flex items-start sm:items-center justify-between gap-4 cursor-pointer select-none ${
                   reminder.completed
                     ? 'border-emerald-200 bg-emerald-50/30 opacity-80'
                     : 'border-slate-200 hover:border-teal-400 shadow-sm'
                 }`}
               >
-                <div className="flex items-start sm:items-center gap-3.5">
+                <div className="flex items-start sm:items-center gap-3.5 flex-1 min-w-0">
                   {/* Big toggle check button (Min 44px) */}
                   <button
-                    onClick={() => handleToggleReminder(reminder.id)}
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleReminder(reminder.id);
+                    }}
                     className={`w-11 h-11 rounded-xl flex items-center justify-center border-2 transition flex-shrink-0 ${
                       reminder.completed
                         ? 'bg-emerald-600 border-emerald-600 text-white'
@@ -192,7 +197,7 @@ export default function RemindersPage() {
                     <Check className="w-6 h-6 stroke-[3]" />
                   </button>
 
-                  <div className="space-y-1">
+                  <div className="space-y-1 flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-[11px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200 flex items-center gap-1">
                         <Icon className="w-3 h-3 text-teal-600" /> {reminder.category}
@@ -202,7 +207,7 @@ export default function RemindersPage() {
                       </span>
                     </div>
 
-                    <h3 className={`font-extrabold text-base sm:text-lg text-slate-900 ${reminder.completed ? 'line-through text-slate-500' : ''}`}>
+                    <h3 className={`font-extrabold text-base sm:text-lg text-slate-900 truncate ${reminder.completed ? 'line-through text-slate-500' : ''}`}>
                       {reminder.title}
                     </h3>
 
@@ -214,8 +219,12 @@ export default function RemindersPage() {
 
                 {/* Right controls: delete */}
                 <button
-                  onClick={() => handleDeleteReminder(reminder.id)}
-                  className="text-slate-400 hover:text-rose-600 p-2 rounded-lg hover:bg-rose-50 transition"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteReminder(reminder.id);
+                  }}
+                  className="text-slate-400 hover:text-rose-600 p-2.5 rounded-xl hover:bg-rose-50 transition flex-shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center"
                   title="Delete Reminder"
                 >
                   <Trash2 className="w-4 h-4" />

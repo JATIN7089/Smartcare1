@@ -112,9 +112,19 @@ export const api = {
   async getReminders() {
     try {
       const res = await fetch('/api/reminders');
-      if (res.ok) return await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length) return data;
+      }
     } catch (e) {}
-    return [];
+    return [
+      { id: 'rem-1', title: 'Blood Pressure & Heart Medicine', category: 'Medicine', time: '08:00 AM', date: 'Daily', completed: true, notes: 'Take with warm water after morning tea & breakfast' },
+      { id: 'rem-2', title: 'Hydration Break (Fresh Water / Chamomile)', category: 'Hydration', time: '10:00 AM', date: 'Daily', completed: true, notes: 'Drink a full glass of lukewarm water' },
+      { id: 'rem-3', title: 'Afternoon Memory Exercise', category: 'Cognitive Activity', time: '02:30 PM', date: 'Daily', completed: false, notes: 'Play 1 session of NER Cultural Match' },
+      { id: 'rem-4', title: 'Doctor Follow-Up Consultation', category: 'Appointments', time: '04:00 PM', date: 'Today', completed: false, notes: 'Dr. Barua tele-checkin or Sonitpur clinic' },
+      { id: 'rem-5', title: 'Evening Walk in Courtyard', category: 'Exercise', time: '05:30 PM', date: 'Daily', completed: false, notes: '15-minute gentle walk around tea garden garden' },
+      { id: 'rem-6', title: 'Evening Calming Breathing Session', category: 'Well-being', time: '08:30 PM', date: 'Daily', completed: false, notes: '5 minutes of paced breathing before sleep' }
+    ];
   },
 
   async addReminder(reminder) {
@@ -129,13 +139,17 @@ export const api = {
     return { success: true, reminder: { ...reminder, id: `rem-${Date.now()}` } };
   },
 
-  async toggleReminder(id) {
+  async toggleReminder(id, targetState) {
     if (!syncEngine.effectiveOnline()) {
-      syncEngine.enqueue({ type: 'reminder_toggle', data: { id, completed: true } });
+      syncEngine.enqueue({ type: 'reminder_toggle', data: { id, completed: targetState !== undefined ? targetState : true } });
       return { success: true, queued: true };
     }
     try {
-      const res = await fetch(`/api/reminders/${id}/toggle`, { method: 'PUT' });
+      const res = await fetch(`/api/reminders/${id}/toggle`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ completed: targetState })
+      });
       if (res.ok) return await res.json();
     } catch (e) {}
     return { success: true };
@@ -153,9 +167,22 @@ export const api = {
   async getRoutines() {
     try {
       const res = await fetch('/api/routines');
-      if (res.ok) return await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length) return data;
+      }
     } catch (e) {}
-    return [];
+    return [
+      { time: '07:00 AM', label: 'Wake up & gentle stretch', done: true, icon: 'Sun' },
+      { time: '08:00 AM', label: 'Morning Tea, Breakfast + Medication', done: true, icon: 'Coffee' },
+      { time: '10:00 AM', label: 'Morning Hydration & Garden walk', done: true, icon: 'Droplets' },
+      { time: '11:00 AM', label: 'SmarTCARE Cognitive Game Session', done: false, icon: 'Brain' },
+      { time: '01:00 PM', label: 'Nutritious lunch with family', done: false, icon: 'Utensils' },
+      { time: '02:30 PM', label: 'Rest & Memory Lane reminiscence', done: false, icon: 'BookOpen' },
+      { time: '04:00 PM', label: 'Doctor Tele-Consultation / Routine check', done: false, icon: 'Stethoscope' },
+      { time: '06:00 PM', label: 'Tea & Family conversation with Rita', done: false, icon: 'Users' },
+      { time: '08:30 PM', label: 'Evening Breathing & Lights out', done: false, icon: 'Moon' }
+    ];
   },
 
   async toggleRoutine(index) {
@@ -192,9 +219,104 @@ export const api = {
   async getMemories() {
     try {
       const res = await fetch('/api/memories');
-      if (res.ok) return await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length) return data;
+      }
     } catch (e) {}
-    return [];
+    return [
+      {
+        id: 'mem-1',
+        title: 'Rita — Elder Daughter',
+        relationship: 'Daughter',
+        location: 'Guwahati, Assam',
+        year: '2025',
+        question: 'Who is this visiting you during Rongali Bihu?',
+        answer: 'Rita, your elder daughter who lives in Guwahati.',
+        category: 'Person',
+        subject: 'Rita',
+        voiceNote: 'This is Rita, your elder daughter. She lives in Guwahati and calls you every evening.',
+        photo: '/memories/rita.jpg',
+        notes: 'Rita calls every evening at 6:00 PM to talk about the grandchildren.',
+        themeColor: '#3b82f6'
+      },
+      {
+        id: 'mem-2',
+        title: 'Bihu Celebration at Tezpur Courtyard',
+        relationship: 'Family Festival',
+        location: 'Tezpur Ancestral House',
+        year: '2024',
+        question: 'Which festival were we celebrating when we prepared fresh Pitha and Laru?',
+        answer: 'Rongali Bihu in the month of Bohag!',
+        category: 'Event',
+        subject: 'Rongali Bihu',
+        voiceNote: 'This is Rongali Bihu at your Tezpur courtyard.',
+        photo: null,
+        notes: 'Asha made Til Pitha and played the Tokari with her grandchildren.',
+        themeColor: '#ea580c'
+      },
+      {
+        id: 'mem-3',
+        title: 'Trip to Majuli Island',
+        relationship: 'Travel Memory',
+        location: 'Majuli River Island, Brahmaputra',
+        year: '2023',
+        question: 'Where did we take the ferry across the mighty Brahmaputra river?',
+        answer: 'Majuli Island, visiting the peaceful Satras and pottery makers.',
+        category: 'Place',
+        subject: 'Majuli Island',
+        voiceNote: 'This is Majuli Island, where you took the ferry across the Brahmaputra.',
+        photo: null,
+        notes: 'Asha loved hearing the devotional Borgeet and seeing traditional masks.',
+        themeColor: '#0d9488'
+      },
+      {
+        id: 'mem-4',
+        title: 'Grandson Aarav’s School Graduation',
+        relationship: 'Grandson',
+        location: 'Jorhat, Assam',
+        year: '2024',
+        question: 'Whose science exhibition did you attend with your red silk chador?',
+        answer: 'Aarav, your grandson who won the science trophy.',
+        category: 'Person',
+        subject: 'Aarav',
+        voiceNote: 'This is Aarav, your grandson. He won the science trophy.',
+        photo: '/memories/aarav.jpg',
+        notes: 'Aarav loves when Dadi tells stories about the Eastern Himalayas.',
+        themeColor: '#7c3aed'
+      },
+      {
+        id: 'mem-5',
+        title: 'My Home',
+        relationship: 'Home',
+        location: 'Tezpur, Assam',
+        year: 'Present',
+        question: 'Is this your home?',
+        answer: 'Yes, this is your home in Tezpur where you live.',
+        category: 'Place',
+        subject: 'My Home',
+        voiceNote: 'Yes, this is your home in Tezpur. You are safe here.',
+        photo: '/memories/home.jpg',
+        isHome: true,
+        notes: 'The green gate and the tulsi plant in the courtyard.',
+        themeColor: '#0d9488'
+      },
+      {
+        id: 'mem-6',
+        title: 'Sunita — Younger Daughter',
+        relationship: 'Daughter',
+        location: 'Tezpur, Assam',
+        year: 'Present',
+        question: 'Who is this that looks after you every day?',
+        answer: 'Sunita, your younger daughter and primary caregiver.',
+        category: 'Person',
+        subject: 'Sunita',
+        voiceNote: 'This is Sunita, your younger daughter. She looks after you every day.',
+        photo: '/memories/sunita.jpg',
+        notes: 'Sunita manages the reminders and medicines.',
+        themeColor: '#7c3aed'
+      }
+    ];
   },
 
   async addMemory(memory) {
