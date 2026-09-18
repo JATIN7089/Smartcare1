@@ -124,7 +124,7 @@ export default function SoundMemoryGame() {
 
       const payload = {
         gameType: 'sound-memory',
-        category: 'Auditory Memory',
+        category: t('sm_tag'),
         difficulty: cognitiveProfile?.difficultyLevel || 'Moderate',
         accuracy,
         attempts: SOUND_QUESTIONS.length,
@@ -170,7 +170,7 @@ export default function SoundMemoryGame() {
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
           <div className="flex items-center justify-between">
             <span className="text-xs font-black uppercase text-teal-600 tracking-wider flex items-center gap-1.5">
-              <Music className="w-4 h-4" /> Sound & Environmental Memory
+              <Music className="w-4 h-4" />{t('sm_title')}
             </span>
             <button
               onClick={() => setShowHint(!showHint)}
@@ -198,16 +198,16 @@ export default function SoundMemoryGame() {
               {isPlaying ? (
                 <>
                   <Volume2 className="w-10 h-10 animate-bounce" />
-                  <span className="text-[10px] font-black uppercase mt-1">Playing...</span>
+                  <span className="text-[10px] font-black uppercase mt-1">{t('sm_playing')}</span>
                 </>
               ) : (
                 <>
                   <Play className="w-10 h-10 fill-white ml-1" />
-                  <span className="text-[10px] font-black uppercase mt-1">Listen Sound</span>
+                  <span className="text-[10px] font-black uppercase mt-1">{t('sm_listen')}</span>
                 </>
               )}
             </button>
-            <p className="text-xs text-slate-500 font-medium">Tap to play environmental audio through your speakers</p>
+            <p className="text-xs text-slate-500 font-medium">{t('sm_hint')}</p>
           </div>
 
           {showHint && (
@@ -260,7 +260,7 @@ export default function SoundMemoryGame() {
           <div className="w-16 h-16 rounded-full bg-teal-100 text-teal-700 mx-auto flex items-center justify-center">
             <Trophy className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-black text-slate-900">Sound Exercise Completed!</h2>
+          <h2 className="text-2xl font-black text-slate-900">{t('sm_done')}</h2>
           <p className="text-sm text-slate-600 max-w-sm mx-auto">
             Auditory recognition engages the temporal lobes and sensory integration areas of the brain.
           </p>
@@ -272,7 +272,7 @@ export default function SoundMemoryGame() {
             </div>
             <div className="bg-teal-50 border border-teal-200 rounded-xl px-5 py-3">
               <span className="text-xs text-teal-700 block font-bold">{t('rem_category')}</span>
-              <span className="text-sm font-black text-teal-900 mt-1 block">Auditory Memory</span>
+              <span className="text-sm font-black text-teal-900 mt-1 block">{t('sm_tag')}</span>
             </div>
           </div>
 

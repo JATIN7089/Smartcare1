@@ -124,7 +124,7 @@ export default function MyPeoplePage() {
           >
             <img
               src={home.photo}
-              alt="Your home"
+              alt="{t('mp_home')}"
               className="w-full aspect-video object-cover bg-slate-100"
             />
           </button>
@@ -188,7 +188,7 @@ export default function MyPeoplePage() {
               <button
                 onClick={() => setOpen(null)}
                 className="absolute top-3 right-3 w-10 h-10 rounded-full bg-slate-900/60 text-white flex items-center justify-center hover:bg-slate-900/80"
-                aria-label="Close"
+                aria-label="{t('mp_close')}"
               >
                 <X className="w-5 h-5" />
               </button>

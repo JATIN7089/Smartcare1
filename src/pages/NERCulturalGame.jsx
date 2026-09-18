@@ -206,7 +206,7 @@ export default function NERCulturalGame() {
         {/* Region preference picker */}
         <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-1.5 shadow-xs">
           <MapPin className="w-4 h-4 text-rose-500" />
-          <span className="text-xs font-bold text-slate-600">Region Theme:</span>
+          <span className="text-xs font-bold text-slate-600">{t('ner_region')}</span>
           <select
             value={culturalRegion}
             onChange={(e) => setCulturalRegion(e.target.value)}
@@ -223,7 +223,7 @@ export default function NERCulturalGame() {
       <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black uppercase text-teal-700 tracking-wider">NER Cultural Heritage</span>
+            <span className="text-xs font-black uppercase text-teal-700 tracking-wider">{t('ner_title')}</span>
             <span className="text-xs bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded-full">
               {culturalRegion}
             </span>
@@ -306,7 +306,7 @@ export default function NERCulturalGame() {
                   <div className="w-10 h-10 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center font-black">
                     🪷
                   </div>
-                  <span className="text-[11px] font-bold text-slate-500">Tap Card</span>
+                  <span className="text-[11px] font-bold text-slate-500">{t('ner_tap')}</span>
                 </div>
               )}
             </button>
@@ -322,7 +322,7 @@ export default function NERCulturalGame() {
               <Trophy className="w-7 h-7" />
             </div>
             <div>
-              <span className="text-xs font-black uppercase tracking-wider text-teal-800">Cultural Match Completed</span>
+              <span className="text-xs font-black uppercase tracking-wider text-teal-800">{t('ner_done')}</span>
               <h2 className="text-2xl font-black text-slate-900">Wonderful, {user?.name || 'Asha'}!</h2>
             </div>
           </div>
@@ -343,7 +343,7 @@ export default function NERCulturalGame() {
           </div>
 
           <div className="bg-white rounded-2xl p-4 border border-teal-200">
-            <p className="text-xs font-bold text-slate-500 uppercase">AI Engagement Explanation</p>
+            <p className="text-xs font-bold text-slate-500 uppercase">{t('ner_ai')}</p>
             <p className="text-sm text-slate-700 mt-1">{gameResult.explanation}</p>
           </div>
 

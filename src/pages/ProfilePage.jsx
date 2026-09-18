@@ -121,7 +121,7 @@ export default function ProfilePage() {
 
       {showExplanation && (
         <div className="bg-white rounded-2xl p-4 border border-teal-200 text-xs text-slate-600 space-y-2 animate-in fade-in">
-          <p><strong>{t('prof_balance')}</strong> High accuracy helps unlock fun new cultural cards and symbols. If an activity feels too challenging, exercises automatically become simpler with helpful hints.</p>
+          <p><strong>{t('prof_balance')}</strong>{t('prof_unlock')}</p>
         </div>
       )}
     </div>

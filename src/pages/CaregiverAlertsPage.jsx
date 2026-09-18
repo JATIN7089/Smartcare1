@@ -40,7 +40,7 @@ export default function CaregiverAlertsPage() {
           to="/caregiver"
           className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2 rounded-xl border border-teal-200 transition"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Caregiver Portal
+          <ArrowLeft className="w-4 h-4" />{t('cga_back')}
         </Link>
         <span className="text-xs font-bold text-slate-500">
           Explainable Activity Notification System
@@ -67,7 +67,7 @@ export default function CaregiverAlertsPage() {
         {alerts.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 space-y-3">
             <CheckCircle2 className="w-12 h-12 text-teal-600 mx-auto" />
-            <h3 className="font-extrabold text-lg text-slate-900">All Activity Trends Steady</h3>
+            <h3 className="font-extrabold text-lg text-slate-900">{t('cga_steady')}</h3>
             <p className="text-xs text-slate-500 max-w-sm mx-auto">
               No recent activity changes or missed adherence flags detected for Asha Sharma.
             </p>
@@ -85,7 +85,7 @@ export default function CaregiverAlertsPage() {
                   </div>
                   <div>
                     <h3 className="font-extrabold text-lg text-slate-900">{alert.title}</h3>
-                    <span className="text-xs text-slate-400 font-medium">Patient: Asha Sharma (68) • Detected Recently</span>
+                    <span className="text-xs text-slate-400 font-medium">{t('cga_patient')}</span>
                   </div>
                 </div>
 
@@ -97,12 +97,12 @@ export default function CaregiverAlertsPage() {
               {/* Explainable Reasoning */}
               <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2 text-xs sm:text-sm">
                 <div>
-                  <span className="font-bold text-slate-700 uppercase tracking-wide text-[11px] block">Observed Pattern:</span>
+                  <span className="font-bold text-slate-700 uppercase tracking-wide text-[11px] block">{t('cga_pattern')}</span>
                   <p className="text-slate-800 font-medium">{alert.reason}</p>
                 </div>
 
                 <div className="pt-1 border-t border-slate-200/80">
-                  <span className="font-bold text-teal-800 uppercase tracking-wide text-[11px] block">Suggested Supportive Action:</span>
+                  <span className="font-bold text-teal-800 uppercase tracking-wide text-[11px] block">{t('cga_action')}</span>
                   <p className="text-teal-900">{alert.recommendation}</p>
                 </div>
               </div>
@@ -140,13 +140,13 @@ export default function CaregiverAlertsPage() {
                     rows={2}
                     value={noteText}
                     onChange={(e) => setNoteText(e.target.value)}
-                    placeholder="Write a caregiver observation regarding this alert..."
+                    placeholder="{t('cga_ph')}"
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-teal-500"
                   />
                   <div className="flex justify-between items-center">
                     {noteSuccess && (
                       <span className="text-xs text-emerald-600 font-bold flex items-center gap-1">
-                        <Check className="w-4 h-4" /> Note saved to Asha's timeline
+                        <Check className="w-4 h-4" />{t('cga_saved')}
                       </span>
                     )}
                     <button

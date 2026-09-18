@@ -180,7 +180,7 @@ export default function RemindersPage() {
                         : 'border-slate-300 hover:border-teal-600 text-transparent hover:text-teal-600'
                     }`}
                     title={reminder.completed ? "Mark as Incomplete" : "Mark as Completed"}
-                    aria-label="Toggle reminder completion"
+                    aria-label="{t('rem_toggle')}"
                   >
                     <Check className="w-6 h-6 stroke-[3]" />
                   </button>
@@ -209,7 +209,7 @@ export default function RemindersPage() {
                 <button
                   onClick={() => handleDeleteReminder(reminder.id)}
                   className="text-slate-400 hover:text-rose-600 p-2 rounded-lg hover:bg-rose-50 transition"
-                  title="Delete Reminder"
+                  title="{t('rem_del')}"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

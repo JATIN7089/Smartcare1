@@ -261,14 +261,14 @@ export default function CaregiverDashboard() {
             <div className="flex justify-between items-center">
               {encouragementSent && (
                 <span className="text-xs text-emerald-600 font-bold flex items-center gap-1 animate-in fade-in">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> Sent to Asha's device!
+                  <CheckCircle2 className="w-3.5 h-3.5" />{t('cg_sent')}
                 </span>
               )}
               <button
                 type="submit"
                 className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 ml-auto shadow-xs"
               >
-                <Send className="w-3.5 h-3.5" /> Send Encouragement
+                <Send className="w-3.5 h-3.5" />{t('cg_send_btn')}
               </button>
             </div>
           </form>
@@ -278,7 +278,7 @@ export default function CaregiverDashboard() {
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
           <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
             <Users className="w-5 h-5 text-teal-600" />
-            <span>Link Another Senior with Join Code</span>
+            <span>{t('cg_link')}</span>
           </h3>
           <p className="text-xs text-slate-500">
             Enter the 8-character pairing code generated on the senior's tablet (e.g. SMT-4821).
@@ -289,7 +289,7 @@ export default function CaregiverDashboard() {
               type="text"
               value={joinCodeInput}
               onChange={(e) => setJoinCodeInput(e.target.value)}
-              placeholder="e.g. SMT-4821"
+              placeholder="{t('cg_ph_code')}"
               className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-mono font-bold uppercase text-slate-800 focus:ring-2 focus:ring-teal-500 outline-none"
             />
             <button

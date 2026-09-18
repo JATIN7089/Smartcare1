@@ -368,8 +368,8 @@ export default function MemoryMatchGame() {
 
             {showExplanation && (
               <div className="text-xs text-slate-600 bg-slate-50 rounded-xl p-3 border border-slate-200 space-y-1">
-                <p><strong>{t('g_explain_rule')}</strong> If accuracy &gt; 85% and response pace is brisk, difficulty gradually steps up to foster neuroplastic engagement. If mistakes accumulate, difficulty gently simplifies to prevent cognitive fatigue.</p>
-                <p className="text-amber-800 font-medium">Notice: This adaptive metric tracks interaction engagement and is strictly non-diagnostic.</p>
+                <p><strong>{t('g_explain_rule')}</strong>{t('mm_explain')}</p>
+                <p className="text-amber-800 font-medium">{t('mm_notice')}</p>
               </div>
             )}
           </div>
@@ -386,7 +386,7 @@ export default function MemoryMatchGame() {
               to="/breathing"
               className="bg-sky-600 hover:bg-sky-700 text-white font-extrabold px-5 py-3 rounded-xl text-sm shadow-md transition flex items-center gap-2"
             >
-              <span>Take a 2-Minute Breathing Break</span>
+              <span>{t('mm_break')}</span>
               <ArrowLeft className="w-4 h-4 rotate-180" />
             </Link>
           </div>

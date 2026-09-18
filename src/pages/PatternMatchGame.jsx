@@ -150,7 +150,7 @@ export default function PatternMatchGame() {
       {!completed ? (
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
           <div>
-            <span className="text-xs font-black uppercase text-teal-600 tracking-wider">Pattern Recognition</span>
+            <span className="text-xs font-black uppercase text-teal-600 tracking-wider">{t('pm_title')}</span>
             <h2 className="text-2xl font-black text-slate-900 mt-1">{currentQ.title}</h2>
             <p className="text-sm text-slate-600 mt-1">{currentQ.desc}</p>
           </div>
@@ -233,19 +233,19 @@ export default function PatternMatchGame() {
           <div className="w-16 h-16 rounded-full bg-teal-100 text-teal-700 mx-auto flex items-center justify-center">
             <Trophy className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-black text-slate-900">Pattern Exercise Complete!</h2>
+          <h2 className="text-2xl font-black text-slate-900">{t('pm_done')}</h2>
           <p className="text-sm text-slate-600 max-w-sm mx-auto">
             You solved patterns with precision. Pattern recognition activates the parietal cortex and promotes mental flexibility.
           </p>
 
           <div className="flex justify-center gap-4">
             <div className="bg-teal-50 border border-teal-200 rounded-xl px-5 py-3">
-              <span className="text-xs text-teal-700 block font-bold">Solved</span>
+              <span className="text-xs text-teal-700 block font-bold">{t('pm_solved')}</span>
               <span className="text-2xl font-black text-teal-900">{correctAnswers}/{PATTERN_QUESTIONS.length}</span>
             </div>
             <div className="bg-teal-50 border border-teal-200 rounded-xl px-5 py-3">
               <span className="text-xs text-teal-700 block font-bold">{t('rem_category')}</span>
-              <span className="text-sm font-black text-teal-900 mt-1 block">Pattern Reasoning</span>
+              <span className="text-sm font-black text-teal-900 mt-1 block">{t('pm_reason')}</span>
             </div>
           </div>
 

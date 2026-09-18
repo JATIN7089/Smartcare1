@@ -287,7 +287,7 @@ export default function LoginPage() {
             <form onSubmit={submitRegister} className="space-y-3">
               {/* Role choice drives what this account will ever be able to see */}
               <div>
-                <label className="text-xs font-bold text-slate-600 block mb-1.5">I am a</label>
+                <label className="text-xs font-bold text-slate-600 block mb-1.5">{t('log_iam')}</label>
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { id: 'caregiver', label: 'Caregiver', icon: Users },
@@ -384,7 +384,7 @@ export default function LoginPage() {
                     value={form.joinCode}
                     onChange={(e) => { setForm(f => ({ ...f, joinCode: e.target.value.toUpperCase() })); setError(''); }}
                     autoCapitalize="characters"
-                    placeholder="SMT-4821"
+                    placeholder="{t('log_ph')}"
                     className="w-full bg-white border-2 border-slate-200 focus:border-teal-500 rounded-2xl pl-11 pr-4 py-3 text-sm font-bold tracking-wide outline-none transition min-h-[48px]"
                   />
                 </div>

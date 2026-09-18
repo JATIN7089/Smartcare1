@@ -141,7 +141,7 @@ export default function DailyRecallGame() {
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
           <div className="flex items-center gap-2 text-teal-700">
             <Calendar className="w-5 h-5" />
-            <span className="text-xs font-black uppercase tracking-wider">Daily Routine Recall</span>
+            <span className="text-xs font-black uppercase tracking-wider">{t('dr_title')}</span>
           </div>
 
           <h2 className="text-2xl font-black text-slate-900 leading-snug">
@@ -210,7 +210,7 @@ export default function DailyRecallGame() {
             </div>
             <div className="bg-teal-50 border border-teal-200 rounded-xl px-5 py-3">
               <span className="text-xs text-teal-700 block font-bold">{t('rem_category')}</span>
-              <span className="text-sm font-black text-teal-900 mt-1 block">Routine Memory</span>
+              <span className="text-sm font-black text-teal-900 mt-1 block">{t('dr_tag')}</span>
             </div>
           </div>
 

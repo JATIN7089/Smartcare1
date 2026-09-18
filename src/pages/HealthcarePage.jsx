@@ -91,54 +91,54 @@ export default function HealthcarePage() {
           onClick={() => setShowAddPlanModal(true)}
           className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-5 py-3 rounded-2xl text-sm shadow-md transition flex items-center gap-2 min-h-[44px]"
         >
-          <Plus className="w-5 h-5" /> Prescribe Supportive Activity Plan
+          <Plus className="w-5 h-5" />{t('hc_prescribe')}
         </button>
       </div>
 
       {/* Cohort Summary KPIs */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-xs font-bold text-slate-500 uppercase block">Assigned Senior Cohort</span>
+          <span className="text-xs font-bold text-slate-500 uppercase block">{t('hc_cohort')}</span>
           <span className="text-3xl font-black text-slate-900 mt-1 block">3</span>
-          <span className="text-xs text-slate-400 mt-1 block">Sonitpur & Jorhat Districts</span>
+          <span className="text-xs text-slate-400 mt-1 block">{t('hc_districts')}</span>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-xs font-bold text-slate-500 uppercase block">Weekly Adherence Rate</span>
+          <span className="text-xs font-bold text-slate-500 uppercase block">{t('hc_adh')}</span>
           <span className="text-3xl font-black text-emerald-700 mt-1 block">84.6%</span>
-          <span className="text-xs text-emerald-600 font-bold mt-1 block">Stable engagement</span>
+          <span className="text-xs text-emerald-600 font-bold mt-1 block">{t('hc_stable')}</span>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-xs font-bold text-slate-500 uppercase block">Active Activity Plans</span>
+          <span className="text-xs font-bold text-slate-500 uppercase block">{t('hc_plans')}</span>
           <span className="text-3xl font-black text-teal-700 mt-1 block">{plans.length}</span>
-          <span className="text-xs text-slate-400 mt-1 block">Syncs directly to Senior UI</span>
+          <span className="text-xs text-slate-400 mt-1 block">{t('hc_sync')}</span>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-xs font-bold text-slate-500 uppercase block">Activity Change Flags</span>
+          <span className="text-xs font-bold text-slate-500 uppercase block">{t('hc_flags')}</span>
           <span className="text-3xl font-black text-amber-600 mt-1 block">1</span>
-          <span className="text-xs text-amber-700 font-semibold mt-1 block">Biren Gogoi (Jorhat)</span>
+          <span className="text-xs text-amber-700 font-semibold mt-1 block">{t('hc_biren')}</span>
         </div>
       </div>
 
       {/* Cohort Patient Table */}
       <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-black text-slate-900">Enrolled Seniors Cohort</h2>
-          <span className="text-xs text-slate-500 font-medium">Remote rural clinics sync via low-bandwidth queue</span>
+          <h2 className="text-xl font-black text-slate-900">{t('hc_enrolled')}</h2>
+          <span className="text-xs text-slate-500 font-medium">{t('hc_rural')}</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs sm:text-sm">
             <thead>
               <tr className="border-b border-slate-200 text-slate-400 uppercase text-[11px] font-bold">
-                <th className="py-3 px-3">Patient Name</th>
-                <th className="py-3 px-3">Age & Center</th>
-                <th className="py-3 px-3">Activity Status</th>
-                <th className="py-3 px-3">Weekly Adherence</th>
-                <th className="py-3 px-3">Challenge Tier</th>
-                <th className="py-3 px-3 text-right">Actions</th>
+                <th className="py-3 px-3">{t('hc_col_name')}</th>
+                <th className="py-3 px-3">{t('hc_col_age')}</th>
+                <th className="py-3 px-3">{t('hc_col_status')}</th>
+                <th className="py-3 px-3">{t('hc_col_adh')}</th>
+                <th className="py-3 px-3">{t('hc_col_tier')}</th>
+                <th className="py-3 px-3 text-right">{t('hc_col_actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -180,7 +180,7 @@ export default function HealthcarePage() {
           <div>
             <h3 className="font-black text-xl text-slate-900 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-teal-600" />
-              <span>Assigned Supportive Activity Plans</span>
+              <span>{t('hc_assigned')}</span>
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
               Structured daily tasks prescribed by healthcare workers that instantly sync to the senior's tablet.
@@ -235,7 +235,7 @@ export default function HealthcarePage() {
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h3 className="font-extrabold text-xl text-slate-900">Create Supportive Activity Plan</h3>
+              <h3 className="font-extrabold text-xl text-slate-900">{t('hc_create')}</h3>
               <button
                 onClick={() => setShowAddPlanModal(false)}
                 className="text-slate-400 hover:text-slate-700 p-1"
@@ -246,32 +246,32 @@ export default function HealthcarePage() {
 
             <form onSubmit={handleCreatePlan} className="space-y-3 text-xs">
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Plan Title</label>
+                <label className="font-bold text-slate-700 block mb-1">{t('hc_plan_title')}</label>
                 <input
                   type="text"
                   required
                   value={planTitle}
                   onChange={(e) => setPlanTitle(e.target.value)}
-                  placeholder="e.g. Morning Cultural Recall & Hydration"
+                  placeholder="{t('hc_ph')}"
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900"
                 />
               </div>
 
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Priority</label>
+                <label className="font-bold text-slate-700 block mb-1">{t('hc_priority')}</label>
                 <select
                   value={planPriority}
                   onChange={(e) => setPlanPriority(e.target.value)}
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-2 py-2"
                 >
-                  <option value="High">High Priority</option>
-                  <option value="Normal">Normal Priority</option>
-                  <option value="Low">Low Priority</option>
+                  <option value="High">{t('hc_pri_high')}</option>
+                  <option value="Normal">{t('hc_pri_norm')}</option>
+                  <option value="Low">{t('hc_pri_low')}</option>
                 </select>
               </div>
 
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Tasks (one per line)</label>
+                <label className="font-bold text-slate-700 block mb-1">{t('hc_tasks')}</label>
                 <textarea
                   rows={4}
                   value={tasksText}

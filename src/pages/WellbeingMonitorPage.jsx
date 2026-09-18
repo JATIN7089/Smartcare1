@@ -55,13 +55,13 @@ export default function WellbeingMonitorPage() {
           to="/wellbeing"
           className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2 rounded-xl border border-teal-200 transition"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Well-being Hub
+          <ArrowLeft className="w-4 h-4" />{t('wbm_back')}
         </Link>
 
         {/* Live Bluetooth demo status */}
         <div className="flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-300 px-3 py-1.5 rounded-full text-xs font-bold">
           <Bluetooth className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
-          <span>NER-CareBand BLE (Connected • Demo Mode)</span>
+          <span>{t('wbm_band')}</span>
         </div>
       </div>
 
@@ -73,7 +73,7 @@ export default function WellbeingMonitorPage() {
             DEMO SIMULATION SENSOR DATA
           </p>
           <p>
-            The physiological metrics below are <strong>simulated values</strong> illustrating future wearable integration over Web Bluetooth. They are NOT real medical measurements and are NOT used to diagnose anxiety, cognitive impairment, or cardiovascular disease.
+            The physiological metrics below are <strong>{t('wbm_sim')}</strong>{t('wbm_sim2')}
           </p>
         </div>
       </div>
@@ -93,31 +93,31 @@ export default function WellbeingMonitorPage() {
         {/* Heart Rate */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between text-rose-500 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Resting Heart Rate</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('wbm_hr')}</span>
             <Heart className="w-5 h-5 animate-pulse" />
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-4xl font-black text-slate-900">{telemetry.heartRate}</span>
-            <span className="text-xs font-bold text-slate-500">BPM</span>
+            <span className="text-xs font-bold text-slate-500">{t('wbm_bpm')}</span>
           </div>
           <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
-            <span>Cadence: Steady</span>
-            <span className="text-rose-600 font-bold">Simulated</span>
+            <span>{t('wbm_cad')}</span>
+            <span className="text-rose-600 font-bold">{t('wbm_simtag')}</span>
           </div>
         </div>
 
         {/* Respiratory Rate */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between text-teal-600 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Respiratory Rate</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('wbm_rr')}</span>
             <Wind className="w-5 h-5" />
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-4xl font-black text-slate-900">{telemetry.respiratoryRate}</span>
-            <span className="text-xs font-bold text-slate-500">breaths/min</span>
+            <span className="text-xs font-bold text-slate-500">{t('wbm_rru')}</span>
           </div>
           <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
-            <span>Pace: 4-2-6 Synchronized</span>
+            <span>{t('wbm_pace')}</span>
             <span className="text-teal-600 font-bold">Simulated</span>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function WellbeingMonitorPage() {
         {/* HRV */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between text-indigo-600 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">HR Variability (rMSSD)</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('wbm_hrv')}</span>
             <Activity className="w-5 h-5" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -133,7 +133,7 @@ export default function WellbeingMonitorPage() {
             <span className="text-xs font-bold text-slate-500">ms</span>
           </div>
           <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
-            <span>Autonomic Tone: Relaxed</span>
+            <span>{t('wbm_tone')}</span>
             <span className="text-indigo-600 font-bold">Simulated</span>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function WellbeingMonitorPage() {
         {/* Skin Conductance */}
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden">
           <div className="flex items-center justify-between text-amber-500 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Skin Conductance (GSR)</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{t('wbm_gsr')}</span>
             <Zap className="w-5 h-5" />
           </div>
           <div className="flex items-baseline gap-2">
@@ -149,7 +149,7 @@ export default function WellbeingMonitorPage() {
             <span className="text-xs font-bold text-slate-500">µS</span>
           </div>
           <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
-            <span>Arousal: Peaceful</span>
+            <span>{t('wbm_arouse')}</span>
             <span className="text-amber-600 font-bold">Simulated</span>
           </div>
         </div>
@@ -160,7 +160,7 @@ export default function WellbeingMonitorPage() {
         {/* Breathing History */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-lg text-slate-900">Today’s Breathing Activity</h3>
+            <h3 className="font-bold text-lg text-slate-900">{t('wbm_today')}</h3>
             <Link
               to="/breathing"
               className="text-xs font-bold text-teal-700 hover:underline"
@@ -171,21 +171,21 @@ export default function WellbeingMonitorPage() {
 
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-              <span className="text-xs text-slate-500 block">Total Cycles</span>
+              <span className="text-xs text-slate-500 block">{t('wbm_cycles')}</span>
               <span className="text-2xl font-black text-teal-700">{totalCyclesToday || 35}</span>
             </div>
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-              <span className="text-xs text-slate-500 block">Paced Minutes</span>
+              <span className="text-xs text-slate-500 block">{t('wbm_minutes')}</span>
               <span className="text-2xl font-black text-teal-700">{totalMinutes || 7}m</span>
             </div>
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
-              <span className="text-xs text-slate-500 block">Current Pace</span>
+              <span className="text-xs text-slate-500 block">{t('wbm_curpace')}</span>
               <span className="text-2xl font-black text-slate-800">4-2-6</span>
             </div>
           </div>
 
           <div className="space-y-2 pt-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">Recent Sessions</span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">{t('wbm_recent')}</span>
             {breathingSessions.slice(0, 3).map((sess, i) => (
               <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs">
                 <div>
@@ -204,7 +204,7 @@ export default function WellbeingMonitorPage() {
         <div className="bg-slate-900 rounded-3xl p-6 text-white space-y-4 shadow-md">
           <div className="flex items-center gap-2">
             <Radio className="w-5 h-5 text-teal-400" />
-            <h3 className="font-bold text-lg text-white">Wearable Sensor Architecture</h3>
+            <h3 className="font-bold text-lg text-white">{t('wbm_arch')}</h3>
           </div>
           <p className="text-xs text-slate-400 leading-relaxed">
             Designed for future low-cost BLE bands deployed by community health workers across the North Eastern Region:
@@ -212,23 +212,23 @@ export default function WellbeingMonitorPage() {
 
           <div className="space-y-2 text-xs font-mono">
             <div className="bg-slate-800 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
-              <span className="text-teal-300 font-bold">1. Wearable SmartBand</span>
-              <span className="text-slate-400">PPG + EDA sensors</span>
+              <span className="text-teal-300 font-bold">{t('wbm_a1')}</span>
+              <span className="text-slate-400">{t('wbm_a1s')}</span>
             </div>
-            <div className="text-center text-teal-400 font-bold text-xs">↓ Bluetooth Low Energy (Web Bluetooth API)</div>
+            <div className="text-center text-teal-400 font-bold text-xs">{t('wbm_a1b')}</div>
             <div className="bg-slate-800 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
-              <span className="text-sky-300 font-bold">2. Local Sensor Service</span>
-              <span className="text-slate-400">Smoothing & Noise Filter</span>
+              <span className="text-sky-300 font-bold">{t('wbm_a2')}</span>
+              <span className="text-slate-400">{t('wbm_a2s')}</span>
             </div>
-            <div className="text-center text-teal-400 font-bold text-xs">↓ Local Sync Queue</div>
+            <div className="text-center text-teal-400 font-bold text-xs">{t('wbm_a2b')}</div>
             <div className="bg-slate-800 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
-              <span className="text-indigo-300 font-bold">3. SmarTCARE Client</span>
-              <span className="text-slate-400">Offline-first IndexedDB</span>
+              <span className="text-indigo-300 font-bold">{t('wbm_a3')}</span>
+              <span className="text-slate-400">{t('wbm_a3s')}</span>
             </div>
-            <div className="text-center text-teal-400 font-bold text-xs">↓ Encrypted Cloud Sync</div>
+            <div className="text-center text-teal-400 font-bold text-xs">{t('wbm_a3b')}</div>
             <div className="bg-slate-800 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between">
-              <span className="text-emerald-300 font-bold">4. Caregiver & CHO Portal</span>
-              <span className="text-slate-400">Supportive Overview</span>
+              <span className="text-emerald-300 font-bold">{t('wbm_a4')}</span>
+              <span className="text-slate-400">{t('wbm_a4s')}</span>
             </div>
           </div>
         </div>

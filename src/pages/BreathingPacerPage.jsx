@@ -249,7 +249,7 @@ export default function BreathingPacerPage() {
           <button
             onClick={() => navigate(-1)}
             className="flex items-center gap-1.5 text-sm font-bold text-slate-700 bg-white hover:bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 shadow-xs transition min-h-[44px]"
-            aria-label="Go back to the previous screen"
+            aria-label="{t('brp_back')}"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{t('back', 'Back')}</span>
@@ -258,7 +258,7 @@ export default function BreathingPacerPage() {
           <Link
             to="/elderly"
             className="flex items-center gap-1.5 text-sm font-bold text-slate-700 bg-white hover:bg-slate-50 px-3.5 py-2.5 rounded-xl border border-slate-200 shadow-xs transition min-h-[44px]"
-            aria-label="Go to home screen"
+            aria-label="{t('brp_home')}"
           >
             <Home className="w-4 h-4" />
             <span className="hidden sm:inline">{t('home', 'Home')}</span>

@@ -58,7 +58,7 @@ export default function CaregiverReportsPage() {
           to="/caregiver"
           className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2 rounded-xl border border-teal-200 transition"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Caregiver Portal
+          <ArrowLeft className="w-4 h-4" />{t('cgr_back')}
         </Link>
 
         <div className="flex items-center gap-2">
@@ -105,27 +105,27 @@ export default function CaregiverReportsPage() {
       {/* KPI Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
-          <span className="text-xs font-bold text-slate-500 uppercase block">Games Completed</span>
+          <span className="text-xs font-bold text-slate-500 uppercase block">{t('cgr_games')}</span>
           <span className="text-3xl font-black text-teal-700 mt-1 block">19</span>
-          <span className="text-xs text-slate-400 mt-1 block">Memory, NER & Sounds</span>
+          <span className="text-xs text-slate-400 mt-1 block">{t('cgr_games_sub')}</span>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
-          <span className="text-xs font-bold text-slate-500 uppercase block">Average Accuracy</span>
+          <span className="text-xs font-bold text-slate-500 uppercase block">{t('cgr_acc')}</span>
           <span className="text-3xl font-black text-indigo-700 mt-1 block">84.2%</span>
-          <span className="text-xs text-emerald-600 font-bold mt-1 block">+3.1% positive trend</span>
+          <span className="text-xs text-emerald-600 font-bold mt-1 block">{t('cgr_acc_sub')}</span>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
-          <span className="text-xs font-bold text-slate-500 uppercase block">Reminder Adherence</span>
+          <span className="text-xs font-bold text-slate-500 uppercase block">{t('cgr_adh')}</span>
           <span className="text-3xl font-black text-emerald-700 mt-1 block">88%</span>
-          <span className="text-xs text-slate-400 mt-1 block">28/32 completed</span>
+          <span className="text-xs text-slate-400 mt-1 block">{t('cgr_adh_sub')}</span>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm text-center">
-          <span className="text-xs font-bold text-slate-500 uppercase block">Breathing Cycles</span>
+          <span className="text-xs font-bold text-slate-500 uppercase block">{t('cgr_breath')}</span>
           <span className="text-3xl font-black text-sky-700 mt-1 block">115</span>
-          <span className="text-xs text-slate-400 mt-1 block">Paced 4-2-6 minutes</span>
+          <span className="text-xs text-slate-400 mt-1 block">{t('cgr_breath_sub')}</span>
         </div>
       </div>
 
@@ -169,9 +169,9 @@ export default function CaregiverReportsPage() {
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
           <h3 className="font-extrabold text-lg text-slate-900 flex items-center gap-2">
             <Brain className="w-5 h-5 text-indigo-600" />
-            <span>Cognitive Sessions Completed</span>
+            <span>{t('cgr_sessions')}</span>
           </h3>
-          <p className="text-xs text-slate-500">Number of daily game activities engaged.</p>
+          <p className="text-xs text-slate-500">{t('cgr_sessions_sub')}</p>
 
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -189,9 +189,9 @@ export default function CaregiverReportsPage() {
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-3">
           <h3 className="font-extrabold text-lg text-slate-900 flex items-center gap-2">
             <Clock className="w-5 h-5 text-amber-600" />
-            <span>Response Cadence Trend (Seconds)</span>
+            <span>{t('cgr_cadence')}</span>
           </h3>
-          <p className="text-xs text-slate-500">Average response time per card interaction.</p>
+          <p className="text-xs text-slate-500">{t('cgr_cadence_sub')}</p>
 
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">

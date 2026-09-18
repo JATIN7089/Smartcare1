@@ -91,7 +91,7 @@ export default function FeaturesPage() {
               </div>
 
               <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-teal-700">
-                <span>Launch Feature</span>
+                <span>{t('feat_launch')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>

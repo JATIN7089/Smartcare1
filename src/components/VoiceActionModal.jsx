@@ -151,7 +151,7 @@ export default function VoiceActionModal({ isOpen, onClose }) {
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition"
-          aria-label="Close"
+          aria-label="{t('vam_close')}"
         >
           <X className="w-6 h-6" />
         </button>
@@ -246,14 +246,14 @@ export default function VoiceActionModal({ isOpen, onClose }) {
             type="text"
             value={manualInput}
             onChange={(e) => setManualInput(e.target.value)}
-            placeholder="Type command (e.g. 'Play memory', 'Start breathing')..."
+            placeholder="{t('vam_ph')}'Play memory', 'Start breathing')..."
             className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 min-h-[44px]"
           />
           <button
             type="submit"
             disabled={!manualInput.trim()}
             className="bg-teal-600 hover:bg-teal-700 disabled:opacity-40 text-white font-bold p-2.5 rounded-xl transition min-h-[44px] min-w-[44px] flex items-center justify-center"
-            aria-label="Send"
+            aria-label="{t('vam_send')}"
           >
             <Send className="w-4 h-4" />
           </button>

@@ -94,17 +94,17 @@ export default function ArchitecturePage() {
         {/* Sync Telemetry Strip */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
           <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <span className="text-xs text-slate-500 font-bold block uppercase">Queued Offline Items</span>
+            <span className="text-xs text-slate-500 font-bold block uppercase">{t('arch_q')}</span>
             <span className="text-2xl font-black text-teal-700">{syncState.queueLength} items</span>
           </div>
 
           <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <span className="text-xs text-slate-500 font-bold block uppercase">Last Cloud Sync</span>
+            <span className="text-xs text-slate-500 font-bold block uppercase">{t('arch_last')}</span>
             <span className="text-lg font-black text-slate-800">{syncState.meta.lastSynced || 'Just now'}</span>
           </div>
 
           <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-            <span className="text-xs text-slate-500 font-bold block uppercase">Cumulative Synced Logs</span>
+            <span className="text-xs text-slate-500 font-bold block uppercase">{t('arch_cum')}</span>
             <span className="text-lg font-black text-emerald-700">{syncState.meta.totalSynced || 42} records</span>
           </div>
         </div>
@@ -119,14 +119,14 @@ export default function ArchitecturePage() {
 
       {/* Complete Ecosystem Visual Architecture (Section 8 & 39) */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-        <h3 className="font-extrabold text-2xl text-slate-900">End-to-End System Flow Diagram</h3>
+        <h3 className="font-extrabold text-2xl text-slate-900">{t('arch_flow')}</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-7 gap-3 items-center text-center text-xs">
           {/* Node 1 */}
           <div className="bg-teal-50 border-2 border-teal-300 rounded-2xl p-4 space-y-1.5 shadow-xs">
             <Smartphone className="w-6 h-6 text-teal-700 mx-auto" />
-            <h4 className="font-black text-slate-900">1. Elderly User</h4>
-            <p className="text-slate-500">Touch & Voice UI in Assamese, Hindi, English</p>
+            <h4 className="font-black text-slate-900">{t('arch_1')}</h4>
+            <p className="text-slate-500">{t('arch_1s')}</p>
           </div>
 
           <div className="text-teal-600 font-bold text-lg hidden md:block">→</div>
@@ -134,8 +134,8 @@ export default function ArchitecturePage() {
           {/* Node 2 */}
           <div className="bg-sky-50 border-2 border-sky-300 rounded-2xl p-4 space-y-1.5 shadow-xs">
             <Cpu className="w-6 h-6 text-sky-700 mx-auto" />
-            <h4 className="font-black text-slate-900">2. Local Engine</h4>
-            <p className="text-slate-500">Deterministic scoring & Web Audio offline synthesizer</p>
+            <h4 className="font-black text-slate-900">{t('arch_2')}</h4>
+            <p className="text-slate-500">{t('arch_2s')}</p>
           </div>
 
           <div className="text-teal-600 font-bold text-lg hidden md:block">→</div>
@@ -143,8 +143,8 @@ export default function ArchitecturePage() {
           {/* Node 3 */}
           <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 space-y-1.5 shadow-xs">
             <Database className="w-6 h-6 text-amber-700 mx-auto" />
-            <h4 className="font-black text-slate-900">3. Sync Queue</h4>
-            <p className="text-slate-500">IndexedDB / localStorage conflict-free logs</p>
+            <h4 className="font-black text-slate-900">{t('arch_3')}</h4>
+            <p className="text-slate-500">{t('arch_3s')}</p>
           </div>
 
           <div className="text-teal-600 font-bold text-lg hidden md:block">→</div>
@@ -152,8 +152,8 @@ export default function ArchitecturePage() {
           {/* Node 4 */}
           <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-4 space-y-1.5 shadow-xs">
             <Users className="w-6 h-6 text-emerald-700 mx-auto" />
-            <h4 className="font-black text-slate-900">4. Caregivers & CHO</h4>
-            <p className="text-slate-500">Family & Doctor monitoring dashboards</p>
+            <h4 className="font-black text-slate-900">{t('arch_4')}</h4>
+            <p className="text-slate-500">{t('arch_4s')}</p>
           </div>
         </div>
       </div>
@@ -165,14 +165,14 @@ export default function ArchitecturePage() {
           <div className="w-12 h-12 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center">
             <Brain className="w-6 h-6" />
           </div>
-          <h3 className="font-extrabold text-lg text-slate-900">AI Personalization Engine</h3>
+          <h3 className="font-extrabold text-lg text-slate-900">{t('arch_ai')}</h3>
           <p className="text-xs text-slate-600 leading-relaxed">
             Local mathematical evaluation engine that dynamically computes cognitive difficulty levels.
           </p>
           <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 font-mono text-[11px] text-slate-700">
             Score = Acc × 0.45 + Speed × 0.20 + Consistency × 0.20 + Completion × 0.15
           </div>
-          <span className="text-[11px] font-bold text-teal-800 block">✓ Explainable activity feedback</span>
+          <span className="text-[11px] font-bold text-teal-800 block">{t('arch_ai1')}</span>
         </div>
 
         {/* Layer 2: Multilingual Spoken Voice Layer */}
@@ -180,14 +180,14 @@ export default function ArchitecturePage() {
           <div className="w-12 h-12 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center">
             <Radio className="w-6 h-6" />
           </div>
-          <h3 className="font-extrabold text-lg text-slate-900">Voice & Auditory Layer</h3>
+          <h3 className="font-extrabold text-lg text-slate-900">{t('arch_voice')}</h3>
           <p className="text-xs text-slate-600 leading-relaxed">
             SpeechSynthesis & SpeechRecognition with fallback options for Indian English, Hindi, and Assamese.
           </p>
           <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 font-mono text-[11px] text-slate-700">
             Web Speech API + Custom Web Audio Harmonic Synthesizer
           </div>
-          <span className="text-[11px] font-bold text-sky-800 block">✓ 100% offline nature & singing bowls</span>
+          <span className="text-[11px] font-bold text-sky-800 block">{t('arch_voice1')}</span>
         </div>
 
         {/* Layer 3: PWA & Offline Sync Layer */}
@@ -195,14 +195,14 @@ export default function ArchitecturePage() {
           <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
             <Layers className="w-6 h-6" />
           </div>
-          <h3 className="font-extrabold text-lg text-slate-900">Offline-First PWA Layer</h3>
+          <h3 className="font-extrabold text-lg text-slate-900">{t('arch_pwa')}</h3>
           <p className="text-xs text-slate-600 leading-relaxed">
             Cache-first service worker, persistent IndexedDB session queues, and automatic sync reconciliation.
           </p>
           <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 font-mono text-[11px] text-slate-700">
             IndexedDB → LocalSyncQueue → REST /api/sync
           </div>
-          <span className="text-[11px] font-bold text-indigo-800 block">✓ Low-bandwidth NER optimization</span>
+          <span className="text-[11px] font-bold text-indigo-800 block">{t('arch_pwa1')}</span>
         </div>
       </div>
 

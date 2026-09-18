@@ -182,7 +182,7 @@ export default function DemoTourModal() {
         <button
           onClick={() => setDemoTourStep(0)}
           className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition"
-          title="Close Tour"
+          title="{t('dt_close')}"
         >
           <X className="w-5 h-5" />
         </button>
@@ -219,7 +219,7 @@ export default function DemoTourModal() {
           disabled={demoTourStep === 1}
           className="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 disabled:opacity-40 disabled:hover:text-slate-600 px-3 py-2 rounded-lg border border-slate-200"
         >
-          <ArrowLeft className="w-3.5 h-3.5" /> Previous
+          <ArrowLeft className="w-3.5 h-3.5" />{t('dt_prev')}
         </button>
 
         <div className="flex items-center gap-2">
@@ -237,7 +237,7 @@ export default function DemoTourModal() {
               onClick={() => goToStep(demoTourStep + 1)}
               className="flex items-center gap-1.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-extrabold px-4 py-2 rounded-xl shadow-md transition"
             >
-              <span>Next Demo Step</span>
+              <span>{t('dt_next')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           ) : (
@@ -246,7 +246,7 @@ export default function DemoTourModal() {
               className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold px-4 py-2 rounded-xl shadow-md transition"
             >
               <CheckCircle2 className="w-4 h-4" />
-              <span>Tour Completed</span>
+              <span>{t('dt_done')}</span>
             </button>
           )}
         </div>

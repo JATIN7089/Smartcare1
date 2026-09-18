@@ -141,7 +141,7 @@ export default function CaregiverPatientDetailPage() {
           to="/caregiver"
           className="flex items-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2 rounded-xl border border-teal-200 transition"
         >
-          <ArrowLeft className="w-4 h-4" /> Back to Caregiver Dashboard
+          <ArrowLeft className="w-4 h-4" />{t('cgd_back')}
         </Link>
 
         <div className="flex items-center gap-2">
@@ -149,7 +149,7 @@ export default function CaregiverPatientDetailPage() {
             onClick={() => setShowAddReminderModal(true)}
             className="bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs flex items-center gap-1.5"
           >
-            <Plus className="w-4 h-4" /> Add Reminder
+            <Plus className="w-4 h-4" />{t('cgd_addrem')}
           </button>
           <Link
             to="/caregiver/reports"
@@ -182,12 +182,12 @@ export default function CaregiverPatientDetailPage() {
         {/* Level and streak badges */}
         <div className="flex items-center gap-3">
           <div className="bg-slate-50 border border-slate-200 px-4 py-2 rounded-2xl text-center">
-            <span className="text-[11px] font-bold text-slate-400 block uppercase">Activity Streak</span>
-            <span className="text-xl font-black text-teal-700">9 Days Active</span>
+            <span className="text-[11px] font-bold text-slate-400 block uppercase">{t('cgd_streak')}</span>
+            <span className="text-xl font-black text-teal-700">{t('cgd_days')}</span>
           </div>
 
           <div className="bg-slate-50 border border-slate-200 px-4 py-2 rounded-2xl text-center">
-            <span className="text-[11px] font-bold text-slate-400 block uppercase">Current Challenge</span>
+            <span className="text-[11px] font-bold text-slate-400 block uppercase">{t('cgd_challenge')}</span>
             <span className="text-xl font-black text-indigo-700">Moderate</span>
           </div>
         </div>
@@ -199,7 +199,7 @@ export default function CaregiverPatientDetailPage() {
           <div>
             <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
               <TrendingUp className="w-5 h-5 text-teal-600" />
-              <span>Multi-Day Activity & Adherence Trends</span>
+              <span>{t('cgd_trends')}</span>
             </h3>
             <p className="text-xs text-slate-500">
               Interactive timeline of memory score, attention, and daily reminder adherence.
@@ -246,7 +246,7 @@ export default function CaregiverPatientDetailPage() {
         <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
           <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
             <MessageSquare className="w-5 h-5 text-indigo-600" />
-            <span>Caregiver & Clinical Notes</span>
+            <span>{t('cgd_notes')}</span>
           </h3>
 
           <form onSubmit={handleAddNote} className="space-y-2">
@@ -254,7 +254,7 @@ export default function CaregiverPatientDetailPage() {
               rows={2}
               value={newNote}
               onChange={(e) => setNewNote(e.target.value)}
-              placeholder="Add observation about mother's mood, memory, or sleep..."
+              placeholder="{t('cgd_ph_obs')}'s mood, memory, or sleep..."
               className="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-teal-500"
             />
             <div className="flex justify-end">
@@ -285,7 +285,7 @@ export default function CaregiverPatientDetailPage() {
           <div className="flex items-center justify-between">
             <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-teal-600" />
-              <span>Assigned Activity Plans</span>
+              <span>{t('cgd_plans')}</span>
             </h3>
             <span className="text-xs bg-teal-50 text-teal-800 font-bold px-2 py-0.5 rounded-full">
               {activityPlans.length} active
@@ -325,23 +325,23 @@ export default function CaregiverPatientDetailPage() {
       {showAddReminderModal && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95">
-            <h3 className="font-extrabold text-lg text-slate-900">Add Reminder for Asha</h3>
+            <h3 className="font-extrabold text-lg text-slate-900">{t('cgd_addfor')}</h3>
             <form onSubmit={handleCreateReminder} className="space-y-3 text-xs">
               <div>
-                <label className="font-bold text-slate-700 block mb-1">Reminder Name</label>
+                <label className="font-bold text-slate-700 block mb-1">{t('cgd_name')}</label>
                 <input
                   type="text"
                   required
                   value={remTitle}
                   onChange={(e) => setRemTitle(e.target.value)}
-                  placeholder="e.g. Afternoon Herbal Tea"
+                  placeholder="{t('cgd_ph_rem')}"
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">Time</label>
+                  <label className="font-bold text-slate-700 block mb-1">{t('cgd_time')}</label>
                   <input
                     type="text"
                     value={remTime}
@@ -351,16 +351,16 @@ export default function CaregiverPatientDetailPage() {
                   />
                 </div>
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">Category</label>
+                  <label className="font-bold text-slate-700 block mb-1">{t('cgd_cat')}</label>
                   <select
                     value={remCategory}
                     onChange={(e) => setRemCategory(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl px-2 py-2 text-xs"
                   >
-                    <option value="Medicine">Medicine</option>
-                    <option value="Hydration">Hydration</option>
-                    <option value="Cognitive Activity">Cognitive Activity</option>
-                    <option value="Appointments">Appointments</option>
+                    <option value="Medicine">{t('cgd_cat_med')}</option>
+                    <option value="Hydration">{t('cgd_cat_hyd')}</option>
+                    <option value="Cognitive Activity">{t('cgd_cat_cog')}</option>
+                    <option value="Appointments">{t('cgd_cat_appt')}</option>
                   </select>
                 </div>
               </div>

@@ -55,7 +55,7 @@ export default function LandingPage() {
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight">
-                Helping Memories <span className="text-teal-600">Stay Active.</span>
+                Helping Memories <span className="text-teal-600">{t('lp_active')}</span>
               </h1>
 
               <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">
@@ -64,13 +64,13 @@ export default function LandingPage() {
 
               {/* Tagline Strip */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                <span>Play</span>
+                <span>{t('lp_play')}</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
-                <span>Recall</span>
+                <span>{t('lp_recall')}</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
-                <span>Stay Connected</span>
+                <span>{t('lp_connected')}</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-teal-500" />
-                <span>Live Better</span>
+                <span>{t('lp_better')}</span>
               </div>
 
               {/* CTAs */}
@@ -79,7 +79,7 @@ export default function LandingPage() {
                   onClick={handleStartElderly}
                   className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-7 py-3.5 rounded-2xl text-base shadow-lg shadow-teal-600/20 transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2 min-h-[48px]"
                 >
-                  <span>Start Cognitive Journey</span>
+                  <span>{t('lp_start')}</span>
                   <ArrowRight className="w-5 h-5" />
                 </button>
 
@@ -88,7 +88,7 @@ export default function LandingPage() {
                   className="bg-amber-400 hover:bg-amber-300 text-amber-950 font-extrabold px-6 py-3.5 rounded-2xl text-base shadow-md transition flex items-center gap-2 min-h-[48px]"
                 >
                   <Play className="w-4 h-4 fill-amber-950" />
-                  <span>Explore SIH 2026 Demo</span>
+                  <span>{t('lp_demo')}</span>
                 </button>
               </div>
 
@@ -98,7 +98,7 @@ export default function LandingPage() {
                   <MapPin className="w-4 h-4 text-rose-500" /> Ministry of Development of North Eastern Region (MDoNER)
                 </span>
                 <span>•</span>
-                <span className="font-bold text-teal-800">Team: Phantom techie</span>
+                <span className="font-bold text-teal-800">{t('lp_team')}</span>
               </div>
             </div>
 
@@ -114,8 +114,8 @@ export default function LandingPage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                     <div>
-                      <span className="text-[10px] font-bold text-teal-700 uppercase">Tezpur, Assam</span>
-                      <h3 className="font-black text-slate-900 text-sm">Good Morning, Asha 👋</h3>
+                      <span className="text-[10px] font-bold text-teal-700 uppercase">{t('lp_place')}</span>
+                      <h3 className="font-black text-slate-900 text-sm">{t('lp_gm')}</h3>
                     </div>
                     <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
                       Level: Moderate
@@ -125,8 +125,8 @@ export default function LandingPage() {
                   {/* Simulated Progress */}
                   <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 space-y-1">
                     <div className="flex justify-between text-[11px] font-bold text-slate-600">
-                      <span>Today's Activities</span>
-                      <span className="text-teal-700">80% Done</span>
+                      <span>{t('lp_today')}</span>
+                      <span className="text-teal-700">{t('lp_done')}</span>
                     </div>
                     <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
                       <div className="bg-teal-600 h-full w-4/5 rounded-full" />
@@ -137,13 +137,13 @@ export default function LandingPage() {
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className="bg-teal-50 border border-teal-200 p-2.5 rounded-xl">
                       <Brain className="w-4 h-4 text-teal-700 mb-1" />
-                      <span className="font-bold text-slate-900 block">Memory Match</span>
-                      <span className="text-[10px] text-teal-800 font-semibold">85% Accuracy</span>
+                      <span className="font-bold text-slate-900 block">{t('gm_memory_title')}</span>
+                      <span className="text-[10px] text-teal-800 font-semibold">{t('lp_acc')}</span>
                     </div>
                     <div className="bg-sky-50 border border-sky-200 p-2.5 rounded-xl">
                       <Wind className="w-4 h-4 text-sky-700 mb-1" />
-                      <span className="font-bold text-slate-900 block">Breathing Pacer</span>
-                      <span className="text-[10px] text-sky-800 font-semibold">10 Cycles Done</span>
+                      <span className="font-bold text-slate-900 block">{t('lp_card_bp')}</span>
+                      <span className="text-[10px] text-sky-800 font-semibold">{t('lp_cycles')}</span>
                     </div>
                   </div>
 
@@ -151,8 +151,8 @@ export default function LandingPage() {
                   <div className="bg-amber-50 border border-amber-200 p-2.5 rounded-xl flex items-center gap-2 text-xs">
                     <Bell className="w-4 h-4 text-amber-600 flex-shrink-0" />
                     <div>
-                      <span className="font-bold text-slate-800 block">Medicine: BP Tablet</span>
-                      <span className="text-[10px] text-amber-800">8:00 AM • Completed ✓</span>
+                      <span className="font-bold text-slate-800 block">{t('lp_med')}</span>
+                      <span className="text-[10px] text-amber-800">{t('lp_medtime')}</span>
                     </div>
                   </div>
 
@@ -162,7 +162,7 @@ export default function LandingPage() {
                     className="w-full bg-gradient-to-r from-teal-600 to-sky-600 text-white font-extrabold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-sm"
                   >
                     <Mic className="w-4 h-4 animate-pulse" />
-                    <span>Talk to SmarTCARE</span>
+                    <span>{t('assistant_title')}</span>
                   </button>
                 </div>
               </div>
@@ -201,16 +201,16 @@ export default function LandingPage() {
                 <span className="text-xs font-black uppercase text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-full">
                   For Elderly Seniors
                 </span>
-                <h3 className="text-xl font-black text-slate-900 mt-2">Dignity, Joy & Memory Comfort</h3>
+                <h3 className="text-xl font-black text-slate-900 mt-2">{t('lp_dignity')}</h3>
                 <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
                   Simple, large-target touch controls with local North Eastern cultural imagery, voice guidance, structured routines, and paced breathing.
                 </p>
               </div>
 
               <ul className="space-y-2 text-xs text-slate-700 pt-2 border-t border-slate-100">
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-teal-600" /> 7 working adaptive cognitive games</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-teal-600" /> 4-2-6 breathing pacer with voice cues</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-teal-600" /> 100% offline-ready PWA storage</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-teal-600" />{t('lp_g7')}</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-teal-600" />{t('lp_bp')}</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-teal-600" />{t('lp_off')}</li>
               </ul>
             </div>
 
@@ -221,7 +221,7 @@ export default function LandingPage() {
               }}
               className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 rounded-xl text-xs sm:text-sm shadow-xs transition flex items-center justify-center gap-2 min-h-[44px]"
             >
-              <span>Explore Elderly Home</span>
+              <span>{t('lp_explore')}</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -236,16 +236,16 @@ export default function LandingPage() {
                 <span className="text-xs font-black uppercase text-sky-800 bg-sky-50 px-2.5 py-0.5 rounded-full">
                   For Family Caregivers
                 </span>
-                <h3 className="text-xl font-black text-slate-900 mt-2">Peace of Mind & Trend Tracking</h3>
+                <h3 className="text-xl font-black text-slate-900 mt-2">{t('lp_peace')}</h3>
                 <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
                   Realtime adherence monitoring, explainable activity shift alerts, memory lane curation, and secure join-code senior linking.
                 </p>
               </div>
 
               <ul className="space-y-2 text-xs text-slate-700 pt-2 border-t border-slate-100">
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-600" /> 7d, 30d, 90d interactive charts</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-600" /> Explainable non-stigmatizing alerts</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-600" /> SMT-4821 join-code pairing</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-600" />{t('lp_charts')}</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-600" />{t('lp_alerts')}</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-sky-600" />{t('lp_join')}</li>
               </ul>
             </div>
 
@@ -256,7 +256,7 @@ export default function LandingPage() {
               }}
               className="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-xl text-xs sm:text-sm shadow-xs transition flex items-center justify-center gap-2 min-h-[44px]"
             >
-              <span>Open Caregiver Portal</span>
+              <span>{t('lp_open_cg')}</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -271,16 +271,16 @@ export default function LandingPage() {
                 <span className="text-xs font-black uppercase text-indigo-800 bg-indigo-50 px-2.5 py-0.5 rounded-full">
                   For Healthcare Workers
                 </span>
-                <h3 className="text-xl font-black text-slate-900 mt-2">Community Health Insights</h3>
+                <h3 className="text-xl font-black text-slate-900 mt-2">{t('lp_community')}</h3>
                 <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
                   Primary Health Center (PHC) cohort analytics, structured supportive activity plans, and clinical timeline synchronization.
                 </p>
               </div>
 
               <ul className="space-y-2 text-xs text-slate-700 pt-2 border-t border-slate-100">
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-600" /> Cohort adherence metrics</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-600" /> Prescribe supportive routine plans</li>
-                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-600" /> Strict non-diagnostic medical safety</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-600" />{t('lp_cohort')}</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-600" />{t('lp_prescribe')}</li>
+                <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-indigo-600" />{t('lp_safety')}</li>
               </ul>
             </div>
 
@@ -291,7 +291,7 @@ export default function LandingPage() {
               }}
               className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl text-xs sm:text-sm shadow-xs transition flex items-center justify-center gap-2 min-h-[44px]"
             >
-              <span>Open Healthcare Portal</span>
+              <span>{t('lp_open_hc')}</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -317,7 +317,7 @@ export default function LandingPage() {
             to="/cultural-mode"
             className="bg-white hover:bg-slate-100 text-slate-900 font-extrabold px-6 py-3.5 rounded-2xl text-sm shadow-md transition flex items-center gap-2 flex-shrink-0"
           >
-            <span>Explore 8 States Cultural Mode</span>
+            <span>{t('lp_cultural')}</span>
             <ArrowRight className="w-4 h-4 text-teal-600" />
           </Link>
         </div>

@@ -209,15 +209,15 @@ export default function SequenceRecallGame() {
                 <div className="w-20 h-20 rounded-full bg-teal-600 text-white flex items-center justify-center mx-auto text-3xl font-black shadow-lg animate-pulse">
                   {autoStartCount}
                 </div>
-                <h3 className="text-2xl font-black text-slate-800">Starting Automatically...</h3>
-                <p className="text-sm text-teal-700 font-bold">Voice command received • Get ready!</p>
+                <h3 className="text-2xl font-black text-slate-800">{t('sr_start')}</h3>
+                <p className="text-sm text-teal-700 font-bold">{t('sr_voice')}</p>
               </div>
             ) : (
               <>
                 <div className="w-16 h-16 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center mx-auto text-2xl font-black">
                   1-2-3
                 </div>
-                <h3 className="text-xl font-bold text-slate-800">Your Attention Activity</h3>
+                <h3 className="text-xl font-bold text-slate-800">{t('sr_title')}</h3>
                 <p className="text-sm text-slate-500 max-w-sm mx-auto">
                   Watch the {sequenceLength} symbols appear, remember the order, and tap them in sequence.
                 </p>
@@ -257,8 +257,8 @@ export default function SequenceRecallGame() {
         {phase === 'recalling' && (
           <div className="w-full space-y-6 py-4">
             <div className="text-center">
-              <span className="text-xs font-black uppercase text-teal-700 tracking-wider">Your Turn</span>
-              <h3 className="text-lg font-bold text-slate-800">Tap the symbols in the order you saw them</h3>
+              <span className="text-xs font-black uppercase text-teal-700 tracking-wider">{t('sr_turn')}</span>
+              <h3 className="text-lg font-bold text-slate-800">{t('sr_tap')}</h3>
             </div>
 
             {/* Answer Slots */}
@@ -289,7 +289,7 @@ export default function SequenceRecallGame() {
 
             {/* Tap Options */}
             <div className="pt-4 border-t border-slate-100">
-              <span className="text-xs font-bold text-slate-500 text-center block mb-3 uppercase">Available Options</span>
+              <span className="text-xs font-bold text-slate-500 text-center block mb-3 uppercase">{t('sr_options')}</span>
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
                 {SYMBOLS_POOL.map(item => (
                   <button
@@ -324,7 +324,7 @@ export default function SequenceRecallGame() {
 
             {/* Target vs Answered */}
             <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2">
-              <span className="text-xs font-bold text-slate-500 block uppercase">Original Sequence</span>
+              <span className="text-xs font-bold text-slate-500 block uppercase">{t('sr_original')}</span>
               <div className="flex items-center gap-2">
                 {targetSequence.map((item, idx) => (
                   <div key={idx} className="px-3 py-1 bg-white rounded-lg border border-slate-200 text-xs font-bold flex items-center gap-1">

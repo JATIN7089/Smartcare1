@@ -260,7 +260,7 @@ export default function VoiceAssistantPage() {
               ? 'bg-rose-500 text-white animate-pulse ring-8 ring-rose-300'
               : 'bg-teal-600 hover:bg-teal-700 text-white hover:scale-105 ring-4 ring-teal-200'
           }`}
-          aria-label="Microphone button"
+          aria-label="{t('va_mic_aria')}"
         >
           {isListening ? (
             <>
@@ -390,7 +390,7 @@ export default function VoiceAssistantPage() {
         <button
           type="submit"
           className="bg-teal-600 hover:bg-teal-700 text-white p-3 rounded-xl transition min-h-[44px] min-w-[44px] flex items-center justify-center shadow-xs"
-          aria-label="Send message"
+          aria-label="{t('va_send_aria')}"
         >
           <Send className="w-4 h-4" />
         </button>

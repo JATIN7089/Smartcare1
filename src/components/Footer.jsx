@@ -24,15 +24,15 @@ export default function Footer() {
             <div className="bg-slate-800/80 rounded-xl p-3.5 border border-slate-700/80 space-y-1.5 text-xs">
               <div className="flex items-center gap-2 text-teal-300 font-bold">
                 <Award className="w-4 h-4" />
-                <span>SMART INDIA HACKATHON 2026</span>
+                <span>{t('ft_sih')}</span>
               </div>
-              <p className="text-slate-300 font-medium">Problem Statement ID: <span className="text-white font-bold">26003</span></p>
+              <p className="text-slate-300 font-medium">{t('ft_psid')}<span className="text-white font-bold">26003</span></p>
               <p className="text-slate-400">{t('foot_problem')}</p>
               <p className="text-amber-300 text-[11px] pt-1">
-                <strong>Ministry:</strong> Ministry of Development of North Eastern Region (MDoNER)
+                <strong>{t('ft_min')}</strong>{t('ft_mdoner')}
               </p>
               <p className="text-slate-400 text-[11px]">
-                <strong>Team:</strong> Phantom techie
+                <strong>{t('ft_team')}</strong> Phantom techie
               </p>
             </div>
           </div>

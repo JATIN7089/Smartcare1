@@ -132,7 +132,7 @@ export default function MemoryLanePage() {
         <div className="flex items-center gap-2.5">
           <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
           <span>
-            <strong>{t('ml_consent')}</strong> Memory cards are encrypted locally and shared exclusively within Asha's verified caregiver circle.
+            <strong>{t('ml_consent')}</strong>{t('ml_privacy')}
           </span>
         </div>
         <span className="bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full text-xs">{t('ml_hipaa')}</span>
@@ -245,7 +245,7 @@ export default function MemoryLanePage() {
                     <div className="flex items-center gap-3">
                       <img
                         src={photo}
-                        alt="Selected"
+                        alt="{t('ml_sel')}"
                         className="w-20 h-20 rounded-2xl object-cover border-2 border-teal-200"
                       />
                       <div className="flex-1 min-w-0">
@@ -343,7 +343,7 @@ export default function MemoryLanePage() {
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Granddaughter Ananya's Dance Performance"
+                  placeholder="{t('ml_ph1')}'s Dance Performance"
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900 focus:ring-2 focus:ring-teal-500 outline-none"
                 />
               </div>
@@ -375,7 +375,7 @@ export default function MemoryLanePage() {
                     type="text"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Tezpur"
+                    placeholder="{t('ml_ph2')}"
                     className="w-full bg-slate-50 border border-slate-300 rounded-xl px-2 py-1.5 text-xs text-slate-900"
                   />
                 </div>
@@ -411,7 +411,7 @@ export default function MemoryLanePage() {
                   type="text"
                   value={voiceNote}
                   onChange={(e) => setVoiceNote(e.target.value)}
-                  placeholder="e.g. This is Ananya, your granddaughter. She visits on Sundays."
+                  placeholder="{t('ml_ph3')}"
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-900"
                 />
                 <p className="text-[10px] text-slate-400 mt-1">{t('ml_blank')}</p>
@@ -423,7 +423,7 @@ export default function MemoryLanePage() {
                   rows={2}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="e.g. Dadi clapped enthusiastically and gave her a warm hug afterwards."
+                  placeholder="{t('ml_ph4')}"
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-900"
                 />
               </div>

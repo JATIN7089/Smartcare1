@@ -56,7 +56,7 @@ export default function JoinCodeCard() {
           <KeyRound className="w-5 h-5" />
         </div>
         <div className="min-w-0">
-          <h3 className="font-extrabold text-lg text-slate-900">Family Join Code</h3>
+          <h3 className="font-extrabold text-lg text-slate-900">{t('jc_title')}</h3>
           <p className="text-xs text-slate-500 leading-relaxed">
             Share this with a family member or health worker so they can create
             their own account and support you.
@@ -79,7 +79,7 @@ export default function JoinCodeCard() {
               {code}
             </span>
             <span className="flex items-center gap-1.5 text-xs font-bold">
-              <Eye className="w-3.5 h-3.5" /> Tap to reveal
+              <Eye className="w-3.5 h-3.5" />{t('jc_tap')}
             </span>
           </button>
         )}
@@ -97,7 +97,7 @@ export default function JoinCodeCard() {
           onClick={share}
           className="flex items-center justify-center gap-2 py-3 rounded-2xl border-2 border-slate-200 hover:border-teal-400 hover:text-teal-700 text-slate-600 font-extrabold text-sm transition active:scale-[0.98] min-h-[48px]"
         >
-          <Share2 className="w-4 h-4" /> Share
+          <Share2 className="w-4 h-4" />{t('jc_share')}
         </button>
       </div>
 
@@ -106,7 +106,7 @@ export default function JoinCodeCard() {
           onClick={() => setRevealed(false)}
           className="w-full flex items-center justify-center gap-1.5 text-[11px] font-bold text-slate-400 hover:text-slate-600 transition min-h-[36px]"
         >
-          <EyeOff className="w-3.5 h-3.5" /> Hide code
+          <EyeOff className="w-3.5 h-3.5" />{t('jc_hide')}
         </button>
       )}
 

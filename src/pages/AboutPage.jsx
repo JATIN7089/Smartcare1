@@ -33,29 +33,29 @@ export default function AboutPage() {
       <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-teal-200 shadow-sm space-y-5">
         <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
           <FileCheck2 className="w-5 h-5 text-teal-600" />
-          <span>Smart India Hackathon 2026 Specifications</span>
+          <span>{t('ab_spec')}</span>
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-            <span className="text-slate-400 font-bold block uppercase text-[11px]">Problem Statement ID</span>
+            <span className="text-slate-400 font-bold block uppercase text-[11px]">{t('ab_psid')}</span>
             <span className="text-lg font-black text-teal-800">26003</span>
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-            <span className="text-slate-400 font-bold block uppercase text-[11px]">Team Name</span>
+            <span className="text-slate-400 font-bold block uppercase text-[11px]">{t('ab_team')}</span>
             <span className="text-lg font-black text-slate-900">Phantom techie</span>
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-            <span className="text-slate-400 font-bold block uppercase text-[11px]">Ministry / Organization</span>
+            <span className="text-slate-400 font-bold block uppercase text-[11px]">{t('ab_min')}</span>
             <span className="text-base font-black text-slate-800">
               Ministry of Development of North Eastern Region (MDoNER)
             </span>
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
-            <span className="text-slate-400 font-bold block uppercase text-[11px]">Theme & Category</span>
+            <span className="text-slate-400 font-bold block uppercase text-[11px]">{t('ab_theme')}</span>
             <span className="text-base font-black text-slate-800">
               Healthcare, Biomedical Devices & Assistive Technology (Software)
             </span>
@@ -63,7 +63,7 @@ export default function AboutPage() {
         </div>
 
         <div className="p-4 rounded-2xl bg-teal-50 border border-teal-200 text-xs sm:text-sm text-teal-950 space-y-1">
-          <span className="font-extrabold uppercase tracking-wide text-teal-800 block">Problem Title:</span>
+          <span className="font-extrabold uppercase tracking-wide text-teal-800 block">{t('ab_ptitle')}</span>
           <p className="font-semibold leading-relaxed">
             "AI-Based Cognitive Gaming and Memory Assistance Platform for Elderly Dementia Patients in North Eastern Region (NER)"
           </p>
@@ -74,7 +74,7 @@ export default function AboutPage() {
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
         <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
           <ShieldCheck className="w-5 h-5 text-emerald-600" />
-          <span>Product Safety & Non-Diagnostic Positioning</span>
+          <span>{t('ab_safety')}</span>
         </h3>
         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
           In strict compliance with medical ethics and software safety standards:
@@ -82,22 +82,22 @@ export default function AboutPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 space-y-2">
-            <span className="font-bold text-rose-900 uppercase">What SmarTCARE Does NOT Do:</span>
+            <span className="font-bold text-rose-900 uppercase">{t('ab_not')}</span>
             <ul className="space-y-1.5 text-rose-800">
-              <li>• Does NOT diagnose or predict dementia or Alzheimer's.</li>
-              <li>• Does NOT claim to detect acute medical emergencies.</li>
-              <li>• Does NOT use stigmatizing clinical labels on elderly profiles.</li>
-              <li>• Does NOT interpret simulated sensor data as real clinical metrics.</li>
+              <li>{t('ab_n1')}</li>
+              <li>{t('ab_n2')}</li>
+              <li>{t('ab_n3')}</li>
+              <li>{t('ab_n4')}</li>
             </ul>
           </div>
 
           <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
-            <span className="font-bold text-emerald-900 uppercase">What SmarTCARE DOES Provide:</span>
+            <span className="font-bold text-emerald-900 uppercase">{t('ab_yes')}</span>
             <ul className="space-y-1.5 text-emerald-800">
-              <li>• AI-assisted cognitive engagement and memory stimulation.</li>
-              <li>• Explainable difficulty leveling that prevents user fatigue.</li>
-              <li>• Culturally respectful imagery from all 8 North Eastern states.</li>
-              <li>• 100% offline-first resilience for low-connectivity valleys.</li>
+              <li>{t('ab_y1')}</li>
+              <li>{t('ab_y2')}</li>
+              <li>{t('ab_y3')}</li>
+              <li>{t('ab_y4')}</li>
             </ul>
           </div>
         </div>

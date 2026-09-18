@@ -172,7 +172,7 @@ export default function ObjectRecognitionGame() {
       {!completed ? (
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black uppercase text-teal-600 tracking-wider">Familiar Object Recognition</span>
+            <span className="text-xs font-black uppercase text-teal-600 tracking-wider">{t('or_title')}</span>
             <button
               onClick={() => setShowHint(!showHint)}
               className="text-xs font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg border border-amber-200 flex items-center gap-1"
@@ -242,7 +242,7 @@ export default function ObjectRecognitionGame() {
           <div className="w-16 h-16 rounded-full bg-teal-100 text-teal-700 mx-auto flex items-center justify-center">
             <Trophy className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-black text-slate-900">Object Recognition Complete!</h2>
+          <h2 className="text-2xl font-black text-slate-900">{t('or_done')}</h2>
           <p className="text-sm text-slate-600 max-w-sm mx-auto">
             Connecting semantic names to familiar cultural items stimulates semantic memory networks without causing strain.
           </p>
@@ -254,7 +254,7 @@ export default function ObjectRecognitionGame() {
             </div>
             <div className="bg-teal-50 border border-teal-200 rounded-xl px-5 py-3">
               <span className="text-xs text-teal-700 block font-bold">{t('rem_category')}</span>
-              <span className="text-sm font-black text-teal-900 mt-1 block">Semantic Recall</span>
+              <span className="text-sm font-black text-teal-900 mt-1 block">{t('or_tag')}</span>
             </div>
           </div>
 

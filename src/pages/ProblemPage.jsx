@@ -70,7 +70,7 @@ export default function ProblemPage() {
 
       {/* 5 Clean Cards (As required by prompt Section 7) */}
       <div className="space-y-4">
-        <h2 className="text-xl font-black text-slate-900">Five Key Healthcare & Technological Barriers</h2>
+        <h2 className="text-xl font-black text-slate-900">{t('prob_title')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {problemCards.map((card, idx) => {
             const Icon = card.icon;
@@ -102,7 +102,7 @@ export default function ProblemPage() {
       {/* CTA to Solution */}
       <div className="bg-teal-50 border-2 border-teal-300 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <h3 className="font-black text-xl text-teal-950">Discover the SmarTCARE Solution</h3>
+          <h3 className="font-black text-xl text-teal-950">{t('prob_sol')}</h3>
           <p className="text-xs sm:text-sm text-teal-800 mt-1">
             Explore how our local-first AI ecosystem overcomes each of these five regional challenges.
           </p>
@@ -111,7 +111,7 @@ export default function ProblemPage() {
           to="/solution"
           className="bg-teal-600 hover:bg-teal-700 text-white font-extrabold px-6 py-3 rounded-2xl text-xs sm:text-sm shadow-md transition flex items-center gap-2 whitespace-nowrap min-h-[44px]"
         >
-          <span>View Solution Ecosystem</span>
+          <span>{t('prob_view')}</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>

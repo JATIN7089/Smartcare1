@@ -77,15 +77,15 @@ export default function Navbar() {
       <div className="bg-gradient-to-r from-emerald-700 via-teal-700 to-sky-700 text-white text-xs px-3 sm:px-6 py-1.5 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2 font-medium">
           <span className="bg-white/20 px-2 py-0.5 rounded text-[11px] font-bold tracking-wider uppercase">SIH 2026</span>
-          <span className="hidden md:inline">Problem 26003 • Ministry of Development of North Eastern Region (MDoNER)</span>
-          <span className="md:hidden">SmarTCARE • Team Phantom techie</span>
+          <span className="hidden md:inline">{t('nb_prob')}</span>
+          <span className="md:hidden">{t('nb_team')}</span>
         </div>
 
         {/* Network & Offline Mode Controls */}
         <div className="flex items-center gap-3">
           <button
             onClick={toggleSimulatedOffline}
-            title="Toggle simulated offline mode to demo remote NER connectivity"
+            title="{t('nb_offline')}"
             className={`flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-semibold transition ${
               syncState.simulatedOffline 
                 ? 'bg-amber-400 text-amber-950 hover:bg-amber-300' 
@@ -238,10 +238,10 @@ export default function Navbar() {
               onChange={(e) => setRole(e.target.value)}
               className="bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold text-slate-800 rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-teal-500 outline-none cursor-pointer"
             >
-              <option value="elderly">Elderly: Asha (68)</option>
-              <option value="caregiver">Caregiver: Sunita</option>
-              <option value="healthcare">Healthcare: Dr. Barua</option>
-              <option value="admin">MDoNER Admin</option>
+              <option value="elderly">{t('nb_elderly')}</option>
+              <option value="caregiver">{t('nb_caregiver')}</option>
+              <option value="healthcare">{t('nb_health')}</option>
+              <option value="admin">{t('nb_admin')}</option>
             </select>
           </div>
 
