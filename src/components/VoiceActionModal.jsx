@@ -29,14 +29,14 @@ export default function VoiceActionModal({ isOpen, onClose }) {
 
   // Suggested voice commands
   const quickChips = [
+    { label: '🗺️ Mujhe ghar jana hai', cmd: 'mujhe ghar jana hai' },
     { label: '🎮 Game khelna hai', cmd: 'game khelna hai' },
     { label: '💊 Kaunsi medicine li?', cmd: 'kaunsi medicine li thi' },
     { label: '✅ Maine dawai kha li', cmd: 'maine dawai kha li' },
     { label: '⏰ Agli dawai kab hai?', cmd: 'agli dawai kab hai' },
     { label: '▶️ Start Memory Game', cmd: 'start memory game' },
     { label: '🫁 Start Breathing', cmd: 'start breathing' },
-    { label: '📈 How am I doing?', cmd: 'how am I doing' },
-    { label: '🏠 Go Home', cmd: 'go home' }
+    { label: '📈 How am I doing?', cmd: 'how am I doing' }
   ];
 
   useEffect(() => {
