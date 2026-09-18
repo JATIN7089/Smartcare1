@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '8mb' }));
 app.use(express.static(distPath));
 
 
@@ -282,7 +282,10 @@ let state = {
       year: '2025',
       question: 'Who is this visiting you during Rongali Bihu?',
       answer: 'Rita, your elder daughter who lives in Guwahati.',
-      category: 'Family',
+      category: 'Person',
+      subject: 'Rita',
+      voiceNote: 'This is Rita, your elder daughter. She lives in Guwahati and calls you every evening.',
+      photo: '/memories/rita.jpg',
       notes: 'Rita calls every evening at 6:00 PM to talk about the grandchildren.',
       themeColor: '#3b82f6'
     },
@@ -295,6 +298,9 @@ let state = {
       question: 'Which festival were we celebrating when we prepared fresh Pitha and Laru?',
       answer: 'Rongali Bihu in the month of Bohag!',
       category: 'Event',
+      subject: 'Rongali Bihu',
+      voiceNote: 'This is Rongali Bihu at your Tezpur courtyard.',
+      photo: null,
       notes: 'Asha made Til Pitha and played the Tokari with her grandchildren.',
       themeColor: '#ea580c'
     },
@@ -307,6 +313,9 @@ let state = {
       question: 'Where did we take the ferry across the mighty Brahmaputra river?',
       answer: 'Majuli Island, visiting the peaceful Satras and pottery makers.',
       category: 'Place',
+      subject: 'Majuli Island',
+      voiceNote: 'This is Majuli Island, where you took the ferry across the Brahmaputra.',
+      photo: null,
       notes: 'Asha loved hearing the devotional Borgeet and seeing traditional masks.',
       themeColor: '#0d9488'
     },
@@ -318,8 +327,42 @@ let state = {
       year: '2024',
       question: 'Whose science exhibition did you attend with your red silk chador?',
       answer: 'Aarav, your grandson who won the science trophy.',
-      category: 'Family',
+      category: 'Person',
+      subject: 'Aarav',
+      voiceNote: 'This is Aarav, your grandson. He won the science trophy.',
+      photo: '/memories/aarav.jpg',
       notes: 'Aarav loves when Dadi tells stories about the Eastern Himalayas.',
+      themeColor: '#7c3aed'
+    },
+    {
+      id: 'mem-5',
+      title: 'My Home',
+      relationship: 'Home',
+      location: 'Tezpur, Assam',
+      year: 'Present',
+      question: 'Is this your home?',
+      answer: 'Yes, this is your home in Tezpur where you live.',
+      category: 'Place',
+      subject: 'My Home',
+      voiceNote: 'Yes, this is your home in Tezpur. You are safe here.',
+      photo: '/memories/home.jpg',
+      isHome: true,
+      notes: 'The green gate and the tulsi plant in the courtyard.',
+      themeColor: '#0d9488'
+    },
+    {
+      id: 'mem-6',
+      title: 'Sunita — Younger Daughter',
+      relationship: 'Daughter',
+      location: 'Tezpur, Assam',
+      year: 'Present',
+      question: 'Who is this that looks after you every day?',
+      answer: 'Sunita, your younger daughter and primary caregiver.',
+      category: 'Person',
+      subject: 'Sunita',
+      voiceNote: 'This is Sunita, your younger daughter. She looks after you every day.',
+      photo: '/memories/sunita.jpg',
+      notes: 'Sunita manages the reminders and medicines.',
       themeColor: '#7c3aed'
     }
   ],
@@ -781,7 +824,11 @@ app.get('/api/memories', (req, res) => {
 });
 
 app.post('/api/memories', (req, res) => {
-  const { title, relationship, location, year, question, answer, category, notes, themeColor } = req.body;
+  const {
+    title, relationship, location, year, question, answer,
+    category, notes, themeColor, photo, subject, voiceNote, isHome
+  } = req.body;
+
   const newMemory = {
     id: `mem-${Date.now()}`,
     title: title || 'Cherished Memory',
@@ -790,7 +837,15 @@ app.post('/api/memories', (req, res) => {
     year: year || '2025',
     question: question || 'Do you remember this special day?',
     answer: answer || 'A joyful family celebration.',
-    category: category || 'Family',
+    category: category || 'Person',
+    // Who or what the photo shows — this is the answer the recognition
+    // game checks against, so it is kept separate from the display title.
+    subject: subject || title || 'Someone special',
+    // Spoken reassurance, read aloud when the senior asks or answers.
+    voiceNote: voiceNote || '',
+    // A compressed data URL uploaded by the caregiver.
+    photo: photo || null,
+    isHome: Boolean(isHome),
     notes: notes || '',
     themeColor: themeColor || '#3b82f6'
   };

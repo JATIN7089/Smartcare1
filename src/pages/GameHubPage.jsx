@@ -15,7 +15,8 @@ import {
   ChevronRight, 
   Play, 
   Award,
-  Filter
+  Filter,
+  Heart
 } from 'lucide-react';
 import DisclaimerBanner from '../components/DisclaimerBanner.jsx';
 
@@ -36,6 +37,17 @@ export default function GameHubPage() {
       badge: 'Cognitive Baseline',
       color: 'from-teal-500 to-emerald-600',
       difficulty: cognitiveProfile?.difficultyLevel || 'Moderate'
+    },
+    {
+      id: 'faces',
+      title: 'Who Is This?',
+      desc: 'Recognise your own family, your home and the places you love. No timer, no score.',
+      category: 'Memory',
+      route: '/games/faces',
+      icon: Heart,
+      badge: 'Personal Photos',
+      color: 'from-rose-500 to-pink-600',
+      difficulty: 'Gentle'
     },
     {
       id: 'cultural',

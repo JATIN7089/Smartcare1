@@ -32,6 +32,8 @@ import BreathingPacerPage from './pages/BreathingPacerPage.jsx';
 import WellbeingMonitorPage from './pages/WellbeingMonitorPage.jsx';
 import GroundingPage from './pages/GroundingPage.jsx';
 import MemoryLanePage from './pages/MemoryLanePage.jsx';
+import MyPeoplePage from './pages/MyPeoplePage.jsx';
+import FaceRecallGame from './pages/FaceRecallGame.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 
 // Caregiver & Healthcare Portals
@@ -108,6 +110,7 @@ function AuthenticatedApp() {
           <Route path="/games/objects" element={<ObjectRecognitionGame />} />
           <Route path="/games/sound" element={<SoundMemoryGame />} />
           <Route path="/games/cultural" element={<NERCulturalGame />} />
+          <Route path="/games/faces" element={<FaceRecallGame />} />
           <Route path="/cultural-mode" element={<CulturalModePage />} />
 
           {/* Well-being */}
@@ -121,6 +124,7 @@ function AuthenticatedApp() {
           <Route path="/reminders" element={<RemindersPage />} />
           <Route path="/routine" element={<RoutinePage />} />
           <Route path="/memory-lane" element={<MemoryLanePage />} />
+          <Route path="/my-people" element={<MyPeoplePage />} />
           <Route path="/profile" element={<ProfilePage />} />
 
           {/* Caregiver Portal — caregiver + health worker only */}

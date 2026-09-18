@@ -54,6 +54,7 @@ export const ROLES = {
       { label: 'Reminders', path: '/reminders', icon: 'Bell' }
     ],
     more: [
+      { label: 'My People & Places', path: '/my-people', icon: 'Users' },
       { label: 'Daily Routine', path: '/routine', icon: 'Clock' },
       { label: 'Memory Lane', path: '/memory-lane', icon: 'Heart' },
       { label: 'Grounding Exercise', path: '/grounding', icon: 'Sparkles' },
