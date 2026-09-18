@@ -1,18 +1,27 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distPath = path.join(__dirname, '../dist');
+const distExists = fs.existsSync(distPath);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json({ limit: '8mb' }));
-app.use(express.static(distPath));
+
+// Only serve static build if it exists — in dev mode Vite serves frontend on :3000
+if (distExists) {
+  app.use(express.static(distPath));
+  console.log(`[API Server] Serving static frontend from ${distPath}`);
+} else {
+  console.log(`[API Server] No dist/ found — running in API-only / dev mode (frontend served by Vite on :3000)`);
+}
 
 
 /* ============================================================
@@ -965,12 +974,25 @@ app.post('/api/sync', (req, res) => {
   });
 });
 
-// Serve frontend for non-API routes
+// Serve frontend for non-API routes (production only)
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
-  res.sendFile(path.join(distPath, 'index.html'));
+  if (!distExists) {
+    // In dev mode, frontend is served by Vite on port 3000
+    return res.status(200).json({
+      message: 'SmarTCARE API running in dev mode. Frontend is served by Vite on http://localhost:3000',
+      frontend: 'http://localhost:3000',
+      apiHealth: '/api/health'
+    });
+  }
+  const indexPath = path.join(distPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+  return res.status(404).json({ error: 'Frontend build not found. Run npm run build first.' });
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`[API Server] SmarTCARE Express API listening on http://localhost:${PORT}`);
+  console.log(`[API Server] SmarTCARE Express API listening on http://0.0.0.0:${PORT}`);
+  console.log(`[API Server] Health check: http://localhost:${PORT}/api/health`);
 });
