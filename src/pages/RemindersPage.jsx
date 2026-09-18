@@ -34,8 +34,17 @@ const CATEGORY_ICONS = {
   Sleep: Moon
 };
 
+const REMINDER_TITLE_KEYS = {
+  'Blood Pressure & Heart Medicine': 'rem_bp',
+  'Hydration Break (Fresh Water / Chamomile)': 'rem_hydration',
+  'Afternoon Memory Exercise': 'rem_memory',
+  'Doctor Follow-Up Consultation': 'rem_doctor',
+  'Evening Walk in Courtyard': 'rem_walk',
+  'Evening Calming Breathing Session': 'rem_breathing'
+};
+
 export default function RemindersPage() {
-  const { reminders, handleToggleReminder, handleAddReminder, handleDeleteReminder, language } = useApp();
+  const { reminders, handleToggleReminder, handleAddReminder, handleDeleteReminder, language, t } = useApp();
   const location = useLocation();
 
   const [activeTab, setActiveTab] = useState('all'); // all | upcoming | completed
@@ -208,7 +217,7 @@ export default function RemindersPage() {
                     </div>
 
                     <h3 className={`font-extrabold text-base sm:text-lg text-slate-900 truncate ${reminder.completed ? 'line-through text-slate-500' : ''}`}>
-                      {reminder.title}
+                      {t ? t(REMINDER_TITLE_KEYS[reminder.title] || '', reminder.title) : reminder.title}
                     </h3>
 
                     {reminder.notes && (
